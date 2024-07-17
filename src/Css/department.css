@@ -1,0 +1,50 @@
+.col_depa{
+    background-color: #833988;
+    border-radius: 10px;
+    margin: 10px;
+    padding: 20px;
+}
+.icon_department{
+    height: 30px;
+    width:30px;
+    background-color: #F57D20;
+    border-radius: 20px;
+    padding: 4px;
+    object-fit: contain;
+}
+.info_cont_depa{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 2vh;
+}
+.coupoun_department{
+    color: #fff;
+margin-right: 1vh;
+}
+.info_department{
+    color: #fff;
+font-size: 13px;
+}
+.title_depa{
+    font-size: 25px;
+    color: #fff;
+    /* font-weight: 500; */
+}
+.btn_handle_cont{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.btn_handle_depa{
+    background-color: #F57D20;
+    border: none;
+    border-radius: 10px;
+    padding: 15px 20px 15px 20px;
+    margin: 5px;
+}
+.img_handle_depa{
+    width: 24px;
+    height: 24px;
+    object-fit: cover;
+}
