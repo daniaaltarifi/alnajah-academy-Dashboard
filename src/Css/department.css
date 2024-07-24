@@ -15,8 +15,8 @@
 .info_cont_depa{
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
     align-items: center;
-    padding-top: 2vh;
 }
 .coupoun_department{
     color: #fff;
@@ -25,6 +25,7 @@ margin-right: 1vh;
 .info_department{
     color: #fff;
 font-size: 13px;
+padding-left: 5px;
 }
 .title_depa{
     font-size: 25px;
@@ -48,3 +49,62 @@ font-size: 13px;
     height: 24px;
     object-fit: cover;
 }
+.add_btn{
+    /* height: 6vh; */
+    background-color: #833988;
+    border: none;
+    border-radius: 20px;
+    margin-right: 5vh;
+    padding-bottom:10px;
+}
+.plus_icon{
+margin-left: 5px;
+    padding: 0 8px 5px 8px;
+    color: #000;
+    border-radius: 50px;
+    background-color: #fff;
+}
+.add_btn:hover{
+    background-color: #F57D20;
+}
+/* Modal************ */
+/* Modal *************************/
+.modal_title{
+    text-align: center;
+    color: #833988;
+    font-size: 34px;
+    font-weight: 700;
+    line-height: 100px;
+  }
+  .input_filed_modal{
+    border-radius: 20px;
+  border-color: #aaa
+  }
+  .text_field{
+    text-align: center;
+    color: #833988;
+  }
+  .buy_department_btn{
+    background-color: #833988;
+    border: none;
+    border-radius: 20px;
+    width: 100%;
+  }
+  .buy_department_btn:hover{
+    background-color: #F57D20;
+  }
+  .select_dep {
+    border-radius: 30px;
+    max-width: 100%;
+    width: 100%;
+    padding: 5px;
+    border-color: #aaa;
+  }
+  .select_dep option {
+    color: #833988;
+  }
+  .modal-backdrop {
+    background-color: rgba(103, 102, 102, 0.4);
+  }
+  
+  

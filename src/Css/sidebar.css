@@ -1,14 +1,7 @@
-.cont_sidebar{
-    width:15vh;
-    background-color: #833988;
-}
-.logo{
-    height: 7vh;
-    width:7vh;
-}
-.link_logo{
-    padding: 60px 0 60px 0;
 
+.logo{
+  padding-top: 50px;
+  padding-bottom: 50px;
 }
 .icon_sidebar{
     height: 25px;
@@ -33,7 +26,7 @@
   #sidebar {
     z-index: 1000;
     position: fixed;
-    width: 100px;
+    width: 80px;
     height: 100%;
     margin-left: -250px;
     overflow-y: auto;
@@ -52,17 +45,19 @@
   
   #sidebar header a {
     color: #fff;
-    display: block;
+    /* display: block; */
   }
   
  
   .nav {
     display: flex;
-    flex-direction: column; /* Display items vertically */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
   
   .nav li {
-    margin-bottom: 50px; /* Adjust the amount of space (margin) between list items as needed */
+    margin-bottom: 50px; 
   }
 
   #sidebar .nav a{
@@ -72,7 +67,7 @@
   #sidebar .nav a:hover{
     border-radius: 5px;
     background: #F57D20;
-    padding: 5px;
+    padding: 10px;
     color: #ECEFF1;
   }
   /* NavBar ****************************/
@@ -99,13 +94,11 @@
   /* #sidebar .nav a i{
     margin-right: 16px;
   } */
-   /* @media screen and (max-width:768px) {
+   @media screen and (max-width:768px) {
     #sidebar {
         width: 70px;
         
     }
-    .nav li {
-        margin-left: 15px; 
-      }
+  
     
-   } */
+   }

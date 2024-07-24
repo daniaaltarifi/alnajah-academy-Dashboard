@@ -3,8 +3,8 @@
     display: flex;
     justify-content: space-around;
     align-items: center;
-    height: 10vh;
-    width: 37vh;
+    height: 100px;
+    /* width: 37vh; */
     border-radius: 10px;
     margin: 15px;
 }
