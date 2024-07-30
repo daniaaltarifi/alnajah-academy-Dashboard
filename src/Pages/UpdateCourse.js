@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import NavBar from "../component/NavBar";
 import "../Css/addCourse.css";
-function AddCourse() {
+function UpdateCourse() {
   const [courseTitle, setCourseTitle] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
   const [displayInfo, setDisplayInfo] = useState([]);
@@ -39,7 +39,7 @@ function AddCourse() {
       <div className="container ">
         <div className="row">
           <div className="col-lg-2 col-md-6 col-sm-12">
-            <div className="title_add_course">اضافة مادة</div>
+            <div className="title_add_course">تعديل مادة</div>
           </div>
         </div>
         <div className="row mt-4">
@@ -202,7 +202,7 @@ function AddCourse() {
           </div>
         ))}
       </div>
-          <button className="btn_addCourse px-5 py-2 ">اضافة</button>
+          <button className="btn_addCourse px-5 py-2 ">حفظ</button>
           </div>
         </div>
       </div>
@@ -210,4 +210,5 @@ function AddCourse() {
   );
 }
 
-export default AddCourse;
+ export default UpdateCourse;
+

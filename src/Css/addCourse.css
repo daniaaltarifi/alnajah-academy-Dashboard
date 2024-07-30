@@ -16,7 +16,7 @@ line-height:45px;
 .input_addcourse{
     border-radius: 20px;
     height: 45px;
-    width: 80%;
+    width: 100%;
     border: 1px solid #a3a3a3;
 padding-right:15px;
     }
@@ -64,8 +64,8 @@ padding-right:15px;
   }
   .file_input_addvideo{
     position: relative;
-    width: 80%; 
-    height: 40px; 
+    width: 100%; 
+    height: 50px; 
     border: 1px dotted #833988;
     border-radius: 4px;
     padding: 8px;
@@ -78,6 +78,7 @@ padding-right:15px;
   .selected_file_addvideo{
     text-align: center;
   }
+ 
   .btn_choose_video{
     background-color: #fff;
     color: #833988;
@@ -87,9 +88,26 @@ padding-right:15px;
     background-color: #F57D20;
     border-radius: 15px;
     color: #fff;
+    margin-top: 3vh;
  }
- @media (max-width: 768px) {
+ .btn_addCourse{
+  background-color: #833988;
+  border-radius: 15px;
+  color: #fff;
+  border: none;
+  
+ }
+  .btn_addCourse:hover{
+    background-color: #F57D20;
+  }
+ @media screen and (max-width: 768px) {
     .selected_file_addvideo {
       display: none;
+    }
+    .selected_file_addcourse{
+      padding-top: 2vh;
+    }
+    .btn_addCourse{
+      margin-top: 10vh;
     }
   }

@@ -35,11 +35,11 @@ const Sidebar = () => {
     <div id="viewport" >
     <div id="sidebar" >
       <header>
-       <Link to="" className="link_logo"><img src={require("../assets/ba9ma2.png")} alt="logo" className="logo img-fluid"/></Link>
+       <Link to="/home" className="link_logo"><img src={require("../assets/ba9ma2.png")} alt="logo" className="logo img-fluid"/></Link>
       </header>
       <div className="nav">
         <li>
-          <Link to="/" lassName="background_icon" onClick={handleBackground}>
+          <Link to="/home" lassName="background_icon" onClick={handleBackground}>
             <img src={require("../assets/home.png")} alt=""className="img-fluid icon_sidebar" /> 
           </Link>
         </li>
@@ -49,28 +49,49 @@ const Sidebar = () => {
           </Link>
         </li>
         <li>
-        <Link to="/courses">
-            <img src={require("../assets/teacher.png")} alt=""className="img-fluid icon_sidebar" /> 
+        <Link to="/courses" onClick={handleBackground} className="background_icon">
+            <img src={require("../assets/book.png")} alt=""className="img-fluid "width={"35px"} /> 
           </Link>
         </li>
         <li>
-        <Link to="#">
+        <Link to="/teacher" onClick={handleBackground} className="background_icon">
+            <img src={require("../assets/teacher.png")} alt=""className="img-fluid icon_sidebar" /> 
+          </Link>
+        </li>
+        
+        <li>
+        <Link to="/order" onClick={handleBackground} className="background_icon">
             <img src={require("../assets/purchase.png")} alt=""className="img-fluid icon_sidebar" /> 
           </Link>
         </li>
         <li>
-        <Link to="#">
+        <Link to="/library" onClick={handleBackground} className="background_icon">
             <img src={require("../assets/library.png")} alt=""className="img-fluid icon_sidebar" /> 
           </Link>
         </li>
         <li>
-        <Link to="#">
+        <Link to="/blogs" onClick={handleBackground} className="background_icon">
             <img src={require("../assets/blog.png")} alt=""className="img-fluid icon_sidebar" /> 
           </Link>
         </li>
         <li>
-        <Link to="#">
+        <Link to="/comments" onClick={handleBackground} className="background_icon">
             <img src={require("../assets/comment.png")} alt=""className="img-fluid icon_sidebar" /> 
+          </Link>
+        </li>
+        <li>
+        <Link to="/users" onClick={handleBackground} className="background_icon">
+            <img src={require("../assets/group.png")} alt=""className="img-fluid icon_sidebar" /> 
+          </Link>
+        </li> 
+        <li>
+        <Link to="/admin" onClick={handleBackground} className="background_icon">
+            <img src={require("../assets/user.png")} alt=""className="img-fluid icon_sidebar" /> 
+          </Link>
+        </li> 
+        <li>
+        <Link to="/faq" onClick={handleBackground} className="background_icon">
+            <img src={require("../assets/help.png")} alt=""className="img-fluid icon_sidebar" /> 
           </Link>
         </li>
       </div>

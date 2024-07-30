@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import '../Css/search.css'
 import Table from "react-bootstrap/Table";
 import DeletePopUp from "../component/DeletePopUp";
-function Courses() {
+function Blogs() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [smShow, setSmShow] = useState(false);
@@ -14,15 +14,15 @@ function Courses() {
   const navigate = useNavigate();
   const handleOpenModal = () => {
     setSmShow(true);
-    setTitlePopup("حذف مادة"); // Set your modal title dynamically
-    setDescriptionPopup("هل أنت متأكد من حذف هذا المادة ؟"); // Set your modal description dynamically
+    setTitlePopup("حذف مقال"); // Set your modal title dynamically
+    setDescriptionPopup("هل أنت متأكد من حذف هذا المقال ؟"); // Set your modal description dynamically
   };
 
   const handleCloseModal = () => {
     setSmShow(false);
   };
   const handleUpdate=()=>{
-    navigate('/updatecourse')
+    navigate('/updateblog')
   }
   // const handleInputChange = (event) => {
   //     const query = event.target.value;
@@ -37,16 +37,16 @@ function Courses() {
   //   };
   return (
     <>
-      <NavBar title={"المواد"} />
+      <NavBar title={"مدونة بصمة"} />
       <section classNameName="margin_section">
         <div className="container ">
     
                <div className="row">
                 <div className="col-lg-6 col-md-12 col-sm-12 ">
-              <Link to="/addcourse">
+              <Link to="/addblog">
               <Button className="add_btn">
                 <span className="plus_icon">+</span>
-                اضف مادة{" "}
+                اضف مقالا{" "}
               </Button>
               </Link>
               </div>
@@ -106,12 +106,10 @@ function Courses() {
     <Table striped hover>
                     <thead>
                       <tr className="table_head_cardprice">
-                        <th className="desc_table_cardprice"> المادة</th>
-                        <th className="desc_table_cardprice">الأستاذ </th>
-                        <th className="desc_table_cardprice">عدد الدروس </th>
-                        <th className="desc_table_cardprice">عدد الطلاب</th>
-                        <th className="desc_table_cardprice">التقييم</th>
-
+                        <th className="desc_table_cardprice">عنوان المقال </th>
+                        <th className="desc_table_cardprice"> صاحب المقال</th>
+                        <th className="desc_table_cardprice">القسم</th>
+                        <th className="desc_table_cardprice">النص </th>
                         <th className="desc_table_cardprice">الإجراء</th>
                       </tr>
                     </thead>
@@ -121,17 +119,15 @@ function Courses() {
                         <td> محمد أحمد</td>
                         <td>12</td>
                         <td>12</td>
-                        <td>5 </td>
 
                         <td>
-                        <i class="fa-regular fa-pen-to-square fa-lg ps-2" style={{color:"#6dab93"}} onClick={handleUpdate}></i>
+                        <i class="fa-regular fa-pen-to-square fa-lg ps-2" style={{color:"#6dab93"}} onClick={handleUpdate} ></i>
                         <i className="fa-regular fa-trash-can fa-lg" style={{color:"#944b43"}} onClick={handleOpenModal} ></i>
                         </td>
                       </tr>
                       <tr>
                       <td>اللغة الأنجليزية </td>
                         <td> محمد أحمد</td>
-                        <td>12</td>
                         <td>12</td>
                         <td>5 </td>
 
@@ -144,11 +140,10 @@ function Courses() {
                       <td>اللغة الأنجليزية </td>
                         <td> محمد أحمد</td>
                         <td>12</td>
-                        <td>12</td>
                         <td>5 </td>
 
                         <td>
-                        <i class="fa-regular fa-pen-to-square fa-lg ps-2" style={{color:"#6dab93"}} onClick={handleUpdate}></i>
+                        <i class="fa-regular fa-pen-to-square fa-lg ps-2" style={{color:"#6dab93"}} ></i>
                         <i className="fa-regular fa-trash-can fa-lg" style={{color:"#944b43"}}></i>
                         </td>
                       </tr>
@@ -167,4 +162,4 @@ function Courses() {
   );
 }
 
-export default Courses;
+export default Blogs;

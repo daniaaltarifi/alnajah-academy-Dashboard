@@ -4,26 +4,20 @@ import Button from "react-bootstrap/Button";
 import { Link, useNavigate } from "react-router-dom";
 import '../Css/search.css'
 import Table from "react-bootstrap/Table";
-import DeletePopUp from "../component/DeletePopUp";
-function Courses() {
+import Form from "react-bootstrap/Form";
+import Modal from "react-bootstrap/Modal";
+function Users() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  const [smShow, setSmShow] = useState(false);
-  const [titlePopup, setTitlePopup] = useState(""); // State for modal title
-  const [descriptionPopup, setDescriptionPopup] = useState(""); 
-  const navigate = useNavigate();
-  const handleOpenModal = () => {
-    setSmShow(true);
-    setTitlePopup("حذف مادة"); // Set your modal title dynamically
-    setDescriptionPopup("هل أنت متأكد من حذف هذا المادة ؟"); // Set your modal description dynamically
-  };
+  const [show, setShow] = useState(false);
 
-  const handleCloseModal = () => {
-    setSmShow(false);
-  };
+  const navigate = useNavigate();
+
   const handleUpdate=()=>{
-    navigate('/updatecourse')
+    navigate('/updateteacher')
   }
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
   // const handleInputChange = (event) => {
   //     const query = event.target.value;
   //     setSearchQuery(query);
@@ -37,20 +31,71 @@ function Courses() {
   //   };
   return (
     <>
-      <NavBar title={"المواد"} />
+      <NavBar title={"المسجلين"} />
       <section classNameName="margin_section">
         <div className="container ">
     
                <div className="row">
                 <div className="col-lg-6 col-md-12 col-sm-12 ">
-              <Link to="/addcourse">
-              <Button className="add_btn">
+              {/* <Link to="/addteacher"> */}
+              <Button className="add_btn" onClick={handleShow}>
                 <span className="plus_icon">+</span>
-                اضف مادة{" "}
+                اضف طالب{" "}
               </Button>
-              </Link>
+              {/* </Link> */}
               </div>
+{/* Modal Add student */}
+<Modal show={show} onHide={handleClose} dir="rtl">
+          <Modal.Title className="modal_title">اضافة طالب</Modal.Title>
 
+          <Modal.Body>
+            <Form>
+              <Form.Group
+                className="mb-3"
+                controlId="exampleForm.ControlInput1"
+              >
+                <Form.Label className="text_field ">اسم الطالب</Form.Label>
+                <Form.Control type="text" className="input_filed_modal" />
+              </Form.Group>
+              <Form.Group
+                className="mb-3"
+                controlId="exampleForm.ControlInput1"
+              >
+                <Form.Label className="text_field text-center">
+                  الأيميل{" "}
+                </Form.Label>
+                <Form.Control type="email" className="input_filed_modal" />
+              </Form.Group>{" "}
+              <Form.Group
+                className="mb-3"
+                controlId="exampleForm.ControlInput1"
+              >
+                <Form.Label className="text_field text-center">
+كلمة السر                </Form.Label>
+                <Form.Control type="password" className="input_filed_modal" />
+                
+              </Form.Group>{" "}
+              <Form.Group
+                className="mb-3"
+                controlId="exampleForm.ControlInput1"
+              >
+                <Form.Label className="text_field text-center">
+تأكيد كلمة السر                 </Form.Label>
+                <Form.Control type="password" className="input_filed_modal" />
+              </Form.Group>{" "}
+         
+           
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            {/* <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button> */}
+            <Button onClick={handleClose} className="buy_department_btn">
+اضافة            </Button>
+          </Modal.Footer>
+        </Modal>
+{/* End Modal Add student */}
                {/* search */}
                 <div className="col-lg-6 col-md-12 col-sm-12 ">
                   <div className="navbar__search">
@@ -106,51 +151,26 @@ function Courses() {
     <Table striped hover>
                     <thead>
                       <tr className="table_head_cardprice">
-                        <th className="desc_table_cardprice"> المادة</th>
-                        <th className="desc_table_cardprice">الأستاذ </th>
-                        <th className="desc_table_cardprice">عدد الدروس </th>
-                        <th className="desc_table_cardprice">عدد الطلاب</th>
-                        <th className="desc_table_cardprice">التقييم</th>
-
-                        <th className="desc_table_cardprice">الإجراء</th>
+                        <th className="desc_table_cardprice">اسم الطالب </th>
+                        <th className="desc_table_cardprice"> الايميل</th>
+                       
                       </tr>
                     </thead>
                     <tbody>
                       <tr>
                         <td>اللغة الأنجليزية </td>
                         <td> محمد أحمد</td>
-                        <td>12</td>
-                        <td>12</td>
-                        <td>5 </td>
-
-                        <td>
-                        <i class="fa-regular fa-pen-to-square fa-lg ps-2" style={{color:"#6dab93"}} onClick={handleUpdate}></i>
-                        <i className="fa-regular fa-trash-can fa-lg" style={{color:"#944b43"}} onClick={handleOpenModal} ></i>
-                        </td>
+                   
                       </tr>
                       <tr>
                       <td>اللغة الأنجليزية </td>
                         <td> محمد أحمد</td>
-                        <td>12</td>
-                        <td>12</td>
-                        <td>5 </td>
-
-                        <td>
-                        <i class="fa-regular fa-pen-to-square fa-lg ps-2" style={{color:"#6dab93"}}></i>
-                        <i className="fa-regular fa-trash-can fa-lg" style={{color:"#944b43"}}></i>
-                        </td>
+                        
                       </tr>
                       <tr>
                       <td>اللغة الأنجليزية </td>
                         <td> محمد أحمد</td>
-                        <td>12</td>
-                        <td>12</td>
-                        <td>5 </td>
-
-                        <td>
-                        <i class="fa-regular fa-pen-to-square fa-lg ps-2" style={{color:"#6dab93"}} onClick={handleUpdate}></i>
-                        <i className="fa-regular fa-trash-can fa-lg" style={{color:"#944b43"}}></i>
-                        </td>
+                       
                       </tr>
                     </tbody>
                   </Table>
@@ -158,13 +178,10 @@ function Courses() {
     </div>
 </div>
         </div>
-        <DeletePopUp  show={smShow}
-        onHide={handleCloseModal}
-        title={titlePopup}
-        description={descriptionPopup} />
+      
       </section>
     </>
   );
 }
 
-export default Courses;
+export default Users;
