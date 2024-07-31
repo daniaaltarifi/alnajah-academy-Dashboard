@@ -1,20 +1,108 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import NavBar from "../component/NavBar";
 import "../Css/addCourse.css";
+import { useLocation,useNavigate } from "react-router-dom";
+import Toastify from "toastify-js";
+import "toastify-js/src/toastify.css"; 
+import axios from "axios";
 function UpdateLibrary() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [book_name, setBook_name] = useState('');
+  const [author, setAuthor] = useState("")
+const [department_id, setDepartment_id] = useState(null)
+const [page_num, setPage_num] = useState("")
+  const [libraryId, setLibraryId] = useState('');
   const [teacherName, setTeacherName] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
   const [displayInfo, setDisplayInfo] = useState([]);
+  const [library, setLibrary] = useState([])
+  const [departmentData, setDepartmentData] = useState([])
+  const handleDepartment = (e) => {
+    const selectedDepartmentId = e.target.value;
+    setDepartment_id(selectedDepartmentId);
+    console.log(department_id)
+  };
 
+  useEffect(() => {
+    // Check if location.state exists and contains the id
+    if (location.state && location.state.id) {
+      setLibraryId(location.state.id);
+      console.log("new" + libraryId)
+    } else {
+      console.warn('No ID found in location.state');
+    }
+  }, [location.state]);
+  useEffect(() => {
+    const fetchDepartments = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/department");
+        setDepartmentData(response.data);
+      } catch (error) {
+        console.error("Error fetching departments:", error);
+      }
+    };
+
+    fetchDepartments();
+  }, []);
+  
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     setSelectedFile(file);
+    console.log(file.name); // This will correctly log the file
   };
+  
 
   const handleDeleteSelectedFile=()=>{
     setSelectedFile(null);
   }
-  
+  const handleUpdate = async () => {
+
+    // if (!book_name || !author || !department_id || !page_num || !selectedFile) {
+    //   Toastify({
+    //     text: "Please Fill All Field",
+    //     duration: 3000, // Duration in milliseconds
+    //     gravity: "top", // 'top' or 'bottom'
+    //     position: 'right', // 'left', 'center', 'right'
+    //     backgroundColor: "#CA1616",
+    //   }).showToast();
+    //   return;
+    // }
+    try {
+      const formData = new FormData();
+      formData.append('book_name', book_name);
+      formData.append('author', author);
+      formData.append('department_id', department_id);
+      formData.append('page_num', page_num); // Append the selected image file
+      formData.append('file_book', selectedFile); // Append the selected image file
+
+      const response = await axios.put(
+        `http://localhost:8080/library/update/${libraryId}`,
+        formData, // Send the FormData object
+        {
+          headers: {
+            "Content-Type": "multipart/form-data", // Set the content type to multipart/form-data
+          },
+        }
+      );
+      console.log(response.data);
+      setLibrary((prevAdd) =>
+        prevAdd.map((data) =>
+          data.id === libraryId ? response.data : data
+        )
+      );
+      Toastify({
+        text: "Updated completely",
+        duration: 3000, // Duration in milliseconds
+        gravity: "top", // 'top' or 'bottom'
+        position: 'right', // 'left', 'center', 'right'
+        backgroundColor: "#5EC693",
+      }).showToast();
+navigate('/library')
+    } catch (error) {
+      console.log(`Error in fetch edit data: ${error}`);
+    }
+  };
   return (
     <>
       <NavBar title={"مكتبة بصمة"} />
@@ -26,34 +114,36 @@ function UpdateLibrary() {
         </div>
         <div className="row mt-4">
           <div className="col-lg-4 col-md-6 col-sm-12">
-            <p className="input_title_addcourse">اسم الكتاب</p>
-            <input type="text" className="input_addcourse" />{" "}
+            <p className="input_title_addcourse" >اسم الكتاب</p>
+            <input type="text" className="input_addcourse" onChange={(e)=>setBook_name(e.target.value)} />{" "}
           </div>
           <div className="col-lg-4 col-md-6 col-sm-12">
             <p className="input_title_addcourse">اسم الكاتب</p>
-            <input type="text" className="input_addcourse" />{" "}
+            <input type="text" className="input_addcourse" onChange={(e)=>setAuthor(e.target.value)}/>{" "}
           </div>
           <div className="col-lg-4 col-md-6 col-sm-12">
             <p className="input_title_addcourse">القسم </p>
             <select
               name="department"
-              // value={selectedDepartment}
-              // onChange={handleDepartment}
+              value={department_id}
+              onChange={handleDepartment}
               id="lang"
               className="select_dep"
             >
               <option value="">اختر قسم</option>
-              {/* {department.map((dep) => ( */}
-              <option>{/* {dep.title} */}department</option>
-              {/* ))} */}
-            </select>{" "}
+              {departmentData.map((dep) => (
+                <option key={dep.id} value={dep.id}>
+                  {dep.title}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
       
         <div className="row mt-4">
         <div className="col-lg-4 col-md-6 col-sm-12">
             <p className="input_title_addcourse">عدد الصفحات</p>
-            <input type="text" className="input_addcourse" />{" "}
+            <input type="text" className="input_addcourse" onChange={(e)=>setPage_num(e.target.value)}/>{" "}
           </div>
           <div className="col-lg-8 col-md-6 col-sm-12">
           <p className="input_title_addcourse">رفع الكتاب </p>
@@ -88,7 +178,7 @@ function UpdateLibrary() {
           </div>
           <div className="d-flex justify-content-center align-items-center ">
 
-        <button className="btn_addCourse px-5 py-2 mt-5">حفظ</button>
+        <button className="btn_addCourse px-5 py-2 mt-5" onClick={handleUpdate}>حفظ</button>
           </div>
      
         </div>

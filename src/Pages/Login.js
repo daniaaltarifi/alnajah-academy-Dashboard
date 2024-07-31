@@ -12,29 +12,29 @@ function Login() {
  
 
   const handleLogin = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     const res = await axios.post('http://localhost:8080/api/login', {
-  //       email, password
-  //     });
+    e.preventDefault();
+    try {
+      const res = await axios.post('http://localhost:8080/api/login', {
+        email, password
+      });
      
-  //     console.log('Login response:', res.data);
-  //     localStorage.setItem('auth', res.data.token);
-  // localStorage.setItem('id', res.data.token.id);
-  //     // Check if the response contains the token
-  //     if (res.data.token) {
-  //       localStorage.setItem('auth', res.data.token);
-  //       localStorage.setItem('name', res.data.name);
-  //       localStorage.setItem('id', res.data.id);
-  //       console.log('Auth token set in localStorage:', localStorage.getItem('auth'));
+      console.log('Login response:', res.data);
+      localStorage.setItem('auth', res.data.token);
+  localStorage.setItem('id', res.data.token.id);
+      // Check if the response contains the token
+      if (res.data.token) {
+        localStorage.setItem('auth', res.data.token);
+        localStorage.setItem('name', res.data.name);
+        localStorage.setItem('id', res.data.id);
+        console.log('Auth token set in localStorage:', localStorage.getItem('auth'));
         window.location.href = '/home'; // Redirect to home page after login
-    //   } else {
-    //     setError("Login failed, no token received.");
-    //   }
-    // } catch (err) {
-    //   setError("البريد الالكتروني أو كلمة المرور غير صحيحة");
-    //   console.error('Login error:', err);
-    // }
+      } else {
+        setError("Login failed, no token received.");
+      }
+    } catch (err) {
+      setError("البريد الالكتروني أو كلمة المرور غير صحيحة");
+      console.error('Login error:', err);
+    }
   };
   return (
     <>

@@ -1,18 +1,25 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import NavBar from "../component/NavBar";
 import Button from "react-bootstrap/Button";
 import { Link, useNavigate } from "react-router-dom";
 import '../Css/search.css'
 import Table from "react-bootstrap/Table";
 import DeletePopUp from "../component/DeletePopUp";
+import axios from "axios";
+import Toastify from "toastify-js";
+import "toastify-js/src/toastify.css"; 
 function Library() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [smShow, setSmShow] = useState(false);
   const [titlePopup, setTitlePopup] = useState(""); // State for modal title
   const [descriptionPopup, setDescriptionPopup] = useState(""); 
+  const [library, setLibrary] = useState([])
+  const [currentId, setCurrentId] = useState(null); 
+
   const navigate = useNavigate();
-  const handleOpenModal = () => {
+  const handleOpenModal = (id) => {
+    setCurrentId(id);
     setSmShow(true);
     setTitlePopup("حذف كتاب"); // Set your modal title dynamically
     setDescriptionPopup("هل أنت متأكد من حذف هذا الكتاب ؟"); // Set your modal description dynamically
@@ -21,9 +28,22 @@ function Library() {
   const handleCloseModal = () => {
     setSmShow(false);
   };
-  const handleUpdate=()=>{
-    navigate('/updatelibrary')
-  }
+  const handleUpdate = (id) => {
+    console.log(id)
+    navigate('/updatelibrary', { state: { id } });
+  };
+  
+  useEffect(()=>{
+    const fetchLibrary = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/library/");
+        setLibrary(response.data);
+      } catch (error) {
+        console.error("Error fetching departments:", error);
+      }
+    };
+fetchLibrary()
+  },[])
   // const handleInputChange = (event) => {
   //     const query = event.target.value;
   //     setSearchQuery(query);
@@ -35,6 +55,31 @@ function Library() {
 
   //     setSearchResults(filteredResults);
   //   };
+  const handleDelete = async () => {
+    try {
+      await axios.delete(
+        `http://localhost:8080/library/delete/${currentId}`
+      );
+
+      // Remove the deleted department from state
+      setLibrary((prevData) =>
+        prevData.filter((data) => data.id !== currentId)
+      );
+
+      Toastify({
+        text: "Department deleted successfully",
+        duration: 3000,
+        gravity: "top",
+        position: "right",
+        backgroundColor: "#F57D20",
+      }).showToast();
+
+      handleCloseModal(); // Close the modal after deletion
+    } catch (error) {
+      console.error("Error deleting department:", error);
+    }
+  };
+
   return (
     <>
       <NavBar title={"مكتبة بصمة "} />
@@ -116,42 +161,22 @@ function Library() {
                       </tr>
                     </thead>
                     <tbody>
+                      {library.map((library)=>(
                       <tr>
-                        <td>اللغة الأنجليزية </td>
-                        <td> محمد أحمد</td>
-                        <td>12</td>
-                        <td>12</td>
-                        <td>5 </td>
+                        <td>{library.book_name} </td>
+                        <td> {library.author}</td>
+                        <td>{library.department_name}</td>
+                        <td>{library.page_num}</td>
+                        <td>{library.created_date} </td>
 
                         <td>
-                        <i class="fa-regular fa-pen-to-square fa-lg ps-2" style={{color:"#6dab93"}} onClick={handleUpdate} ></i>
-                        <i className="fa-regular fa-trash-can fa-lg" style={{color:"#944b43"}} onClick={handleOpenModal} ></i>
+                        <i class="fa-regular fa-pen-to-square fa-lg ps-2" style={{color:"#6dab93"}}   onClick={() => handleUpdate(library.id)}  ></i>
+                        <i className="fa-regular fa-trash-can fa-lg" style={{color:"#944b43"}}   onClick={() => handleOpenModal(library.id)}
+ ></i>
                         </td>
                       </tr>
-                      <tr>
-                      <td>اللغة الأنجليزية </td>
-                        <td> محمد أحمد</td>
-                        <td>12</td>
-                        <td>12</td>
-                        <td>5 </td>
 
-                        <td>
-                        <i class="fa-regular fa-pen-to-square fa-lg ps-2" style={{color:"#6dab93"}}></i>
-                        <i className="fa-regular fa-trash-can fa-lg" style={{color:"#944b43"}}></i>
-                        </td>
-                      </tr>
-                      <tr>
-                      <td>اللغة الأنجليزية </td>
-                        <td> محمد أحمد</td>
-                        <td>12</td>
-                        <td>12</td>
-                        <td>5 </td>
-
-                        <td>
-                        <i class="fa-regular fa-pen-to-square fa-lg ps-2" style={{color:"#6dab93"}} ></i>
-                        <i className="fa-regular fa-trash-can fa-lg" style={{color:"#944b43"}}></i>
-                        </td>
-                      </tr>
+                      ))}
                     </tbody>
                   </Table>
                   
@@ -161,7 +186,9 @@ function Library() {
         <DeletePopUp  show={smShow}
         onHide={handleCloseModal}
         title={titlePopup}
-        description={descriptionPopup} />
+        description={descriptionPopup}
+        handleDelete={handleDelete}
+        />
       </section>
     </>
   );
