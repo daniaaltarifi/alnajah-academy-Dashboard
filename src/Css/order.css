@@ -20,9 +20,19 @@
     .background_btn{
         width: 150px;
     }
+   
+}
+@media screen and (max-width:883px) {
     .cont_btn_order{
         display: flex;
         flex-direction: column;
         justify-content: center;
+        width: 30%;
     }
+     /* .courses_dep{
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+     } */
 }

@@ -28,6 +28,9 @@ import Admin from "./Pages/Admin.js";
 import Faq from "./Pages/Faq.js";
 import AddFaq from "./Pages/AddFaq.js";
 import UpdateFaq from "./Pages/UpdateFaq.js";
+import Toastify from "toastify-js";
+import "toastify-js/src/toastify.css"; 
+import UpdateBlog from "./Pages/UpdateBlog.js";
 function AppContent() {
   const location = useLocation(); // Get the current location
   const showApp = location.pathname != "/";
@@ -54,6 +57,7 @@ function AppContent() {
           <Route path="/updatelibrary" element={<UpdateLibrary />} />
           <Route path="/blogs" element={<Blogs />} />
           <Route path="/addblog" element={<AddBlog />} />
+          <Route path="/updateblog" element={<UpdateBlog />} />
           <Route path="/comments" element={<Comments />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/users" element={<Users />} />

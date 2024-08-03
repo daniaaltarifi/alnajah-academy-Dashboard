@@ -58,16 +58,16 @@ const [page_num, setPage_num] = useState("")
   }
   const handleUpdate = async () => {
 
-    // if (!book_name || !author || !department_id || !page_num || !selectedFile) {
-    //   Toastify({
-    //     text: "Please Fill All Field",
-    //     duration: 3000, // Duration in milliseconds
-    //     gravity: "top", // 'top' or 'bottom'
-    //     position: 'right', // 'left', 'center', 'right'
-    //     backgroundColor: "#CA1616",
-    //   }).showToast();
-    //   return;
-    // }
+    if (!book_name || !author || !department_id || !page_num || !selectedFile) {
+      Toastify({
+        text: "Please Fill All Field",
+        duration: 3000, // Duration in milliseconds
+        gravity: "top", // 'top' or 'bottom'
+        position: 'right', // 'left', 'center', 'right'
+        backgroundColor: "#CA1616",
+      }).showToast();
+      return;
+    }
     try {
       const formData = new FormData();
       formData.append('book_name', book_name);

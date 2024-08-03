@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import NavBar from "../component/NavBar";
 import Button from "react-bootstrap/Button";
 import { Link, useNavigate } from "react-router-dom";
 import '../Css/search.css'
 import Table from "react-bootstrap/Table";
 import DeletePopUp from "../component/DeletePopUp";
+import axios from "axios";
+
 function Courses() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);

@@ -3,7 +3,9 @@
 import SideBar from '../component/SideBar.js';
 import NavBar from '../component/NavBar.js';
 import '../Css/home.css'
-function ContainerFluidExample() {
+import axios from "axios";
+
+function Home() {
   const length=[
     {
       id:1,title:"الأقسام",numLength:"2"
@@ -53,4 +55,4 @@ function ContainerFluidExample() {
   );
 }
 
-export default ContainerFluidExample;
+export default Home;

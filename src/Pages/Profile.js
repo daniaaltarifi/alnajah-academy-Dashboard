@@ -3,6 +3,7 @@ import axios from 'axios';
 import "../Css/auth.css";
 import defaultImage from '../assets/profile.png';
 import NavBar from '../component/NavBar';
+
 function Profile({ user }) {
   const [successMessage, setSuccessMessage] = useState('');
 //   const { userId } = user;

@@ -4,8 +4,8 @@ import "../Css/blog.css";
 import axios from "axios";
 import Toastify from "toastify-js";
 import "toastify-js/src/toastify.css"; 
-import { useNavigate } from "react-router-dom";
-function AddBlog() {
+import { useNavigate,useLocation } from "react-router-dom";
+function UpdateBlog() {
   const [tags, setTags] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [displayInfo, setDisplayInfo] = useState([  ]);
@@ -15,6 +15,18 @@ function AddBlog() {
   const [department_id, setDepartment_id] = useState("")
   const [blogs, setBlogs] = useState([])
   const [departmentData, setDepartmentData] = useState([])
+  const [blogId, setBlogId] = useState('');
+  const location = useLocation();
+
+  useEffect(() => {
+    // Check if location.state exists and contains the id
+    if (location.state && location.state.id) {
+      setBlogId(location.state.id);
+      console.log("new" + blogId)
+    } else {
+      console.warn('No ID found in location.state');
+    }
+  }, [location.state]);
   const navigate = useNavigate();
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -73,7 +85,7 @@ function AddBlog() {
 
     fetchDepartments();
   }, []);
-  const handlePost = async () => {
+  const handleUpdate = async () => {
     if (!title || !author || !descr || !department_id || !selectedFile || !displayInfo) {
       Toastify({
         text: "Please Fill All Field",
@@ -96,19 +108,23 @@ function AddBlog() {
       const tagsArray = Array.isArray(displayInfo) ? displayInfo.map(tag => tag.title) : [];
       tagsArray.forEach(tag => formData.append('tags[]', tag));
   
-      const response = await axios.post(
-        "http://localhost:8080/blog/add",
-        formData,
+      const response = await axios.put(
+        `http://localhost:8080/blog/updateblogandtag/${blogId}`,
+        formData, // Send the FormData object
         {
           headers: {
-            "Content-Type": "multipart/form-data",
+            "Content-Type": "multipart/form-data", // Set the content type to multipart/form-data
           },
         }
       );
   
-      setBlogs(response.data);
-      Toastify({
-        text: "Added completely",
+      console.log(response.data);
+      setBlogs((prevAdd) =>
+        prevAdd.map((data) =>
+          data.id === blogId ? response.data : data
+        )
+      );      Toastify({
+        text: "Updated completely",
         duration: 3000,
         gravity: "top",
         position: 'right',
@@ -127,7 +143,7 @@ function AddBlog() {
       <div className="container ">
         <div className="row">
           <div className="col-lg-2 col-md-6 col-sm-12">
-            <div className="title_add_course">اضافة مقال</div>
+            <div className="title_add_course">تعديل مقال</div>
           </div>
         </div>
         <div className="row mt-4">
@@ -242,7 +258,7 @@ function AddBlog() {
           </div>
 
           <div className="d-flex justify-content-center align-items-center ">
-            <button className="btn_addCourse px-5 py-2 mt-4 "onClick={handlePost}>اضافة</button>
+            <button className="btn_addCourse px-5 py-2 mt-4 "onClick={handleUpdate}>حفظ</button>
           </div>
         </div>
       </div>
@@ -250,4 +266,4 @@ function AddBlog() {
   );
 }
 
-export default AddBlog;
+export default UpdateBlog;

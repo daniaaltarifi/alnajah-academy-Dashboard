@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import NavBar from "../component/NavBar";
 import "../Css/addCourse.css";
+import axios from "axios";
+
 function AddFaq() {
   const [question, setQuestion] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);

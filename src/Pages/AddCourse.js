@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import NavBar from "../component/NavBar";
 import "../Css/addCourse.css";
+import axios from "axios";
+
 function AddCourse() {
   const [courseTitle, setCourseTitle] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import NavBar from "../component/NavBar";
 import Button from "react-bootstrap/Button";
 import { Link, useNavigate } from "react-router-dom";
@@ -6,29 +6,124 @@ import "../Css/search.css";
 import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
+import axios from "axios";
+
 function Admin() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [show, setShow] = useState(false);
-
+  const [admin, setAdmin] = useState([]);
+  const [role, setRole] = useState("admin");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [nameError, setNameError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const navigate = useNavigate();
 
-  const handleUpdate = () => {
-    navigate("/updateteacher");
+  useEffect(()=>{
+    const fetchAdmin = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/api/getusers");
+        const usersdata=response.data;
+        const admin = usersdata.filter(user => user.role === 'admin');
+
+        setAdmin(admin);
+      } catch (error) {
+        console.error("Error fetching admins :", error);
+      }
+    };
+fetchAdmin()
+  },[])
+  const validateName = (name) => {
+    if (name.trim() === "") {
+      setNameError("الرجاء أدخال الاسم !");
+      return false;
+    } else {
+      setNameError("");
+      return true;
+    }
+  };
+
+  const validateEmail = (email) => {
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      setEmailError("الرجاء ادخال بريد الكتروني صحيح");
+      return false;
+    } else {
+      setEmailError("");
+      return true;
+    }
+  };
+
+  const validatePassword = (password) => {
+    const passwordRegex =
+      /^(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[A-Z])[a-zA-Z0-9!@#$%^&*]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      setPasswordError("الرجاء ادخال كلمة مرور قوية");
+      return false;
+    } else {
+      setPasswordError("");
+      return true;
+    }
+  };
+  const handleRegister = async (e) => {
+    e.preventDefault();
+
+    const isNameValid = validateName(name);
+    const isEmailValid = validateEmail(email);
+    const isPasswordValid = validatePassword(password);
+
+    if (!isNameValid || !isEmailValid || !isPasswordValid) {
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setConfirmPasswordError("كلمة المرور غير متطابقة");
+      return;
+    } else {
+      setConfirmPasswordError("");
+    }
+
+    try {
+      const res = await axios.post("http://localhost:8080/api/register", {
+        name,
+        email,
+        password,
+        role,
+        confirmPassword,
+      });
+      console.log(res.data);
+      console.log("Registration successful");
+      setAdmin(prevAdmins => [...prevAdmins, res.data]);
+      handleClose();
+      // Store authentication data in local storage
+      localStorage.setItem("auth", res.data.token);
+      localStorage.setItem("name", name);
+      localStorage.setItem("id", res.data.id);
+      window.location.reload();
+      handleClose();
+    } catch (err) {
+      console.error(err);
+    }
   };
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  // const handleInputChange = (event) => {
-  //     const query = event.target.value;
-  //     setSearchQuery(query);
+  const handleInputChange = (event) => {
+      const query = event.target.value;
+      setSearchQuery(query);
 
-  //     // Filter blogs based on search query
-  //     const filteredResults = blogs.filter((blog) =>
-  //       blog.title.toLowerCase().includes(query.toLowerCase())
-  //     );
+      // Filter blogs based on search query
+      const filteredResults = admin.filter((adm) =>
+        adm.name.toLowerCase().includes(query.toLowerCase())
+      );
 
-  //     setSearchResults(filteredResults);
-  //   };
+      setSearchResults(filteredResults);
+    };
+    const dataToDisplay = searchQuery ? searchResults : admin;
+
   return (
     <>
       <NavBar title={"المسجلين"} />
@@ -54,7 +149,8 @@ function Admin() {
                     controlId="exampleForm.ControlInput1"
                   >
                     <Form.Label className="text_field ">اسم الادمن</Form.Label>
-                    <Form.Control type="text" className="input_filed_modal" />
+                    <Form.Control type="text" className="input_filed_modal"  onChange={(e) => setName(e.target.value)}
+                    />
                   </Form.Group>
                   <Form.Group
                     className="mb-3"
@@ -63,7 +159,8 @@ function Admin() {
                     <Form.Label className="text_field text-center">
                       الأيميل{" "}
                     </Form.Label>
-                    <Form.Control type="email" className="input_filed_modal" />
+                    <Form.Control type="email" className="input_filed_modal" onChange={(e) => setEmail(e.target.value)}
+ />
                   </Form.Group>{" "}
                   <Form.Group
                     className="mb-3"
@@ -75,6 +172,8 @@ function Admin() {
                     <Form.Control
                       type="password"
                       className="input_filed_modal"
+                      onChange={(e) => setPassword(e.target.value)}
+
                     />
                   </Form.Group>{" "}
                   <Form.Group
@@ -87,6 +186,8 @@ function Admin() {
                     <Form.Control
                       type="password"
                       className="input_filed_modal"
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+
                     />
                   </Form.Group>{" "}
                 </Form>
@@ -95,7 +196,7 @@ function Admin() {
                 {/* <Button variant="secondary" onClick={handleClose}>
             Close
           </Button> */}
-                <Button onClick={handleClose} className="buy_department_btn">
+                <Button onClick={handleRegister} className="buy_department_btn">
                   اضافة{" "}
                 </Button>
               </Modal.Footer>
@@ -115,37 +216,15 @@ function Admin() {
                   placeholder="ابحث عن "
                   value={searchQuery}
                   className="search_blog"
-                  //   onChange={handleInputChange}
+                    onChange={handleInputChange}
                 />
                 <a
                   className="btn btn-s purple_btn search_btn_blog"
-                  //   onChange={handleInputChange}
+                    onChange={handleInputChange}
                 >
                   بحث{" "}
                 </a>
-                {searchQuery && (
-                  <ul className="search_dropdown">
-                    {searchResults.length > 0 ? (
-                      searchResults.map((blog) => (
-                        <li
-                          key={blog.id}
-                          onClick={() => {
-                            // navigate(`/blogdetails/${blog.id}`);
-                            window.scrollTo(0, 0);
-                          }}
-                        >
-                          <img
-                            src={`http://localhost:8080/` + blog.img}
-                            alt={blog.title}
-                          />
-                          {blog.title}
-                        </li>
-                      ))
-                    ) : (
-                      <li>No blogs found.</li>
-                    )}
-                  </ul>
-                )}
+            
               </div>
 
               {/* End search */}
@@ -161,18 +240,12 @@ function Admin() {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>اللغة الأنجليزية </td>
-                    <td> محمد أحمد</td>
-                  </tr>
-                  <tr>
-                    <td>اللغة الأنجليزية </td>
-                    <td> محمد أحمد</td>
-                  </tr>
-                  <tr>
-                    <td>اللغة الأنجليزية </td>
-                    <td> محمد أحمد</td>
-                  </tr>
+                {dataToDisplay.map((user) => (
+                    <tr key={user.id}>
+                      <td>{user.name} </td>
+                      <td> {user.email}</td>
+                    </tr>
+                  ))}
                 </tbody>
               </Table>
             </div>

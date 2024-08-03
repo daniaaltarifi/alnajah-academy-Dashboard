@@ -29,7 +29,6 @@ function Library() {
     setSmShow(false);
   };
   const handleUpdate = (id) => {
-    console.log(id)
     navigate('/updatelibrary', { state: { id } });
   };
   
@@ -39,22 +38,25 @@ function Library() {
         const response = await axios.get("http://localhost:8080/library/");
         setLibrary(response.data);
       } catch (error) {
-        console.error("Error fetching departments:", error);
+        console.error("Error fetching library:", error);
       }
     };
 fetchLibrary()
   },[])
-  // const handleInputChange = (event) => {
-  //     const query = event.target.value;
-  //     setSearchQuery(query);
+  const handleInputChange = (event) => {
+      const query = event.target.value;
+      setSearchQuery(query);
 
-  //     // Filter blogs based on search query
-  //     const filteredResults = blogs.filter((blog) =>
-  //       blog.title.toLowerCase().includes(query.toLowerCase())
-  //     );
+      // Filter blogs based on search query
+      const filteredResults = library.filter((lib) =>
+        lib.book_name.toLowerCase().includes(query.toLowerCase())
+      );
 
-  //     setSearchResults(filteredResults);
-  //   };
+      setSearchResults(filteredResults);
+    };
+    const dataToDisplay = searchQuery ? searchResults : library;
+
+
   const handleDelete = async () => {
     try {
       await axios.delete(
@@ -110,37 +112,14 @@ fetchLibrary()
                       placeholder="ابحث عن "
                       value={searchQuery}
                       className="search_blog"
-                    //   onChange={handleInputChange}
+                      onChange={handleInputChange}
                     />
                     <a
                       className="btn btn-s purple_btn search_btn_blog"
-                    //   onChange={handleInputChange}
+                      onChange={handleInputChange}
                     >
                       بحث{" "}
                     </a>
-                    {searchQuery && (
-                      <ul className="search_dropdown">
-                        {searchResults.length > 0 ? (
-                          searchResults.map((blog) => (
-                            <li
-                              key={blog.id}
-                              onClick={() => {
-                                // navigate(`/blogdetails/${blog.id}`);
-                                window.scrollTo(0, 0);
-                              }}
-                            >
-                              <img
-                                src={`http://localhost:8080/` + blog.img}
-                                alt={blog.title}
-                              />
-                              {blog.title}
-                            </li>
-                          ))
-                        ) : (
-                          <li>No blogs found.</li>
-                        )}
-                      </ul>
-                    )}
                   </div>
            
               {/* End search */}
@@ -161,7 +140,7 @@ fetchLibrary()
                       </tr>
                     </thead>
                     <tbody>
-                      {library.map((library)=>(
+                      {dataToDisplay.map((library)=>(
                       <tr>
                         <td>{library.book_name} </td>
                         <td> {library.author}</td>
