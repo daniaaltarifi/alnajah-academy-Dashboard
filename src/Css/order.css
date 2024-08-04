@@ -16,23 +16,21 @@
 .background_btn{
     background-color: #833988;
 }
-@media screen and (max-width: 768px) {
+/* @media screen and (max-width: 768px) {
     .background_btn{
         width: 150px;
     }
    
-}
-@media screen and (max-width:883px) {
+} */
+@media screen and (max-width:958px) {
     .cont_btn_order{
         display: flex;
         flex-direction: column;
         justify-content: center;
-        width: 30%;
+        width: 100%;
     }
-     /* .courses_dep{
-        width: 50%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-     } */
+     .courses_dep{
+        width: 35%;
+text-align: center;
+     }
 }

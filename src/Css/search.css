@@ -103,8 +103,12 @@
   /* End Table */
   @media screen and (max-width:768px) {
     .navbar__search {
-        width: 53%;    }
+        width: 54%;    }
         .search_blog_cont{
-          width: 40%;
+          width: 30%;
         }
+        .faq__search{
+          width: 100%;    }
+
+        
   }

@@ -1,8 +1,8 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import NavBar from "../component/NavBar";
 import Button from "react-bootstrap/Button";
 import { Link, useNavigate } from "react-router-dom";
-import '../Css/search.css'
+import "../Css/search.css";
 import Table from "react-bootstrap/Table";
 import DeletePopUp from "../component/DeletePopUp";
 import axios from "axios";
@@ -12,7 +12,11 @@ function Courses() {
   const [searchResults, setSearchResults] = useState([]);
   const [smShow, setSmShow] = useState(false);
   const [titlePopup, setTitlePopup] = useState(""); // State for modal title
-  const [descriptionPopup, setDescriptionPopup] = useState(""); 
+  const [descriptionPopup, setDescriptionPopup] = useState("");
+  const [courses, setCourses] = useState([]);
+  const [lessonCounts, setLessonCounts] = useState([]);
+  const [student_courseCount, setstudent_courseCount] = useState({});
+
   const navigate = useNavigate();
   const handleOpenModal = () => {
     setSmShow(true);
@@ -23,147 +27,183 @@ function Courses() {
   const handleCloseModal = () => {
     setSmShow(false);
   };
-  const handleUpdate=()=>{
-    navigate('/updatecourse')
-  }
-  // const handleInputChange = (event) => {
-  //     const query = event.target.value;
-  //     setSearchQuery(query);
+  const handleUpdate = () => {
+    navigate("/updatecourse");
+  };
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/courses/");
+        const data = response.data;
+        setCourses(data);
+        fetchStudentCountsCourses(data);
+        fetchLessonCounts(data); // Ensure this function is defined elsewhere
+      } catch (error) {
+        console.log(`Error getting data from frontend: ${error}`);
+      }
+    };
+    fetchCourses();
+  }, []);
 
-  //     // Filter blogs based on search query
-  //     const filteredResults = blogs.filter((blog) =>
-  //       blog.title.toLowerCase().includes(query.toLowerCase())
-  //     );
+  const fetchStudentCountsCourses = async (courses) => {
+    const counts = {};
+    await Promise.all(
+      courses.map(async (course) => {
+        try {
+          const response = await axios.get(
+            `http://localhost:8080/courses/users-counts/${course.id}`
+          );
+          counts[course.id] = response.data.student_count;
+        } catch (error) {
+          console.error(
+            `Error fetching student count for teacher ${course.id}:`,
+            error
+          );
+        }
+      })
+    );
+    setstudent_courseCount(counts);
+  };
 
-  //     setSearchResults(filteredResults);
-  //   };
+  const fetchLessonCounts = async (courses) => {
+    try {
+      const courseIds = courses.map((course) => course.id); // Use course_id for API request
+
+      // Fetch lesson counts for all course IDs in parallel
+      const courseCountPromises = courseIds.map((id) =>
+        axios.get(`http://localhost:8080/courses/lesson-counts/${id}`)
+      );
+      console.log(courseIds);
+      const courseCountsResponses = await Promise.all(courseCountPromises);
+      const courseCountsData = courseCountsResponses.map(
+        (response) => response.data[0].lesson_count
+      );
+
+      // Combine course counts with course data
+      const coursesWithCounts = courses.map((course, index) => ({
+        ...course,
+        lesson_count: courseCountsData[index] || 0,
+      }));
+
+      // Update state or do something with the augmented data
+      setLessonCounts(coursesWithCounts);
+    } catch (error) {
+      console.error("Error fetching course counts:", error);
+    }
+  };
+  useEffect(() => {
+    console.log(lessonCounts); // Log the updated lesson counts
+  }, [lessonCounts]);
+
+  const dataToDisplay = searchQuery ? searchResults : lessonCounts;
+  const handleInputChange = (event) => {
+    const query = event.target.value;
+    setSearchQuery(query);
+    const filteredResults = courses.filter((course) =>
+      course.subject_name.toLowerCase().includes(query.toLowerCase())
+    );
+
+    setSearchResults(filteredResults);
+  };
   return (
     <>
       <NavBar title={"المواد"} />
       <section classNameName="margin_section">
         <div className="container ">
-    
-               <div className="row">
-                <div className="col-lg-6 col-md-12 col-sm-12 ">
+          <div className="row">
+            <div className="col-lg-6 col-md-12 col-sm-12 ">
               <Link to="/addcourse">
-              <Button className="add_btn">
-                <span className="plus_icon">+</span>
-                اضف مادة{" "}
-              </Button>
+                <Button className="add_btn">
+                  <span className="plus_icon">+</span>
+                  اضف مادة{" "}
+                </Button>
               </Link>
+            </div>
+
+            {/* search */}
+            <div className="col-lg-6 col-md-12 col-sm-12 ">
+              <div className="navbar__search">
+                <span>
+                  <i
+                    className="fa-solid fa-magnifying-glass fa-sm"
+                    style={{ color: "#833988" }}
+                  ></i>{" "}
+                </span>
+                <input
+                  type="text"
+                  placeholder="ابحث عن "
+                  value={searchQuery}
+                  className="search_blog"
+                  onChange={handleInputChange}
+                />
+                <a
+                  className="btn btn-s purple_btn search_btn_blog"
+                  onChange={handleInputChange}
+                >
+                  بحث{" "}
+                </a>
+           
               </div>
 
-               {/* search */}
-                <div className="col-lg-6 col-md-12 col-sm-12 ">
-                  <div className="navbar__search">
-                    <span>
-                      <i
-                        className="fa-solid fa-magnifying-glass fa-sm"
-                        style={{ color: "#833988" }}
-                      ></i>{" "}
-                    </span>
-                    <input
-                      type="text"
-                      placeholder="ابحث عن "
-                      value={searchQuery}
-                      className="search_blog"
-                    //   onChange={handleInputChange}
-                    />
-                    <a
-                      className="btn btn-s purple_btn search_btn_blog"
-                    //   onChange={handleInputChange}
-                    >
-                      بحث{" "}
-                    </a>
-                    {searchQuery && (
-                      <ul className="search_dropdown">
-                        {searchResults.length > 0 ? (
-                          searchResults.map((blog) => (
-                            <li
-                              key={blog.id}
-                              onClick={() => {
-                                // navigate(`/blogdetails/${blog.id}`);
-                                window.scrollTo(0, 0);
-                              }}
-                            >
-                              <img
-                                src={`http://localhost:8080/` + blog.img}
-                                alt={blog.title}
-                              />
-                              {blog.title}
-                            </li>
-                          ))
-                        ) : (
-                          <li>No blogs found.</li>
-                        )}
-                      </ul>
-                    )}
-                  </div>
-           
               {/* End search */}
+            </div>
           </div>
+          <div className="row mt-5">
+            <div className="col-lg-12 col-md-12 col-sm-12">
+              <Table striped hover>
+                <thead>
+                  <tr className="table_head_cardprice">
+                    <th className="desc_table_cardprice"> المادة</th>
+                    <th className="desc_table_cardprice">الأستاذ </th>
+                    <th className="desc_table_cardprice">عدد الدروس </th>
+                    <th className="desc_table_cardprice">عدد الطلاب</th>
+                    <th className="desc_table_cardprice">التقييم</th>
+
+                    <th className="desc_table_cardprice">الإجراء</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Array.isArray(dataToDisplay) &&
+                    dataToDisplay.map((course) => (
+                      <tr key={course.id}>
+                        <td>{course.subject_name}</td>
+                        <td>{course.teacher_name}</td>
+                        <td>
+                          {course.lesson_count !== undefined
+                            ? course.lesson_count
+                            : "0"}
+                        </td>
+                        <td>
+                          {student_courseCount[course.id] !== undefined
+                            ? student_courseCount[course.id]
+                            : "0"}
+                        </td>
+                        <td>{course.rating}</td>
+                        <td>
+                          <i
+                            className="fa-regular fa-pen-to-square fa-lg ps-2"
+                            style={{ color: "#6dab93" }}
+                            onClick={() => handleUpdate(course.id)}
+                          ></i>
+                          <i
+                            className="fa-regular fa-trash-can fa-lg"
+                            style={{ color: "#944b43" }}
+                            onClick={() => handleOpenModal(course.id)}
+                          ></i>
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </Table>
+            </div>
           </div>
-<div className="row mt-5">
-    <div className="col-lg-12 col-md-12 col-sm-12">
-    <Table striped hover>
-                    <thead>
-                      <tr className="table_head_cardprice">
-                        <th className="desc_table_cardprice"> المادة</th>
-                        <th className="desc_table_cardprice">الأستاذ </th>
-                        <th className="desc_table_cardprice">عدد الدروس </th>
-                        <th className="desc_table_cardprice">عدد الطلاب</th>
-                        <th className="desc_table_cardprice">التقييم</th>
-
-                        <th className="desc_table_cardprice">الإجراء</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>اللغة الأنجليزية </td>
-                        <td> محمد أحمد</td>
-                        <td>12</td>
-                        <td>12</td>
-                        <td>5 </td>
-
-                        <td>
-                        <i class="fa-regular fa-pen-to-square fa-lg ps-2" style={{color:"#6dab93"}} onClick={handleUpdate}></i>
-                        <i className="fa-regular fa-trash-can fa-lg" style={{color:"#944b43"}} onClick={handleOpenModal} ></i>
-                        </td>
-                      </tr>
-                      <tr>
-                      <td>اللغة الأنجليزية </td>
-                        <td> محمد أحمد</td>
-                        <td>12</td>
-                        <td>12</td>
-                        <td>5 </td>
-
-                        <td>
-                        <i class="fa-regular fa-pen-to-square fa-lg ps-2" style={{color:"#6dab93"}}></i>
-                        <i className="fa-regular fa-trash-can fa-lg" style={{color:"#944b43"}}></i>
-                        </td>
-                      </tr>
-                      <tr>
-                      <td>اللغة الأنجليزية </td>
-                        <td> محمد أحمد</td>
-                        <td>12</td>
-                        <td>12</td>
-                        <td>5 </td>
-
-                        <td>
-                        <i class="fa-regular fa-pen-to-square fa-lg ps-2" style={{color:"#6dab93"}} onClick={handleUpdate}></i>
-                        <i className="fa-regular fa-trash-can fa-lg" style={{color:"#944b43"}}></i>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </Table>
-                  
-    </div>
-</div>
         </div>
-        <DeletePopUp  show={smShow}
-        onHide={handleCloseModal}
-        title={titlePopup}
-        description={descriptionPopup} />
+        <DeletePopUp
+          show={smShow}
+          onHide={handleCloseModal}
+          title={titlePopup}
+          description={descriptionPopup}
+        />
       </section>
     </>
   );

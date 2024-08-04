@@ -16,6 +16,9 @@ function Teacher() {
   const [descriptionPopup, setDescriptionPopup] = useState("");
   const [teachers, setTeachers] = useState([]);
   const [currentId, setCurrentId] = useState(null);
+  const [teacherId, settecherId] = useState(null);
+  const [student_teacherCount, setstudent_teacherCount] = useState({});
+  const [teachersWithCourseCounts, setTeachersWithCourseCounts] = useState([]);
 
   const navigate = useNavigate();
   const handleOpenModal = (id) => {
@@ -43,18 +46,86 @@ function Teacher() {
 
     setSearchResults(filteredResults);
   };
-  const dataToDisplay = searchQuery ? searchResults : teachers;
+  const dataToDisplay = searchQuery ? searchResults : teachersWithCourseCounts;
   useEffect(() => {
     const fetchTeachers = async () => {
       try {
         const response = await axios.get("http://localhost:8080/teacher/");
-        setTeachers(response.data);
+        const teachersData = response.data;
+        setTeachers(teachersData);
+
+        // Fetch counts after setting teachers
+        fetchStudentCounts(teachersData);
+        fetchCourseCountsForAllTeachers(teachersData);
       } catch (error) {
-        console.error("Error fetching departments:", error);
+        console.error("Error fetching teachers:", error);
       }
     };
     fetchTeachers();
   }, []);
+
+  // Fetch student counts for each teacher
+  const fetchStudentCounts = async (teachers) => {
+    const counts = {};
+    await Promise.all(
+      teachers.map(async (teacher) => {
+        try {
+          const response = await axios.get(
+            `http://localhost:8080/teacher/student-counts/${teacher.id}`
+          );
+          counts[teacher.id] = response.data.student_count;
+        } catch (error) {
+          console.error(
+            `Error fetching student count for teacher ${teacher.id}:`,
+            error
+          );
+        }
+      })
+    );
+    setstudent_teacherCount(counts);
+  };
+
+  // Fetch course counts for each teacher
+  const fetchCourseCountsForAllTeachers = async (teachersData) => {
+    try {
+      const teacherIds = teachersData.map((teacher) => teacher.id); // Assuming 'id' is the teacher's unique identifier
+
+      // Fetch course counts for all teacher IDs in parallel
+      const courseCountPromises = teacherIds.map((id) =>
+        axios.get(`http://localhost:8080/courses/course-counts/${id}`)
+      );
+
+      const courseCountsResponses = await Promise.all(courseCountPromises);
+      const courseCountsData = courseCountsResponses.map(
+        (response) => response.data[0].course_count
+      ); // Adjust as needed
+
+      // Combine teacher data with course counts
+      const teachersWithCounts = teachersData.map((teacher, index) => ({
+        ...teacher,
+        course_count: courseCountsData[index],
+      }));
+
+      setTeachersWithCourseCounts(teachersWithCounts);
+    } catch (error) {
+      console.error("Error fetching course counts:", error);
+    }
+  };
+
+  // const fetchCourseCount = async () => {
+  //   console.log("teacherId: " + teacherId);
+  //   try {
+  //     const response = await axios.get(`http://localhost:8080/courses/course-counts/${teacherId}`);
+  //     // Assume response.data is an array with one object
+  //     const data = response.data;
+  //     if (data.length > 0) {
+  //       setCourseCount(data[0].course_count); // Set the course count from the first item in the array
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching course count:', error);
+  //   }
+  // };
+
   const handleDelete = async () => {
     try {
       await axios.delete(`http://localhost:8080/teacher/delete/${currentId}`);
@@ -65,7 +136,7 @@ function Teacher() {
       );
 
       Toastify({
-        text: "Department deleted successfully",
+        text: "teacher deleted successfully",
         duration: 3000,
         gravity: "top",
         position: "right",
@@ -139,8 +210,12 @@ function Teacher() {
                       <td>{teacher.teacher_name} </td>
                       {/* <td> محمد أحمد</td> */}
                       <td>{teacher.descr}</td>
-                      <td>12</td>
-                      <td>5 </td>
+                    <td>{teacher.course_count !== undefined ? teacher.course_count : '0'}</td>
+                      <td>
+                        {student_teacherCount[teacher.id] !== undefined
+                          ? student_teacherCount[teacher.id]
+                          : "0"}
+                      </td>
 
                       <td>
                         <i

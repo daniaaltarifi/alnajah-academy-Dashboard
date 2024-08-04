@@ -41,6 +41,7 @@ function Comments() {
           "http://localhost:8080/commentcourse/"
         );
         setCommentCourses(response.data);
+        console.log(commentCourses)
       } catch (error) {
         console.error("Error fetching blogs comments:", error);
       }

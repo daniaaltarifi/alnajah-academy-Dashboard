@@ -28,8 +28,6 @@ import Admin from "./Pages/Admin.js";
 import Faq from "./Pages/Faq.js";
 import AddFaq from "./Pages/AddFaq.js";
 import UpdateFaq from "./Pages/UpdateFaq.js";
-import Toastify from "toastify-js";
-import "toastify-js/src/toastify.css"; 
 import UpdateBlog from "./Pages/UpdateBlog.js";
 function AppContent() {
   const location = useLocation(); // Get the current location

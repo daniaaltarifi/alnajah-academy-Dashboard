@@ -204,7 +204,7 @@ fetchAdmin()
             {/* End Modal Add student */}
             {/* search */}
             <div className="col-lg-6 col-md-12 col-sm-12 ">
-              <div className="navbar__search">
+              <div className="navbar__search ">
                 <span>
                   <i
                     className="fa-solid fa-magnifying-glass fa-sm"
