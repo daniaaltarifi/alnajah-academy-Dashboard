@@ -94,6 +94,11 @@ const Sidebar = () => {
             <img src={require("../assets/help.png")} alt=""className="img-fluid icon_sidebar" /> 
           </Link>
         </li>
+        <li>
+        <Link to="/coupon" onClick={handleBackground} className="background_icon">
+            <img src={require("../assets/coupon.png")} alt=""className="img-fluid icon_sidebar" /> 
+          </Link>
+        </li>
       </div>
     </div>
    

@@ -152,9 +152,13 @@ fetchUsers()
                     <Form.Label className="text_field ">اسم الطالب</Form.Label>
                     <Form.Control
                       type="text"
-                      className="input_filed_modal"
+                      className={`input_filed_modal  ${nameError ? "error" : ""}`}
+                      onBlur={() => validateName(name)}
+                      value={name}
                       onChange={(e) => setName(e.target.value)}
                     />
+                   {nameError && <p className="error_message">{nameError}</p>}
+
                   </Form.Group>
                   <Form.Group
                     className="mb-3"
@@ -165,9 +169,14 @@ fetchUsers()
                     </Form.Label>
                     <Form.Control
                       type="email"
-                      className="input_filed_modal"
+                      className={`input_filed_modal ${emailError ? "error" : ""}`}
                       onChange={(e) => setEmail(e.target.value)}
+                      onBlur={() => validateEmail(email)}
+                      value={email}
                     />
+                     {emailError && (
+                    <span className="error_message">{emailError}</span>
+                  )}
                   </Form.Group>{" "}
                   <Form.Group
                     className="mb-3"
@@ -178,9 +187,14 @@ fetchUsers()
                     </Form.Label>
                     <Form.Control
                       type="password"
-                      className="input_filed_modal"
+                      className={`input_filed_modal ${passwordError ? "error" : ""}`}
+                      onBlur={() => validatePassword(password)}
+                      value={password}
                       onChange={(e) => setPassword(e.target.value)}
                     />
+                     {passwordError && (
+                    <p className="error_message">{passwordError}</p>
+                  )}
                   </Form.Group>{" "}
                   <Form.Group
                     className="mb-3"
@@ -191,9 +205,16 @@ fetchUsers()
                     </Form.Label>
                     <Form.Control
                       type="password"
-                      className="input_filed_modal"
+                      className={`input_filed_modal ${
+                      confirmPasswordError ? "error" : ""
+                    }`}
+                      value={confirmPassword}
+
                       onChange={(e) => setConfirmPassword(e.target.value)}
                     />
+                     {confirmPasswordError && (
+                    <p className="error_message">{confirmPasswordError}</p>
+                  )}
                   </Form.Group>{" "}
                 </Form>
               </Modal.Body>

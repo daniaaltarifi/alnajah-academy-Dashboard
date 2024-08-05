@@ -8,7 +8,7 @@ import DeletePopUp from "../component/DeletePopUp";
 import axios from "axios";
 import Toastify from "toastify-js";
 import "toastify-js/src/toastify.css"; 
-function Faq() {
+function Coupon() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [smShow, setSmShow] = useState(false);
@@ -21,15 +21,15 @@ function Faq() {
   const handleOpenModal = (id) => {
     setCurrentId(id);
     setSmShow(true);
-    setTitlePopup("حذف سؤال"); // Set your modal title dynamically
-    setDescriptionPopup("هل أنت متأكد من حذف هذا السؤال ؟"); // Set your modal description dynamically
+    setTitlePopup("حذف كوبون"); // Set your modal title dynamically
+    setDescriptionPopup("هل أنت متأكد من حذف هذا الكوبون  ؟"); // Set your modal description dynamically
   };
 
   const handleCloseModal = () => {
     setSmShow(false);
   };
   const handleUpdate = (id) => {
-    navigate('/updatefaq', { state: { id } });
+    // navigate('/updatefaq', { state: { id } });
   };
   
   useEffect(() => {
@@ -56,7 +56,7 @@ function Faq() {
       );
 
       Toastify({
-        text: "Faq deleted successfully",
+        text: "coupon deleted successfully",
         duration: 3000,
         gravity: "top",
         position: "right",
@@ -82,7 +82,7 @@ function Faq() {
     const dataToDisplay= searchQuery ? searchResults : faq
   return (
     <>
-      <NavBar title={"الاسئلة المتكررة"} />
+      <NavBar title={"الكوبونات"} />
       <section classNameName="margin_section">
         <div className="container ">
           <div className="row">
@@ -90,7 +90,7 @@ function Faq() {
               <Link to="/addfaq">
                 <Button className="add_btn">
                   <span className="plus_icon">+</span>
-                  اضف سؤال{" "}
+                  اضف كوبون{" "}
                 </Button>
               </Link>
             </div>
@@ -127,8 +127,7 @@ function Faq() {
               <Table striped hover>
                 <thead>
                   <tr className="table_head_cardprice">
-                    <th className="desc_table_cardprice">السؤال </th>
-                    <th className="desc_table_cardprice"> الجواب</th>
+                    <th className="desc_table_cardprice">الكوبون </th>
                     <th className="desc_table_cardprice">الإجراء</th>
                   </tr>
                 </thead>
@@ -136,7 +135,6 @@ function Faq() {
                   {dataToDisplay.map((quesans) => (
                     <tr>
                       <td>{quesans.ques} </td>
-                      <td> {quesans.ans}</td>
 
                       <td>
                         <i
@@ -169,4 +167,4 @@ function Faq() {
   );
 }
 
-export default Faq;
+export default Coupon;

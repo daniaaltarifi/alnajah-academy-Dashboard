@@ -29,6 +29,7 @@ import Faq from "./Pages/Faq.js";
 import AddFaq from "./Pages/AddFaq.js";
 import UpdateFaq from "./Pages/UpdateFaq.js";
 import UpdateBlog from "./Pages/UpdateBlog.js";
+import Coupon from "./Pages/Coupon.js";
 function AppContent() {
   const location = useLocation(); // Get the current location
   const showApp = location.pathname != "/";
@@ -63,6 +64,7 @@ function AppContent() {
           <Route path="/faq" element={<Faq />} />
           <Route path="/addfaq" element={<AddFaq />} />
           <Route path="/updatefaq" element={<UpdateFaq />} />
+          <Route path="/coupon" element={<Coupon />} />
 
           {/* Add more routes as needed */}
         </Routes>

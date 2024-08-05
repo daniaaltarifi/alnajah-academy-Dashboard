@@ -73,21 +73,20 @@ function Comments() {
       console.error("Error updating blog status:", error);
     }
   };
-  // const handleApprovedCommentsCourse = async (courseid) => {
-  //   try {
-  //     await axios.put(
-  //       `http://localhost:8080/commentcourse/action/${courseid}`,
-  //       {
-  //         action: "approved",
-  //       }
-  //     );
-  //     const response = await axios.get("http://localhost:8080/commentcourse");
-  //     setCommentCourses(response.data);
-  //   } catch (error) {
-  //     console.error("Error updating comment status:", error);
-  //   }
-  // };
-  // handleApprovedCommentsCourse();
+  const handleApprovedCommentsCourse = async (courseid) => {
+    try {
+      await axios.put(
+        `http://localhost:8080/commentcourse/action/${courseid}`,
+        {
+          action: "approved",
+        }
+      );
+      const response = await axios.get("http://localhost:8080/commentcourse");
+      setCommentCourses(response.data);
+    } catch (error) {
+      console.error("Error updating comment status:", error);
+    }
+  };
   const handleApprovedComments = async (commentid) => {
     try {
       await axios.put(`http://localhost:8080/connects/action/${commentid}`, {
@@ -260,9 +259,9 @@ function Comments() {
                         <button
                           type="button"
                           className="btn btn-success ms-2"
-                          // onClick={() =>
-                          //   handleApprovedCommentsCourse(course.id)
-                          // }
+                          onClick={() =>
+                            handleApprovedCommentsCourse(course.id)
+                          }
                         >
                           قبول
                         </button>
