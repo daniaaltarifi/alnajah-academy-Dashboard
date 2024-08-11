@@ -5,21 +5,20 @@ import { useNavigate,useLocation } from "react-router-dom";
 import Toastify from "toastify-js";
 import "toastify-js/src/toastify.css"; 
 import axios from "axios";
-function UpdateTeacher() {
+function UpdateAbout() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [displayInfo, setDisplayInfo] = useState([]);
-  const [department_id, setDepartment_id] = useState("")
-  const [departmentData, setDepartmentData] = useState([])
-  const [teachers, setTeachers] = useState([])
-const [teacher_name, setTeacher_name] = useState("")
+ 
+  const [about, setAbout] = useState([])
+const [title, setTitle] = useState("")
 const [descr, setDescr] = useState("")
-const [teacher_id, setTeacher_id] = useState('');
+const [about_id, setAbout_id] = useState('');
 const location = useLocation();
 
 useEffect(() => {
   // Check if location.state exists and contains the id
   if (location.state && location.state.id) {
-    setTeacher_id(location.state.id);
+    setAbout_id(location.state.id);
   } else {
     console.warn('No ID found in location.state');
   }
@@ -33,25 +32,11 @@ const navigate = useNavigate()
   const handleDeleteSelectedFile=()=>{
     setSelectedFile(null);
   }
-  const handleDepartment = (e) => {
-    const selectedDepartmentId = e.target.value;
-    setDepartment_id(selectedDepartmentId);
-  };
-  useEffect(() => {
-    const fetchDepartments = async () => {
-      try {
-        const response = await axios.get("http://localhost:8080/department");
-        setDepartmentData(response.data);
-      } catch (error) {
-        console.error("Error fetching departments:", error);
-      }
-    };
 
-    fetchDepartments();
-  }, []);
+ 
   const handleUpdate = async () => {
 
-    if (!teacher_name || !descr || !department_id || !selectedFile) {
+    if (!title || !descr || !selectedFile) {
       Toastify({
         text: "Please Fill All Field",
         duration: 3000, // Duration in milliseconds
@@ -63,13 +48,12 @@ const navigate = useNavigate()
     }
     try {
       const formData = new FormData();
-      formData.append('teacher_name', teacher_name);
+      formData.append('title', title);
       formData.append('descr', descr);
-      formData.append('department_id', department_id);
       formData.append('img', selectedFile);
 
       const response = await axios.put(
-        `http://localhost:8080/teacher/update/${teacher_id}`,
+        `http://localhost:8080/about/update/${about_id}`,
         formData, // Send the FormData object
         {
           headers: {
@@ -77,9 +61,9 @@ const navigate = useNavigate()
           },
         }
       );
-      setTeachers((prevAdd) =>
+      setAbout((prevAdd) =>
         prevAdd.map((data) =>
-          data.id === teacher_id ? response.data : data
+          data.id === about_id ? response.data : data
         )
       );
       Toastify({
@@ -89,45 +73,24 @@ const navigate = useNavigate()
         position: 'right', // 'left', 'center', 'right'
         backgroundColor: "#833988",
       }).showToast();
-navigate('/teacher')
+navigate('/about')
     } catch (error) {
       console.log(`Error in fetch edit data: ${error}`);
     }
   };
   return (
     <>
-      <NavBar title={"المواد"} />
+      <NavBar title={"عن بصمة"} />
       <div className="container ">
         <div className="row">
           <div className="col-lg-2 col-md-6 col-sm-12">
-            <div className="title_add_course">تعديل معلم</div>
+            <div className="title_add_course">تعديل عن بصمة</div>
           </div>
         </div>
         <div className="row mt-4">
           <div className="col-lg-4 col-md-6 col-sm-12">
-            <p className="input_title_addcourse">اسم الاستاذ</p>
-            <input type="text" className="input_addcourse" onChange={(e)=>setTeacher_name(e.target.value)}/>{" "}
-          </div>
-          {/* <div className="col-lg-4 col-md-6 col-sm-12">
-            <p className="input_title_addcourse">اسم المادة</p>
-            <input type="text" className="input_addcourse" />{" "}
-          </div> */}
-          <div className="col-lg-4 col-md-6 col-sm-12">
-            <p className="input_title_addcourse">القسم </p>
-            <select
-              name="department"
-              value={department_id}
-              onChange={handleDepartment}
-              id="lang"
-              className="select_dep"
-            >
-              <option value="">اختر قسم</option>
-              {departmentData.map((dep) => (
-                <option key={dep.id} value={dep.id}>
-                  {dep.title}
-                </option>
-              ))}
-            </select>
+            <p className="input_title_addcourse">العنوان</p>
+            <input type="text" className="input_addcourse" onChange={(e)=>setTitle(e.target.value)}/>{" "}
           </div>
         </div>
       
@@ -141,7 +104,7 @@ navigate('/teacher')
             ></textarea>
           </div>
           <div className="col-lg-8 col-md-6 col-sm-12">
-          <p className="input_title_addcourse">صورة الاستاذ </p>
+          <p className="input_title_addcourse">الصورة  </p>
 
           <div className="file_input_addvideo">
               <button className="btn_choose_video">اختيار ملف</button>
@@ -185,4 +148,4 @@ navigate('/teacher')
   );
 }
 
-export default UpdateTeacher;
+export default UpdateAbout;

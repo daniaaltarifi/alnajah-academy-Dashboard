@@ -91,8 +91,6 @@ function Department() {
         `http://localhost:8080/department/update/${currentId}`, // Use currentId here
         { title }
       );
-      console.log(response.data);
-
       // Update the department data in state
       setDepartmentData((prevAdd) =>
         prevAdd.map((data) => (data.id === currentId ? response.data : data))
@@ -168,16 +166,6 @@ function Department() {
                     setTitle(e.target.value);
                   }}
                 />
-              </Form.Group>
-
-              <Form.Group
-                className="mb-3"
-                controlId="exampleForm.ControlInput1"
-              >
-                <Form.Label className="text_field text-center">
-                  الكوبون{" "}
-                </Form.Label>
-                <Form.Control type="text" className="input_filed_modal" />
               </Form.Group>
             </Form>
           </Modal.Body>
@@ -258,19 +246,6 @@ function Department() {
                           onChange={(e) => {
                             setTitle(e.target.value);
                           }}
-                        />
-                      </Form.Group>
-
-                      <Form.Group
-                        className="mb-3"
-                        controlId="exampleForm.ControlInput1"
-                      >
-                        <Form.Label className="text_field text-center">
-                          الكوبون{" "}
-                        </Form.Label>
-                        <Form.Control
-                          type="text"
-                          className="input_filed_modal"
                         />
                       </Form.Group>
                     </Form>

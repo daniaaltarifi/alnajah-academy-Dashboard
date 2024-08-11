@@ -23,8 +23,7 @@ function Blogs() {
     setCurrentId(id);
     setTitlePopup("حذف مقال");
     setDescriptionPopup("هل أنت متأكد من حذف هذا المقال ؟");
-    console.log(currentId);
-  };
+   };
 
   const handleCloseModal = () => {
     setSmShow(false);

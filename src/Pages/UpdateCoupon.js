@@ -5,23 +5,23 @@ import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import Toastify from "toastify-js";
 import "toastify-js/src/toastify.css";
-function UpdateFaq() {
+function UpdateCoupon() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [faqId, setFaqId] = useState("");
-  const [ques, setQues] = useState("");
+  const [couponId, setCouponId] = useState("");
+  const [coupon_code, setCoupon_code] = useState("");
   const [ans, setAns] = useState("");
-  const [faq, setFaq] = useState([]);
+  const [coupons, setCoupons] = useState([]);
   useEffect(() => {
     // Check if location.state exists and contains the id
     if (location.state && location.state.id) {
-      setFaqId(location.state.id);
+      setCouponId(location.state.id);
     } else {
       console.warn("No ID found in location.state");
     }
   }, [location.state]);
   const handleUpdate = async () => {
-    if (!ques || !ans) {
+    if (!coupon_code) {
       Toastify({
         text: "Please Fill All Fields",
         duration: 3000,
@@ -33,13 +33,12 @@ function UpdateFaq() {
     }
     try {
       const response = await axios.put(
-        `http://localhost:8080/faq/update/${faqId}`, // Use faqId here
-        { ques, ans }
+        `http://localhost:8080/coupon/update/${couponId}`, // Use couponId here
+        { coupon_code, ans }
       );
-
       // Update the department data in state
-      setFaq((prevAdd) =>
-        prevAdd.map((data) => (data.id === faqId ? response.data : data))
+      setCoupons((prevAdd) =>
+        prevAdd.map((data) => (data.id === couponId ? response.data : data))
       );
 
       Toastify({
@@ -49,40 +48,33 @@ function UpdateFaq() {
         position: "right",
         backgroundColor: "#F57D20",
       }).showToast();
-      navigate("/faq");
+      navigate("/coupon");
     } catch (error) {
       console.log(`Error updating data: ${error}`);
     }
   };
   return (
     <>
-      <NavBar title={"الاسئلة المتكررة"} />
+      <NavBar title={"الكوبونات"} />
       <div className="container">
         <div className="row">
           <div className="col-lg-2 col-md-6 col-sm-12">
-            <div className="title_add_course">تعديل سؤال</div>
+            <div className="title_add_course">تعديل كوبون</div>
           </div>
         </div>
         <div className="row mt-4  d-flex justify-content-center align-items-center">
           <div className="col-lg-4 col-md-6 col-sm-12">
-            <p className="input_title_addcourse">السؤال</p>
+            <p className="input_title_addcourse">رمز الكوبون</p>
             <input
               type="text"
               className="input_addcourse"
-              onChange={(e) => setQues(e.target.value)}
+              onChange={(e) => setCoupon_code(e.target.value)}
             />{" "}
           </div>
         </div>
 
         <div className="row mt-4  d-flex justify-content-center align-items-center">
-          <div className="col-lg-4 col-md-6 col-sm-12">
-            <p className="input_title_addcourse">الجواب</p>
-            <input
-              type="text"
-              className="input_addcourse"
-              onChange={(e) => setAns(e.target.value)}
-            />{" "}
-          </div>
+         
 
           <div className=" d-flex justify-content-center align-items-center ">
             <button
@@ -98,4 +90,4 @@ function UpdateFaq() {
   );
 }
 
-export default UpdateFaq;
+export default UpdateCoupon;

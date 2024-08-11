@@ -41,7 +41,6 @@ function Comments() {
           "http://localhost:8080/commentcourse/"
         );
         setCommentCourses(response.data);
-        console.log(commentCourses)
       } catch (error) {
         console.error("Error fetching blogs comments:", error);
       }
@@ -105,7 +104,7 @@ function Comments() {
       await axios.delete(`http://localhost:8080/commentcourse/delete/${id}`);
       setCommentCourses((prevData) => prevData.filter((data) => data.id !== id));
       Toastify({
-        text: "Department deleted successfully",
+        text: "Comment deleted successfully",
         duration: 3000,
         gravity: "top",
         position: "right",
@@ -122,7 +121,7 @@ function Comments() {
       await axios.delete(`http://localhost:8080/commentblog/delete/${id}`);
       setCommentblog((prevData) => prevData.filter((data) => data.id !== id));
       Toastify({
-        text: "Department deleted successfully",
+        text: "Comment deleted successfully",
         duration: 3000,
         gravity: "top",
         position: "right",
@@ -139,7 +138,7 @@ function Comments() {
       await axios.delete(`http://localhost:8080/connects/delete/${id}`);
       setAllComments((prevData) => prevData.filter((data) => data.id !== id));
       Toastify({
-        text: "Department deleted successfully",
+        text: "Comment deleted successfully",
         duration: 3000,
         gravity: "top",
         position: "right",
@@ -249,7 +248,7 @@ function Comments() {
                     <td>{course.name}</td>
                     <td>{course.email}</td>
                     <td>{course.course_name}</td>
-                    <td>{course.department}</td>
+                    <td>{course.department_name}</td>
                     <td>{course.comment}</td>
                     <td>{course.created_date}</td>
                     {course.action === "approved" ? (

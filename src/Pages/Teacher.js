@@ -32,7 +32,6 @@ function Teacher() {
     setSmShow(false);
   };
   const handleUpdate = (id) => {
-    console.log(id);
     navigate("/updateteacher", { state: { id } });
   };
   const handleInputChange = (event) => {
@@ -111,21 +110,6 @@ function Teacher() {
       console.error("Error fetching course counts:", error);
     }
   };
-
-  // const fetchCourseCount = async () => {
-  //   console.log("teacherId: " + teacherId);
-  //   try {
-  //     const response = await axios.get(`http://localhost:8080/courses/course-counts/${teacherId}`);
-  //     // Assume response.data is an array with one object
-  //     const data = response.data;
-  //     if (data.length > 0) {
-  //       setCourseCount(data[0].course_count); // Set the course count from the first item in the array
-  //     }
-  //   } catch (error) {
-  //     console.error('Error fetching course count:', error);
-  //   }
-  // };
-
   const handleDelete = async () => {
     try {
       await axios.delete(`http://localhost:8080/teacher/delete/${currentId}`);

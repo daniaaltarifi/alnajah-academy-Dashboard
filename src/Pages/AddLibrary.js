@@ -28,7 +28,6 @@ const [library, setLibrary] = useState([])
     // Delete the selected course by its ID
     const updatedDisplayInfo = displayInfo.filter(course => course.id !== id);
     setDisplayInfo(updatedDisplayInfo);
-    console.log(displayInfo)
   };
   const handleDepartment = (e) => {
     const selectedDepartmentId = e.target.value;

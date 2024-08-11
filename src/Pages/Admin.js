@@ -95,8 +95,6 @@ fetchAdmin()
         role,
         confirmPassword,
       });
-      console.log(res.data);
-      console.log("Registration successful");
       setAdmin(prevAdmins => [...prevAdmins, res.data]);
       handleClose();
       // Store authentication data in local storage

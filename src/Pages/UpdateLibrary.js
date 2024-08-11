@@ -21,14 +21,12 @@ const [page_num, setPage_num] = useState("")
   const handleDepartment = (e) => {
     const selectedDepartmentId = e.target.value;
     setDepartment_id(selectedDepartmentId);
-    console.log(department_id)
   };
 
   useEffect(() => {
     // Check if location.state exists and contains the id
     if (location.state && location.state.id) {
       setLibraryId(location.state.id);
-      console.log("new" + libraryId)
     } else {
       console.warn('No ID found in location.state');
     }
@@ -49,7 +47,6 @@ const [page_num, setPage_num] = useState("")
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     setSelectedFile(file);
-    console.log(file.name); // This will correctly log the file
   };
   
 
@@ -85,7 +82,6 @@ const [page_num, setPage_num] = useState("")
           },
         }
       );
-      console.log(response.data);
       setLibrary((prevAdd) =>
         prevAdd.map((data) =>
           data.id === libraryId ? response.data : data

@@ -80,8 +80,6 @@ function Users() {
         role,
         confirmPassword,
       });
-      console.log(res.data);
-      console.log("Registration successful");
       setUsers(res.data);
       // Store authentication data in local storage
       localStorage.setItem("auth", res.data.token);

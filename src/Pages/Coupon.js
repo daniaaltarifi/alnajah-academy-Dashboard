@@ -14,7 +14,7 @@ function Coupon() {
   const [smShow, setSmShow] = useState(false);
   const [titlePopup, setTitlePopup] = useState(""); // State for modal title
   const [descriptionPopup, setDescriptionPopup] = useState("");
-  const [faq, setFaq] = useState([]);
+  const [coupons, setCoupons] = useState([]);
   const navigate = useNavigate();
   const [currentId, setCurrentId] = useState(null); 
 
@@ -29,15 +29,15 @@ function Coupon() {
     setSmShow(false);
   };
   const handleUpdate = (id) => {
-    // navigate('/updatefaq', { state: { id } });
+    navigate('/updatecoupon', { state: { id } });
   };
   
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/faq/");
+        const response = await axios.get("http://localhost:8080/coupon/");
         const data = response.data;
-        setFaq(data);
+        setCoupons(data);
       } catch (error) {
         console.log(`Error getting data from frontend: ${error}`);
       }
@@ -47,11 +47,11 @@ function Coupon() {
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `http://localhost:8080/faq/delete/${currentId}`
+        `http://localhost:8080/coupon/delete/${currentId}`
       );
 
       // Remove the deleted department from state
-      setFaq((prevData) =>
+      setCoupons((prevData) =>
         prevData.filter((data) => data.id !== currentId)
       );
 
@@ -65,21 +65,14 @@ function Coupon() {
 
       handleCloseModal(); 
     } catch (error) {
-      console.error("Error deleting department:", error);
+      console.error("Error deleting coupon:", error);
     }
   };
-  const handleInputChange = (event) => {
-      const query = event.target.value;
-      setSearchQuery(query);
-
-      // Filter blogs based on search query
-      const filteredResults = faq.filter((quesans) =>
-        quesans.ques.toLowerCase().includes(query.toLowerCase())
-      );
-
-      setSearchResults(filteredResults);
-    };
-    const dataToDisplay= searchQuery ? searchResults : faq
+ 
+    const dataToDisplay= searchQuery ? searchResults : coupons
+    const handleAddCoupon=()=>{
+      navigate('/addcoupon');
+    }
   return (
     <>
       <NavBar title={"الكوبونات"} />
@@ -87,40 +80,15 @@ function Coupon() {
         <div className="container ">
           <div className="row">
             <div className="col-lg-6 col-md-12 col-sm-12 ">
-              <Link to="/addfaq">
-                <Button className="add_btn">
+              {/* <Link to="/couponadd"> */}
+                <Button className="add_btn" onClick={handleAddCoupon}>
                   <span className="plus_icon">+</span>
                   اضف كوبون{" "}
                 </Button>
-              </Link>
+              {/* </Link> */}
             </div>
 
-            {/* search */}
-            <div className="col-lg-6 col-md-12 col-sm-12 ">
-              <div className="navbar__search faq__search">
-                <span>
-                  <i
-                    className="fa-solid fa-magnifying-glass fa-sm"
-                    style={{ color: "#833988" }}
-                  ></i>{" "}
-                </span>
-                <input
-                  type="text"
-                  placeholder="ابحث عن "
-                  value={searchQuery}
-                  className="search_blog"
-                    onChange={handleInputChange}
-                />
-                <a
-                  className="btn btn-s purple_btn search_btn_blog"
-                    onChange={handleInputChange}
-                >
-                  بحث{" "}
-                </a>
-              </div>
-
-              {/* End search */}
-            </div>
+            
           </div>
           <div className="row mt-5">
             <div className="col-lg-12 col-md-12 col-sm-12">
@@ -132,20 +100,20 @@ function Coupon() {
                   </tr>
                 </thead>
                 <tbody>
-                  {dataToDisplay.map((quesans) => (
+                  {dataToDisplay.map((couponData) => (
                     <tr>
-                      <td>{quesans.ques} </td>
+                      <td>{couponData.coupon_code} </td>
 
                       <td>
                         <i
                           class="fa-regular fa-pen-to-square fa-lg ps-2"
                           style={{ color: "#6dab93" }}
-                          onClick={() => handleUpdate(quesans.id)}
+                          onClick={() => handleUpdate(couponData.id)}
                         ></i>
                         <i
                           className="fa-regular fa-trash-can fa-lg"
                           style={{ color: "#944b43" }}
-                          onClick={() => handleOpenModal(quesans.id)}
+                          onClick={() => handleOpenModal(couponData.id)}
                           ></i>
                       </td>
                     </tr>

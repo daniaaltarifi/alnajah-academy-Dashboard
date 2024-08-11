@@ -47,31 +47,6 @@ function Profile({ user }) {
     }));
   };
 
-//   const handleUpdate = async () => {
-//     const formData = new FormData();
-//     formData.append('name', profile.name);
-//     formData.append('email', profile.email);
-//     formData.append('password', profile.password);
-//     formData.append('confirmPassword', profile.confirmPassword);
-//     if (profile.img instanceof File) {
-//       formData.append('img', profile.img);
-//     }
-
-//     try {
-//       const response = await axios.put(`http://localhost:8080/api/profile/${userId}`, formData, {
-//         headers: {
-//           'Content-Type': 'multipart/form-data'
-//         }
-//       });
-//       console.log('Profile updated successfully');
-//       // Update the image URL with the new image URL from the server
-//       setImageUrl(`http://localhost:8080/${response.data.img}`);
-//       setSuccessMessage('Profile updated successfully!');
-//       window.location.reload();
-//     } catch (error) {
-//       console.error('Error updating profile:', error);
-//     }
-//   };
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];

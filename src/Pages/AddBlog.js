@@ -37,23 +37,14 @@ function AddBlog() {
           title: tags,
         },
       ]);
-  
-      // Clear the input field after adding
+
       setTags("");
     }
   };
   
   const handleDeleteCourse = (id) => {
-    // Filter out the tag with the specified ID
     const updatedDisplayInfo = displayInfo.filter((entry) => entry.id !== id);
-  
-    // Update the state with the new array
     setDisplayInfo(updatedDisplayInfo);
-    console.log("Display Info:", updatedDisplayInfo);
-  
-    // Logging to verify
-    console.log("Deleted entry ID:", id);
-    console.log("Updated Display Info:", updatedDisplayInfo);
   };
   
   const handleDepartment = (e) => {
@@ -65,7 +56,6 @@ function AddBlog() {
       try {
         const response = await axios.get("http://localhost:8080/department");
         setDepartmentData(response.data);
-        console.log(departmentData)
       } catch (error) {
         console.error("Error fetching departments:", error);
       }

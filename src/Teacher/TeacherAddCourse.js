@@ -5,24 +5,32 @@ import axios from "axios";
 import Toastify from "toastify-js";
 import "toastify-js/src/toastify.css"; 
 import { useNavigate } from "react-router-dom";
-function AddCourse() {
+function TeacherAddCourse() {
   const [courseTitle, setCourseTitle] = useState('');
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [selectedDefaultVideo, setSelectedDefaultVideo] = useState(null);
+  const [defaultvideo, setDefaultVideo] = useState(null);
   const [displayInfo, setDisplayInfo] = useState([]);
-  const [courses, setCourses] = useState([]);
-  const [subject_name, setSubjectName] = useState("");
-  const [department_id, setDepartmentId] = useState("");
-  const [before_offer, setBefore_offer] = useState("");
-  const [after_offer, setAfter_offer] = useState("");
-  const [descr, setdescr] = useState("");
-  const [teacher_id, setTeacherId] = useState("");
-  const [videos, setVideos] = useState([{ title: '', url: null }]);
-  const navigate = useNavigate();
+const [subject_name, setSubjectName] = useState("")
+const [teacher_id, setTeacherId] = useState("")
+const [department_id,setDepartment_id] = useState("")
+const [before_offer,setBefore_offer]= useState("")
+const [after_offer,setAfter_offer]= useState("")
+const [descr,setDescr]= useState("")
+const [img,setImg]= useState(null)
+const [title,setTitle]= useState("")
+const [url,setUrl]= useState(null)
 const [departmentData, setDepartmentData] = useState([])
-const [teacherData, setTeacherData] = useState([])
-
-  const handleVideoChange = (index, e) => {
+const [teacherCourse, setTeacherCourse] = useState([])
+const navigate=useNavigate()
+const [videos, setVideos] = useState([{ title: '', url: null }]);
+useEffect(() => {
+  const storedTeacherId = localStorage.getItem('email');
+  setTeacherId(storedTeacherId || '');
+  const inputElement = document.getElementById('teacherIdInput');
+    if (inputElement) {
+      inputElement.disabled = true;
+    }
+}, []);
+const handleVideoChange = (index, e) => {
     const { name, value, files } = e.target;
     const newVideos = [...videos];
     if (name === 'title') {
@@ -36,61 +44,45 @@ const [teacherData, setTeacherData] = useState([])
     setVideos([...videos, { title: '', url: null }]);
   };
 
+  const handleImg = (e) => {
+    const file = e.target.files[0];
+    setImg(file);
+    console.log("img",img)
+    
+  };
+  const handelDefaultVideo = (e) => {
+    const file = e.target.files[0];
+    setDefaultVideo(file);
+    console.log("default video",defaultvideo)
+  };
+
+
   const handleDeleteSelectedFile = (index) => {
     const newVideos = [...videos];
     newVideos[index] = { ...newVideos[index], url: null };
     setVideos(newVideos);
   };
   
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    setSelectedFile(file);
-  };
-  const handleAddButtonClick = () => {
-    if (courseTitle && selectedFile) {
-      setDisplayInfo([
-        ...displayInfo,
-        {
-          title: courseTitle,
-          fileName: selectedFile.name // Store the original file name
-        }
-      ]);
-      // Clear the form fields after adding
-      setCourseTitle('');
-      setSelectedFile(null);
-    }
-  };
   const handleDepartment = (e) => {
     const selectedDepartmentId = e.target.value;
-    setDepartmentId(selectedDepartmentId);
-  };
-  const handleTecaher = (e) => {
-    const selectedTeacherId = e.target.value;
-    setTeacherId(selectedTeacherId);
+    setDepartment_id(selectedDepartmentId);
   };
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
         const response = await axios.get("http://localhost:8080/department");
         setDepartmentData(response.data);
-      } catch (error) {
-        console.error("Error fetching departments:", error);
-      }
-    };
-    const fetchTeacher= async () => {
-      try {
-        const response = await axios.get("http://localhost:8080/teacher/");
-        setTeacherData(response.data);
+        console.log(departmentData)
       } catch (error) {
         console.error("Error fetching departments:", error);
       }
     };
 
     fetchDepartments();
-    fetchTeacher()
   }, []);
+ 
   const handlePost = async () => {
-    if (!subject_name || !teacher_id || !department_id || !before_offer || !after_offer || !descr || !selectedFile || !displayInfo || !selectedDefaultVideo) {
+    if (!subject_name || !teacher_id || !department_id || !before_offer || !after_offer || !descr || !img || !displayInfo || !defaultvideo) {
       Toastify({
         text: "Please Fill All Field",
         duration: 3000,
@@ -104,21 +96,21 @@ const [teacherData, setTeacherData] = useState([])
     try {
       const formData = new FormData();
       formData.append('subject_name', subject_name);
-      formData.append('teacher_id', teacher_id);
+      formData.append('email', teacher_id);
       formData.append('department_id', department_id);
       formData.append('before_offer', before_offer);
       formData.append('after_offer', after_offer);
       formData.append('descr', descr);
-      formData.append('img', selectedFile);
-      formData.append('defaultvideo', selectedDefaultVideo);
+      formData.append('img', img);
+      formData.append('defaultvideo', defaultvideo);
       videos.forEach((video, index) => {
         formData.append(`title`, video.title);
         if (video.url) formData.append(`url`, video.url);
       });
-      console.log("displayInfo", subject_name);
+      console.log("displayInfo", title);
   
       const response = await axios.post(
-        "http://localhost:8080/courses/add",
+        "http://localhost:8080/teacher/addcourseteacher",
         formData,
         {
           headers: {
@@ -128,7 +120,7 @@ const [teacherData, setTeacherData] = useState([])
       );
       console.log("displayInfo", displayInfo);
 
-      setCourses(response.data);
+      setTeacherCourse(response.data);
       Toastify({
         text: "Added completely",
         duration: 3000,
@@ -136,7 +128,7 @@ const [teacherData, setTeacherData] = useState([])
         position: 'right',
         backgroundColor: "#833988",
       }).showToast();
-      navigate('/courses');
+      navigate('/teachercourses');
     } catch (error) {
       console.log(`Error fetching post data: ${error}`);
       console.log("subject_name", subject_name);
@@ -145,13 +137,15 @@ const [teacherData, setTeacherData] = useState([])
       console.log("before_offer", before_offer);
       console.log("after_offer", after_offer);
       console.log("descr", descr);
-      console.log("img", selectedFile);
+      console.log("img", img);
       console.log("displayInfo", displayInfo);
-      console.log("defaultvideo", selectedDefaultVideo);
+      console.log("defaultvideo", defaultvideo);
 
     }
   };
   
+  
+
   return (
     <>
       <NavBar title={"المواد"} />
@@ -163,25 +157,12 @@ const [teacherData, setTeacherData] = useState([])
         </div>
         <div className="row mt-4">
           <div className="col-lg-4 col-md-6 col-sm-12">
-            <p className="input_title_addcourse">اسم المادة</p>
+            <p className="input_title_addcourse" >اسم المادة</p>
             <input type="text" className="input_addcourse" onChange={(e)=>setSubjectName(e.target.value)}/>{" "}
           </div>
           <div className="col-lg-4 col-md-6 col-sm-12">
             <p className="input_title_addcourse">اسم الاستاذ</p>
-            <select
-              name="department"
-              value={teacher_id}
-              onChange={handleTecaher}
-              id="lang"
-              className="select_dep"
-            >
-              <option value="">اختر استاذ</option>
-              {teacherData.map((dep) => (
-                <option key={dep.id} value={dep.id}>
-                  {dep.teacher_name}
-                </option>
-              ))}
-            </select>
+            <input type="text" className="input_addcourse" id="teacherIdInput" value={teacher_id} onChange={(e)=>setTeacherId(e.target.value)} />{" "}
           </div>
           <div className="col-lg-4 col-md-6 col-sm-12">
             <p className="input_title_addcourse">القسم </p>
@@ -204,16 +185,13 @@ const [teacherData, setTeacherData] = useState([])
         <div className="row mt-4">
           <div className="col-lg-4 col-md-6 col-sm-12">
             <p className="input_title_addcourse">السعر بعد الخصم </p>
-            <input type="text" className="input_addcourse" />{" "}
+            <input type="text" className="input_addcourse" onChange={(e)=>setAfter_offer(e.target.value)}/>{" "}
           </div>
           <div className="col-lg-4 col-md-6 col-sm-12">
             <p className="input_title_addcourse">السعر قبل الخصم </p>
-            <input type="text" className="input_addcourse" />{" "}
+            <input type="text" className="input_addcourse" onChange={(e)=>setBefore_offer(e.target.value)}/>{" "}
           </div>
-          <div className="col-lg-4 col-md-6 col-sm-12">
-            <p className="input_title_addcourse">الكوبون </p>
-            <input type="text" className="input_addcourse" />{" "}
-          </div>
+         
         </div>
         <div className="row mt-4">
           <div className="col-lg-4 col-md-6 col-sm-12">
@@ -221,15 +199,16 @@ const [teacherData, setTeacherData] = useState([])
             <textarea
               type="text"
               className="input_textarea_addcourse"
+              onChange={(e)=>setDescr(e.target.value)}
             ></textarea>
           </div>
           <div className="col-lg-4 col-md-6 col-sm-12">
             <p className="input_title_addcourse">صورة المادة</p>
             <div className="file-input-container">
-              <input type="file" className="choose_file_addcourse" />{" "}
+              <input type="file" className="choose_file_addcourse"onChange={handleImg} />{" "}
               <span className="ps-5">اختر صورة </span>
-              {selectedFile && <span>{selectedFile.name}</span>}
-              {!selectedFile && (
+              {img && <span>{img.name}</span>}
+              {!img && (
                 <span className="selected_file_addcourse">
                   No file selected
                 </span>
@@ -242,15 +221,15 @@ const [teacherData, setTeacherData] = useState([])
               <input
                 type="file"
                 className="choose_file_addcourse"
-                onChange={handleFileChange}
+                onChange={handelDefaultVideo}
               />
               <span className="ps-5 selected_file_addcourse">اختر فيديو</span>
-              {selectedFile && (
+              {defaultvideo && (
                 <span className="selected_file_addcourse">
-                  {selectedFile.name}
+                  {defaultvideo.name}
                 </span>
               )}
-              {!selectedFile && (
+              {!defaultvideo && (
                 <span className="selected_file_addcourse">
                   No file selected
                 </span>
@@ -318,10 +297,10 @@ const [teacherData, setTeacherData] = useState([])
         </button>
           <button className="btn_addCourse px-5 py-2  mt-5"onClick={handlePost}> اضافة مادة </button>
       </div>
+          </div>
         </div>
-      </div>
     </>
   );
 }
 
-export default AddCourse;
+export default TeacherAddCourse;

@@ -35,11 +35,11 @@ const Sidebar = () => {
     <div id="viewport" >
     <div id="sidebar" >
       <header>
-       <Link to="/home" className="link_logo"><img src={require("../assets/ba9ma2.png")} alt="logo" className="logo img-fluid"/></Link>
+       <Link to="/Home" className="link_logo"><img src={require("../assets/ba9ma2.png")} alt="logo" className="logo img-fluid"/></Link>
       </header>
       <div className="nav">
         <li>
-          <Link to="/home" lassName="background_icon" onClick={handleBackground}>
+          <Link to="/Home" lassName="background_icon" onClick={handleBackground}>
             <img src={require("../assets/home.png")} alt=""className="img-fluid icon_sidebar" /> 
           </Link>
         </li>
@@ -97,6 +97,16 @@ const Sidebar = () => {
         <li>
         <Link to="/coupon" onClick={handleBackground} className="background_icon">
             <img src={require("../assets/coupon.png")} alt=""className="img-fluid icon_sidebar" /> 
+          </Link>
+        </li>
+        <li>
+        <Link to="/slider" onClick={handleBackground} className="background_icon">
+            <img src={require("../assets/banner.png")} alt=""className="img-fluid slider_img_sidebar" /> 
+          </Link>
+        </li>
+        <li>
+        <Link to="/about" onClick={handleBackground} className="background_icon">
+            <img src={require("../assets/question.png")} alt=""className="img-fluid icon_sidebar" /> 
           </Link>
         </li>
       </div>

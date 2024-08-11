@@ -22,7 +22,6 @@ function UpdateBlog() {
     // Check if location.state exists and contains the id
     if (location.state && location.state.id) {
       setBlogId(location.state.id);
-      console.log("new" + blogId)
     } else {
       console.warn('No ID found in location.state');
     }
@@ -58,14 +57,7 @@ function UpdateBlog() {
   const handleDeleteCourse = (id) => {
     // Filter out the tag with the specified ID
     const updatedDisplayInfo = displayInfo.filter((entry) => entry.id !== id);
-  
-    // Update the state with the new array
     setDisplayInfo(updatedDisplayInfo);
-    console.log("Display Info:", updatedDisplayInfo);
-  
-    // Logging to verify
-    console.log("Deleted entry ID:", id);
-    console.log("Updated Display Info:", updatedDisplayInfo);
   };
   
   const handleDepartment = (e) => {
@@ -77,7 +69,6 @@ function UpdateBlog() {
       try {
         const response = await axios.get("http://localhost:8080/department");
         setDepartmentData(response.data);
-        console.log(departmentData)
       } catch (error) {
         console.error("Error fetching departments:", error);
       }
@@ -118,7 +109,6 @@ function UpdateBlog() {
         }
       );
   
-      console.log(response.data);
       setBlogs((prevAdd) =>
         prevAdd.map((data) =>
           data.id === blogId ? response.data : data

@@ -7,92 +7,70 @@ import Table from "react-bootstrap/Table";
 import DeletePopUp from "../component/DeletePopUp";
 import axios from "axios";
 import Toastify from "toastify-js";
-import "toastify-js/src/toastify.css"; 
-function Faq() {
+import "toastify-js/src/toastify.css";
+function About() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [smShow, setSmShow] = useState(false);
   const [titlePopup, setTitlePopup] = useState(""); // State for modal title
   const [descriptionPopup, setDescriptionPopup] = useState("");
-  const [faq, setFaq] = useState([]);
-  const navigate = useNavigate();
-  const [currentId, setCurrentId] = useState(null); 
+  const [about, setAbout] = useState([]);
+  const [currentId, setCurrentId] = useState(null);
 
+  const navigate = useNavigate();
   const handleOpenModal = (id) => {
-    setCurrentId(id);
     setSmShow(true);
-    setTitlePopup("حذف سؤال"); // Set your modal title dynamically
-    setDescriptionPopup("هل أنت متأكد من حذف هذا السؤال ؟"); // Set your modal description dynamically
-  };
+    setCurrentId(id);
+    setTitlePopup("حذف صورة");
+    setDescriptionPopup("هل أنت متأكد من حذف هذه الصورة ؟");
+   };
 
   const handleCloseModal = () => {
     setSmShow(false);
   };
   const handleUpdate = (id) => {
-    navigate('/updatefaq', { state: { id } });
+    navigate('/updateAbout', { state: { id } });
   };
   
+  const handleInputChange = (event) => {
+    const query = event.target.value;
+    setSearchQuery(query);
+
+    // Filter About based on search query
+    const filteredResults = about.filter((slide) =>
+      slide.title.toLowerCase().includes(query.toLowerCase())
+    );
+
+    setSearchResults(filteredResults);
+  };
+  const dataToDisplay = searchQuery ? searchResults : about;
+
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchAbout = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/faq/");
-        const data = response.data;
-        setFaq(data);
+        const response = await axios.get("http://localhost:8080/about");
+        setAbout(response.data);
       } catch (error) {
-        console.log(`Error getting data from frontend: ${error}`);
+        console.error("Error fetching departments:", error);
       }
     };
-    fetchData();
+    fetchAbout();
   }, []);
-  const handleDelete = async () => {
-    try {
-      await axios.delete(
-        `http://localhost:8080/faq/delete/${currentId}`
-      );
 
-      // Remove the deleted department from state
-      setFaq((prevData) =>
-        prevData.filter((data) => data.id !== currentId)
-      );
 
-      Toastify({
-        text: "Faq deleted successfully",
-        duration: 3000,
-        gravity: "top",
-        position: "right",
-        backgroundColor: "#F57D20",
-      }).showToast();
-
-      handleCloseModal(); 
-    } catch (error) {
-      console.error("Error deleting faq:", error);
-    }
-  };
-  const handleInputChange = (event) => {
-      const query = event.target.value;
-      setSearchQuery(query);
-
-      // Filter blogs based on search query
-      const filteredResults = faq.filter((quesans) =>
-        quesans.ques.toLowerCase().includes(query.toLowerCase())
-      );
-
-      setSearchResults(filteredResults);
-    };
-    const dataToDisplay= searchQuery ? searchResults : faq
   return (
     <>
-      <NavBar title={"الاسئلة المتكررة"} />
+      <NavBar title={"عن بصمة"} />
       <section classNameName="margin_section">
         <div className="container ">
-          <div className="row">
+        <div className="row">
             <div className="col-lg-6 col-md-12 col-sm-12 ">
-              <Link to="/addfaq">
+              {/* <Link to="/addAbout">
                 <Button className="add_btn">
                   <span className="plus_icon">+</span>
-                  اضف سؤال{" "}
+                  اضف صور{" "}
                 </Button>
-              </Link>
+              </Link> */}
             </div>
 
                        {/* search */}
@@ -127,28 +105,25 @@ function Faq() {
               <Table striped hover>
                 <thead>
                   <tr className="table_head_cardprice">
-                    <th className="desc_table_cardprice">السؤال </th>
-                    <th className="desc_table_cardprice"> الجواب</th>
+                    <th className="desc_table_cardprice">عنوان  </th>
+                    <th className="desc_table_cardprice"> الوصف</th>
+                   
                     <th className="desc_table_cardprice">الإجراء</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {dataToDisplay.map((quesans) => (
-                    <tr>
-                      <td>{quesans.ques} </td>
-                      <td> {quesans.ans}</td>
+                  {dataToDisplay.map((abou) => (
+                    <tr key={abou.id}>
+                      <td>{abou.title} </td>
+                      <td> {abou.descr}</td>
 
                       <td>
                         <i
                           class="fa-regular fa-pen-to-square fa-lg ps-2"
                           style={{ color: "#6dab93" }}
-                          onClick={() => handleUpdate(quesans.id)}
-                        ></i>
-                        <i
-                          className="fa-regular fa-trash-can fa-lg"
-                          style={{ color: "#944b43" }}
-                          onClick={() => handleOpenModal(quesans.id)}
-                          ></i>
+                          onClick={() => handleUpdate(abou.id)}  ></i>
+                        
+                       
                       </td>
                     </tr>
                   ))}
@@ -162,11 +137,11 @@ function Faq() {
           onHide={handleCloseModal}
           title={titlePopup}
           description={descriptionPopup}
-          handleDelete={handleDelete}
+
         />
       </section>
     </>
   );
 }
 
-export default Faq;
+export default About;

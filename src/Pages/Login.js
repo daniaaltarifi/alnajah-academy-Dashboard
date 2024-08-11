@@ -1,37 +1,44 @@
-
 import "../Css/auth.css";
 import { Link } from "react-router-dom";
 import React, { useState } from 'react';
 import axios from 'axios';
 
-
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
- 
+  const [role, setRole] = useState('');
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       const res = await axios.post('http://localhost:8080/api/login', {
-        email, password
+        email, role, password
       });
-     
-      console.log('Login response:', res.data);
+           // Store authentication data in local storage
       localStorage.setItem('auth', res.data.token);
-  localStorage.setItem('id', res.data.token.id);
+      localStorage.setItem('id', res.data.id);
+      localStorage.setItem('name', res.data.name);
+      localStorage.setItem('role', res.data.role);
+      localStorage.setItem('email', email);  // Store email in local storage
+
       // Check if the response contains the token
       if (res.data.token) {
         localStorage.setItem('auth', res.data.token);
         localStorage.setItem('name', res.data.name);
+        localStorage.setItem('role', res.data.role);
         localStorage.setItem('id', res.data.id);
-        console.log('Auth token set in localStorage:', localStorage.getItem('auth'));
-        window.location.href = '/home'; // Redirect to home page after login
-      } else {
-        setError("Login failed, no token received.");
+        localStorage.setItem('email', email);  // Store email in local storage again  
+        // Redirect based on role
+        if (res.data.role === 'admin') {
+          window.location.href = '/Home';
+        } else if (res.data.role === 'teacher') {
+          window.location.href = '/teachercourses';
+        } else {
+          window.location.href = '/'; // Default redirect for other roles
+        }
       }
-    } catch (err) {
+    }catch (err) {
       setError("البريد الالكتروني أو كلمة المرور غير صحيحة");
       console.error('Login error:', err);
     }
@@ -52,12 +59,12 @@ function Login() {
                     className="img-fluid logo_auth"
                   />
                 </div>
-                <div>
+                {/* <div>
                   <button type="button" className="btn auth_btn">
                   إنشاء حساب
                   </button>
                 
-                </div>
+                </div> */}
               </div>{" "}
             </div>
             <div className="col-lg-5 col-md-6 col-sm-12 cont_input_auth ">
@@ -88,7 +95,7 @@ function Login() {
                 <Link to="" className="forget_pass_auth">نسيت كلمة المرور</Link>
               </div>
               {error && <p className="error_message">{error}</p>}
-              <button type="button" onClick={handleLogin} className="btn purple_btn mb-2">تسحيل الدخول</button>
+              <button type="button" onClick={handleLogin} className="btn purple_btn mb-2">تسجيل الدخول</button>
 
             </div>
             

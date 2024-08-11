@@ -6,7 +6,8 @@ import "../Css/search.css";
 import Table from "react-bootstrap/Table";
 import DeletePopUp from "../component/DeletePopUp";
 import axios from "axios";
-
+import Toastify from "toastify-js";
+import "toastify-js/src/toastify.css"; 
 function Courses() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -16,9 +17,12 @@ function Courses() {
   const [courses, setCourses] = useState([]);
   const [lessonCounts, setLessonCounts] = useState([]);
   const [student_courseCount, setstudent_courseCount] = useState({});
+  const teacherId = localStorage.getItem('email');//return email as teacherid
+  const [currentId, setCurrentId] = useState(null); 
 
   const navigate = useNavigate();
-  const handleOpenModal = () => {
+  const handleOpenModal = (id) => {
+    setCurrentId(id)
     setSmShow(true);
     setTitlePopup("حذف مادة"); // Set your modal title dynamically
     setDescriptionPopup("هل أنت متأكد من حذف هذا المادة ؟"); // Set your modal description dynamically
@@ -27,70 +31,35 @@ function Courses() {
   const handleCloseModal = () => {
     setSmShow(false);
   };
-  const handleUpdate = () => {
-    navigate("/updatecourse");
+  const handleUpdate = (id) => {
+    navigate('/teacherupdatecourses', { state: { id } });
   };
   useEffect(() => {
     const fetchCourses = async () => {
+      console.log(teacherId)
+            if (!teacherId) {
+        console.error('Teacher ID not found in local storage');
+        return;
+      }
+      
       try {
-        const response = await axios.get("http://localhost:8080/courses/");
+        const response = await axios.get(`http://localhost:8080/teacher/teachercourse/${teacherId}`);
         const data = response.data;
         setCourses(data);
-        fetchStudentCountsCourses(data);
-        fetchLessonCounts(data); // Ensure this function is defined elsewhere
+        console.log(response.data)
+      
       } catch (error) {
         console.log(`Error getting data from frontend: ${error}`);
       }
     };
+
     fetchCourses();
   }, []);
 
-  const fetchStudentCountsCourses = async (courses) => {
-    const counts = {};
-    await Promise.all(
-      courses.map(async (course) => {
-        try {
-          const response = await axios.get(
-            `http://localhost:8080/courses/users-counts/${course.id}`
-          );
-          counts[course.id] = response.data.student_count;
-        } catch (error) {
-          console.error(
-            `Error fetching student count for teacher ${course.id}:`,
-            error
-          );
-        }
-      })
-    );
-    setstudent_courseCount(counts);
-  };
+ 
 
-  const fetchLessonCounts = async (courses) => {
-    try {
-      const courseIds = courses.map((course) => course.id); // Use course_id for API request
-
-      // Fetch lesson counts for all course IDs in parallel
-      const courseCountPromises = courseIds.map((id) =>
-        axios.get(`http://localhost:8080/courses/lesson-counts/${id}`)
-      );
-      const courseCountsResponses = await Promise.all(courseCountPromises);
-      const courseCountsData = courseCountsResponses.map(
-        (response) => response.data[0].lesson_count
-      );
-
-      // Combine course counts with course data
-      const coursesWithCounts = courses.map((course, index) => ({
-        ...course,
-        lesson_count: courseCountsData[index] || 0,
-      }));
-
-      // Update state or do something with the augmented data
-      setLessonCounts(coursesWithCounts);
-    } catch (error) {
-      console.error("Error fetching course counts:", error);
-    }
-  };
   useEffect(() => {
+    console.log(lessonCounts); // Log the updated lesson counts
   }, [lessonCounts]);
 
   const dataToDisplay = searchQuery ? searchResults : courses;
@@ -103,6 +72,31 @@ function Courses() {
 
     setSearchResults(filteredResults);
   };
+  const handleDelete = async () => {
+    try {
+      await axios.delete(
+        `http://localhost:8080/teacher/deletecourseteacher/${currentId}`
+      );
+
+      // Remove the deleted department from state
+      setCourses((prevData) =>
+        prevData.filter((data) => data.id !== currentId)
+      );
+
+      Toastify({
+        text: "Course deleted successfully",
+        duration: 3000,
+        gravity: "top",
+        position: "right",
+        backgroundColor: "#F57D20",
+      }).showToast();
+
+      handleCloseModal(); // Close the modal after deletion
+    } catch (error) {
+      console.error("Error deleting Course:", error);
+    }
+  };
+
   return (
     <>
       <NavBar title={"المواد"} />
@@ -110,7 +104,7 @@ function Courses() {
         <div className="container ">
           <div className="row">
             <div className="col-lg-6 col-md-12 col-sm-12 ">
-              <Link to="/addcourse">
+              <Link to="/teacheraddcourses">
                 <Button className="add_btn">
                   <span className="plus_icon">+</span>
                   اضف مادة{" "}
@@ -152,10 +146,10 @@ function Courses() {
                 <thead>
                   <tr className="table_head_cardprice">
                     <th className="desc_table_cardprice"> المادة</th>
-                    <th className="desc_table_cardprice">الأستاذ </th>
-                    <th className="desc_table_cardprice">عدد الدروس </th>
-                    <th className="desc_table_cardprice">عدد الطلاب</th>
-                    <th className="desc_table_cardprice">التقييم</th>
+                    <th className="desc_table_cardprice">القسم </th>
+                    <th className="desc_table_cardprice">السعر قبل الخصم </th>
+                    <th className="desc_table_cardprice">السعر بعد الخصم</th>
+                    <th className="desc_table_cardprice">الوصف</th>
 
                     <th className="desc_table_cardprice">الإجراء</th>
                   </tr>
@@ -165,18 +159,12 @@ function Courses() {
                     dataToDisplay.map((course) => (
                       <tr key={course.id}>
                         <td>{course.subject_name}</td>
-                        <td>{course.teacher_name}</td>
-                        <td>
-                          {course.lesson_count !== undefined
-                            ? course.lesson_count
-                            : "0"}
-                        </td>
-                        <td>
-                          {student_courseCount[course.id] !== undefined
-                            ? student_courseCount[course.id]
-                            : "0"}
-                        </td>
-                        <td>{course.rating}</td>
+                        <td>{course.department_name}</td>
+                        <td>{course.before_offer}</td>
+
+                        <td>{course.after_offer}</td>
+
+                        <td>{course.descr}</td>
                         <td>
                           <i
                             className="fa-regular fa-pen-to-square fa-lg ps-2"
@@ -201,6 +189,7 @@ function Courses() {
           onHide={handleCloseModal}
           title={titlePopup}
           description={descriptionPopup}
+          handleDelete={handleDelete}
         />
       </section>
     </>
