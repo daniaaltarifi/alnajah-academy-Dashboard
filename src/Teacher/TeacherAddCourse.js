@@ -20,8 +20,10 @@ const [title,setTitle]= useState("")
 const [url,setUrl]= useState(null)
 const [departmentData, setDepartmentData] = useState([])
 const [teacherCourse, setTeacherCourse] = useState([])
+const [currentContext, setCurrentContext] = useState(null); // or 'link'
+  const [videos, setVideos] = useState([]);
+  const [links, setLinks] = useState([]);
 const navigate=useNavigate()
-const [videos, setVideos] = useState([{ title: '', url: null }]);
 useEffect(() => {
   const storedTeacherId = localStorage.getItem('email');
   setTeacherId(storedTeacherId || '');
@@ -30,19 +32,30 @@ useEffect(() => {
       inputElement.disabled = true;
     }
 }, []);
-const handleVideoChange = (index, e) => {
-    const { name, value, files } = e.target;
-    const newVideos = [...videos];
-    if (name === 'title') {
-      newVideos[index] = { ...newVideos[index], title: value };
-    } else if (name === 'url') {
-      newVideos[index] = { ...newVideos[index], url: files[0] };
-    }
-    setVideos(newVideos);
-  };
-  const addVideoField = () => {
-    setVideos([...videos, { title: '', url: null }]);
-  };
+const handleVideoFileChange = (index, e) => {
+  const newVideos = [...videos];
+  newVideos[index].url = e.target.files[0];
+  setVideos(newVideos);
+};
+const handleLinkChange = (index, e) => {
+  const newLinks = [...links];
+  if (e.target.name === 'title') {
+    newLinks[index].title = e.target.value;
+    setLinks(newLinks);
+  } else if (e.target.name === 'link') {
+    newLinks[index].link = e.target.value;
+    setLinks(newLinks);
+  }
+};
+
+const addVideoField = () => {
+  setVideos([...videos, { title: '', url: null }]);
+};
+
+// Add a new link field
+const addLinkField = () => {
+  setLinks([...links, { title: '', link: '' }]);
+};
 
   const handleImg = (e) => {
     const file = e.target.files[0];
@@ -57,6 +70,12 @@ const handleVideoChange = (index, e) => {
   };
 
 
+  const handleDeleteimg = (index) => {
+    const newVideos = [...videos];
+    newVideos[index] = { ...newVideos[index], url: null };
+    setVideos(newVideos);
+  };
+  
   const handleDeleteSelectedFile = (index) => {
     const newVideos = [...videos];
     newVideos[index] = { ...newVideos[index], url: null };
@@ -104,10 +123,14 @@ const handleVideoChange = (index, e) => {
       formData.append('img', img);
       formData.append('defaultvideo', defaultvideo);
       videos.forEach((video, index) => {
-        formData.append(`title`, video.title);
-        if (video.url) formData.append(`url`, video.url);
+        formData.append('url', video.url);
+        formData.append('title', video.title);
       });
-      console.log("displayInfo", title);
+      links.forEach((link, index) => {
+        formData.append('link', link.link);
+        formData.append('title', link.title);
+      });
+      console.log("link", links);
   
       const response = await axios.post(
         "http://localhost:8080/teacher/addcourseteacher",
@@ -139,6 +162,7 @@ const handleVideoChange = (index, e) => {
       console.log("descr", descr);
       console.log("img", img);
       console.log("displayInfo", displayInfo);
+      console.log("link", links);
       console.log("defaultvideo", defaultvideo);
 
     }
@@ -246,16 +270,23 @@ const handleVideoChange = (index, e) => {
           <div className="col-lg-4 col-md-6 col-sm-12"></div>
           <div className="col-lg-8 col-md-6 col-sm-12">
           <div className="title_add_course">اضافة المواضيع</div>
-          {videos.map((video, index) => (
+          <div>
+  <button className="btn btn_add_video ms-5" onClick={() => setCurrentContext('video')}>Video</button>
+  <button className="btn btn_add_video " onClick={() => setCurrentContext('link')}>Link</button>
+</div>
+          {currentContext === 'video' && videos.map((video, index) => (
           <div key={index}>
-            <p className="input_title_addcourse">عنوان الموضوع  </p>
+            <p className="input_title_addcourse">عنوان الموضوع</p>
             <input
               type="text"
               className="input_addcourse"
-              name="title"
               value={video.title}
-              onChange={(e) => handleVideoChange(index, e)}
-              placeholder="Enter video title"
+              onChange={(e) => {
+                const updatedVideos = [...videos];
+                updatedVideos[index] = { ...updatedVideos[index], title: e.target.value };
+                setVideos(updatedVideos);
+              }}
+              placeholder="Enter title"
               required
             />
             <div className="file_input_addvideo">
@@ -263,37 +294,55 @@ const handleVideoChange = (index, e) => {
               <input
                 type="file"
                 className="choose_file_addcourse"
-                name="url"
-                onChange={(e) => handleVideoChange(index, e)}
+                onChange={(e) => handleVideoFileChange(index, e)}
                 required
               />
-              <span className="ps-5 selected_file_addvideo">
-                قم بتحميل الملفات من هنا
-              </span>
-              {!video.url && (
-                <span className="selected_file_addcourse">
-                  No file selected
-                </span>
-              )}
+              <span className="ps-5 selected_file_addvideo">قم بتحميل الملفات من هنا</span>
+              {!video.url && <span className="selected_file_addcourse">No file selected</span>}
             </div>
             {video.url && (
               <div className="d-flex justify-content-around">
                 <p className="selected_file_addcourse">{video.url.name}</p>
                 <i
                   className="fa-solid fa-square-xmark fa-lg mt-2"
-                  onClick={() => handleDeleteSelectedFile(index)}
-                  style={{ color: "#944b43" }}
+                  onClick={() => handleDeleteimg(index, 'video')}
+                  style={{ color: '#944b43' }}
                 ></i>
               </div>
             )}
           </div>
         ))}
-         <button
+
+        {currentContext === 'link' && links.map((link, index) => (
+          <div key={index}>
+            <p className="input_title_addcourse">عنوان الموضوع</p>
+            <input
+              type="text"
+              name="title"
+              className="input_addcourse"
+              value={link.title}
+              onChange={(e) => handleLinkChange(index, e)}
+              placeholder="Enter title"
+              required
+            />
+            <input
+              type="text"
+              name="link"
+              className="input_addcourse"
+              value={link.link}
+              onChange={(e) => handleLinkChange(index, e)}
+              placeholder="Enter link URL"
+              required
+            />
+          </div>
+        ))}
+
+        <button
           type="button"
           className="btn btn_add_video float-start"
-          onClick={addVideoField}
+          onClick={currentContext === 'video' ? addVideoField : addLinkField}
         >
-          اضافة فيديو
+          {currentContext === 'video' ? 'Add Video' : 'Add Link'}
         </button>
           <button className="btn_addCourse px-5 py-2  mt-5"onClick={handlePost}> اضافة مادة </button>
       </div>

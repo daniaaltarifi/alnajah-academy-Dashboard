@@ -6,7 +6,8 @@ import "../Css/search.css";
 import Table from "react-bootstrap/Table";
 import DeletePopUp from "../component/DeletePopUp";
 import axios from "axios";
-
+import Toastify from "toastify-js";
+import "toastify-js/src/toastify.css";
 function Courses() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -16,9 +17,11 @@ function Courses() {
   const [courses, setCourses] = useState([]);
   const [lessonCounts, setLessonCounts] = useState([]);
   const [student_courseCount, setstudent_courseCount] = useState({});
+  const [currentId, setCurrentId] = useState(null);
 
   const navigate = useNavigate();
-  const handleOpenModal = () => {
+  const handleOpenModal = (id) => {
+    setCurrentId(id);
     setSmShow(true);
     setTitlePopup("حذف مادة"); // Set your modal title dynamically
     setDescriptionPopup("هل أنت متأكد من حذف هذا المادة ؟"); // Set your modal description dynamically
@@ -103,6 +106,28 @@ function Courses() {
 
     setSearchResults(filteredResults);
   };
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`http://localhost:8080/courses/delete/${currentId}`);
+
+      // Remove the deleted department from state
+      setCourses((prevData) =>
+        prevData.filter((data) => data.id !== currentId)
+      );
+
+      Toastify({
+        text: "course deleted successfully",
+        duration: 3000,
+        gravity: "top",
+        position: "right",
+        backgroundColor: "#F57D20",
+      }).showToast();
+
+      handleCloseModal(); // Close the modal after deletion
+    } catch (error) {
+      console.error("Error deleting department:", error);
+    }
+  };
   return (
     <>
       <NavBar title={"المواد"} />
@@ -153,9 +178,8 @@ function Courses() {
                   <tr className="table_head_cardprice">
                     <th className="desc_table_cardprice"> المادة</th>
                     <th className="desc_table_cardprice">الأستاذ </th>
-                    <th className="desc_table_cardprice">عدد الدروس </th>
+                    {/* <th className="desc_table_cardprice">عدد الدروس </th> */}
                     <th className="desc_table_cardprice">عدد الطلاب</th>
-                    <th className="desc_table_cardprice">التقييم</th>
 
                     <th className="desc_table_cardprice">الإجراء</th>
                   </tr>
@@ -166,17 +190,12 @@ function Courses() {
                       <tr key={course.id}>
                         <td>{course.subject_name}</td>
                         <td>{course.teacher_name}</td>
-                        <td>
-                          {course.lesson_count !== undefined
-                            ? course.lesson_count
-                            : "0"}
-                        </td>
+                      
                         <td>
                           {student_courseCount[course.id] !== undefined
                             ? student_courseCount[course.id]
                             : "0"}
                         </td>
-                        <td>{course.rating}</td>
                         <td>
                           <i
                             className="fa-regular fa-pen-to-square fa-lg ps-2"
@@ -201,6 +220,7 @@ function Courses() {
           onHide={handleCloseModal}
           title={titlePopup}
           description={descriptionPopup}
+          handleDelete={handleDelete}
         />
       </section>
     </>

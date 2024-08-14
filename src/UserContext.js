@@ -15,40 +15,48 @@ const UserProvider = ({ children }) => {
     const auth = localStorage.getItem('auth');
     const name = localStorage.getItem('name');
     const id = localStorage.getItem('id');
-    
+    const img = localStorage.getItem('img');    
+
     const role = localStorage.getItem('role');
     setUser({
       isLoggedIn: !!auth,
       userName: name || '',
       userId: id || '',
-      role: role || ''
+      role: role || '',
+      img: img || '',
+
     });
   }, []);
 
-  const updateUser = (name, id,  role) => {
+  const updateUser = (name, id, img) => {
     localStorage.setItem('name', name);
     localStorage.setItem('id', id);
-    localStorage.setItem('role', role);
-    const auth = localStorage.getItem('auth');
+    localStorage.setItem('img', img); // Store the image URL, not the file object
+
     setUser({
-      isLoggedIn: !!auth,
+      isLoggedIn: !!localStorage.getItem('auth'),
       userName: name,
       userId: id,
-      role: role
+      img: img || user.img,
     });
   };
 
   const logout = () => {
-    localStorage.clear();
+    localStorage.removeItem('auth');
+    localStorage.removeItem('roles');
+    localStorage.removeItem('userid');
+    localStorage.removeItem('curruntUser');
+    localStorage.removeItem('name');
+    localStorage.removeItem('id');
+    localStorage.removeItem('img');
     setUser({
       isLoggedIn: false,
       userId: '',
       userName: '',
-      role: '',
+      img: '',
     });
     window.location.href = '/';
   };
-
   return (
     <UserContext.Provider value={{ user, updateUser, logout }}>
       {children}

@@ -15,6 +15,7 @@ function Department() {
   const [titlePopup, setTitlePopup] = useState("");
   const [descriptionPopup, setDescriptionPopup] = useState("");
   const [title, setTitle] = useState("");
+  const [price, setPrice] = useState("");
   const [departmentData, setDepartmentData] = useState([]);
   const [currentId, setCurrentId] = useState(null); 
   const [del, setDel] = useState([]);
@@ -46,7 +47,7 @@ function Department() {
     fetchData();
   });
   const handlePost = async () => {
-    if (!title) {
+    if (!title || !price) {
       Toastify({
         text: "Please Fill All Field",
         duration: 3000, // Duration in milliseconds
@@ -59,7 +60,7 @@ function Department() {
     try {
       const response = await axios.post(
         "http://localhost:8080/department/add",
-        { title }
+        { title , price }
       );
       setDepartmentData(response.data);
       Toastify({
@@ -76,7 +77,7 @@ function Department() {
     }
   };
   const handleUpdate = async () => {
-    if (!title) {
+    if (!title || !price) {
       Toastify({
         text: "Please Fill All Fields",
         duration: 3000,
@@ -89,7 +90,7 @@ function Department() {
     try {
       const response = await axios.put(
         `http://localhost:8080/department/update/${currentId}`, // Use currentId here
-        { title }
+        { title, price }
       );
       // Update the department data in state
       setDepartmentData((prevAdd) =>
@@ -154,7 +155,7 @@ function Department() {
 
           <Modal.Body>
             <Form>
-              <Form.Group
+            <Form.Group
                 className="mb-3"
                 controlId="exampleForm.ControlInput1"
               >
@@ -167,12 +168,22 @@ function Department() {
                   }}
                 />
               </Form.Group>
+              <Form.Group
+                className="mb-3"
+                controlId="exampleForm.ControlInput1"
+              >
+                <Form.Label className="text_field "> سعر القسم </Form.Label>
+                <Form.Control
+                  type="text"
+                  className="input_filed_modal"
+                  onChange={(e) => {
+                    setPrice(e.target.value);
+                  }}
+                />
+              </Form.Group>
             </Form>
           </Modal.Body>
           <Modal.Footer>
-            {/* <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button> */}
             <Button onClick={handlePost} className="buy_department_btn">
               اضافة{" "}
             </Button>
@@ -183,22 +194,13 @@ function Department() {
             {Array.isArray(departmentData) &&departmentData.map((card, id) => (
               <div className="col-lg-3 col-md-6 col-sm-12 col_depa" key={card.id}>
                 <div className=" info_cont_depa">
-                  <div className="d-flex ">
-                    <img
+                <img
                       src={require("../assets/department.png")}
                       alt="department"
-                      className="img-fluid icon_department"
+                      className="img-fluid icon_department ms-3"
                     />
-
-                    <p className="coupoun_department">{card.coupon}</p>
-                  </div>
-                  <div className="d-flex">
-                    <p className="info_department"> 20 مادة </p>
-                    <p className="info_department"> 2 طالب </p>
-                  </div>
+                <p className="title_depa ">{card.title}</p>
                 </div>
-
-                <p className="title_depa">{card.title}</p>
                 <div className="btn_handle_cont">
                   <button
                     className="btn_handle_depa"
@@ -245,6 +247,22 @@ function Department() {
                           className="input_filed_modal"
                           onChange={(e) => {
                             setTitle(e.target.value);
+                          }}
+                        />
+                      </Form.Group>
+                      <Form.Group
+                        className="mb-3"
+                        controlId="exampleForm.ControlInput1"
+                      >
+                        <Form.Label className="text_field ">
+                          {" "}
+                          سعر القسم{" "}
+                        </Form.Label>
+                        <Form.Control
+                          type="text"
+                          className="input_filed_modal"
+                          onChange={(e) => {
+                            setPrice(e.target.value);
                           }}
                         />
                       </Form.Group>

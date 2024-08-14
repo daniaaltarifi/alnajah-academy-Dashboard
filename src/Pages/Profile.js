@@ -1,12 +1,15 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef ,useContext} from 'react';
 import axios from 'axios';
 import "../Css/auth.css";
 import defaultImage from '../assets/profile.png';
 import NavBar from '../component/NavBar';
-
-function Profile({ user }) {
+import { UserContext } from '../UserContext';
+import { useNavigate } from 'react-router-dom';
+function Profile() {
   const [successMessage, setSuccessMessage] = useState('');
-//   const { userId } = user;
+  const {user,updateUser}=useContext(UserContext)
+  const { userId } = user;
+const navigate = useNavigate()
   const [profile, setProfile] = useState({
     name: '',
     email: '',
@@ -18,6 +21,32 @@ function Profile({ user }) {
   const [imageUrl, setImageUrl] = useState(null); // Initialize with defaultImage
 
   const fileInputRef = useRef(null);
+  useEffect(() => {
+    if (user.userId) {
+      axios.get(`http://localhost:8080/api/profile/${user.userId}`)
+        .then(response => {
+          setProfile({
+            name: response.data.name,
+            email: response.data.email,
+            img: response.data.img,
+            password: '',
+            confirmPassword: ''
+          });
+          // Set the image URL from the profile data
+          setImageUrl(`http://localhost:8080/${response.data.img}`);
+        })
+        .catch(error => {
+          console.error('There was an error fetching the profile!', error);
+        });
+    }
+  }, [user.userId]);
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setProfile(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
 
 //   useEffect(() => {
 //     if (userId) {
@@ -38,40 +67,69 @@ function Profile({ user }) {
 //         });
 //     }
 //   }, [userId]);
+const handleUpdate = async (e) => {
+  e.preventDefault();
+  const formData = new FormData();
+  formData.append('name', profile.name);
+  formData.append('email', profile.email);
+  formData.append('password', profile.password);
+  formData.append('confirmPassword', profile.confirmPassword);
+  // formData.append('img', profile.img);
+  
+  if (profile.img instanceof File) {
+    formData.append('img', profile.img);
+  }
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setProfile(prevState => ({
-      ...prevState,
-      [name]: value
+  try {
+    const response = await axios.put(`http://localhost:8080/api/profile/${user.userId}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    // Update the image URL with the new image URL from the server
+      setImageUrl(`http://localhost:8080/${response.data.img}`);
+setSuccessMessage('تم تعديل حسابك');
+    updateUser(profile.name,userId,response.data.img)
+setProfile(prevState => ({
+...prevState,
+name: response.data.name,
+img: response.data.img,
+}));
+window.location.reload();
+// navigate(`/profile/${user.userId}`)
+} catch (error) {
+console.error('Error updating profile:', error);
+}
+};
+
+
+const handleFileChange = (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    // Set the profile image file
+    setProfile(prevProfile => ({
+      ...prevProfile,
+      img: file
     }));
-  };
+    const objectUrl = URL.createObjectURL(file);
+    setImageUrl(objectUrl);
 
+    // Clean up the object URL when component unmounts
+    return () => URL.revokeObjectURL(objectUrl);
+  }
+  
+};
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      // Set the profile image file
-      setProfile(prevProfile => ({
-        ...prevProfile,
-        img: file
-      }));
-      // Create a preview URL for the selected file
-      const objectUrl = URL.createObjectURL(file);
-      setImageUrl(objectUrl);
-    }
-  };
+const handleButtonClick = () => {
+  if (fileInputRef.current) {
+    fileInputRef.current.click();
+  }
+};
 
-  const handleButtonClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // handleUpdate();
-  };
+// const handleSubmit = (e) => {
+//   e.preventDefault();
+//   handleUpdate();
+// };
 
   return (
     <>
@@ -143,7 +201,7 @@ function Profile({ user }) {
                 </div>
               </div>
               {successMessage && <p className="success_message">{successMessage}</p>}
-              <button type="button" className="btn purple_btn mb-2 px-5" onClick={handleSubmit}>حفظ</button>
+              <button type="button" className="btn purple_btn mb-2 px-5" onClick={handleUpdate}>حفظ</button>
             </div>
           </div>
         </div>

@@ -118,7 +118,7 @@ function Teacher() {
       setTeachers((prevData) =>
         prevData.filter((data) => data.id !== currentId)
       );
-
+window.location.reload();
       Toastify({
         text: "teacher deleted successfully",
         duration: 3000,

@@ -20,6 +20,8 @@ function Login() {
       localStorage.setItem('id', res.data.id);
       localStorage.setItem('name', res.data.name);
       localStorage.setItem('role', res.data.role);
+      localStorage.setItem('img', res.data.img);
+
       localStorage.setItem('email', email);  // Store email in local storage
 
       // Check if the response contains the token
@@ -28,6 +30,8 @@ function Login() {
         localStorage.setItem('name', res.data.name);
         localStorage.setItem('role', res.data.role);
         localStorage.setItem('id', res.data.id);
+        localStorage.setItem('img', res.data.img);
+
         localStorage.setItem('email', email);  // Store email in local storage again  
         // Redirect based on role
         if (res.data.role === 'admin') {
@@ -89,11 +93,7 @@ function Login() {
                   value={password} onChange={(e) => setPassword(e.target.value)}
                 
                 />
-              
-
-
-                <Link to="" className="forget_pass_auth">نسيت كلمة المرور</Link>
-              </div>
+                            </div>
               {error && <p className="error_message">{error}</p>}
               <button type="button" onClick={handleLogin} className="btn purple_btn mb-2">تسجيل الدخول</button>
 

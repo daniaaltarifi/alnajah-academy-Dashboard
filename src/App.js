@@ -43,6 +43,11 @@ import UpdateSlider from "./Pages/UpdateSlider.js";
 import AddSlider from "./Pages/AddSlider.js";
 import About from "./Pages/About.js";
 import UpdateAbout from "./Pages/UpdateAbout.js";
+import AvailableCards from "./Pages/AvailableCards.js";
+import AddAvailableCards from "./Pages/AddAvailableCard.js";
+import UpdateAvailableCard from "./Pages/UpdateAvailablecard.js";
+import Goverment from "./Pages/Goverment.js";
+import AddGoverment from "./Pages/AddGoverment.js";
 function AppContent() {
   const location = useLocation();
   const { user, setUser } = useContext(UserContext);
@@ -107,6 +112,12 @@ const AppRouterAdmin = () => {
           <Route path="/updateslider" element={<UpdateSlider />} />
           <Route path="/about" element={<About />} />
           <Route path="/updateabout" element={<UpdateAbout />} />
+          <Route path="/availablecards" element={<AvailableCards />} />
+          <Route path="/addavailablecard" element={<AddAvailableCards />} />
+          <Route path="/updateavailablecard" element={<UpdateAvailableCard />} />
+          <Route path="/goverment" element={<Goverment />} />
+          <Route path="/addgoverment" element={<AddGoverment />} />
+
 
         </Routes>
       </div>

@@ -7,70 +7,89 @@ import Table from "react-bootstrap/Table";
 import DeletePopUp from "../component/DeletePopUp";
 import axios from "axios";
 import Toastify from "toastify-js";
-import "toastify-js/src/toastify.css";
-function About() {
+import "toastify-js/src/toastify.css"; 
+function Goverment() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [smShow, setSmShow] = useState(false);
   const [titlePopup, setTitlePopup] = useState(""); // State for modal title
   const [descriptionPopup, setDescriptionPopup] = useState("");
-  const [about, setAbout] = useState([]);
-  const [currentId, setCurrentId] = useState(null);
-
+  const [goverment, setGoverment] = useState([]);
   const navigate = useNavigate();
+  const [currentId, setCurrentId] = useState(null); 
+
   const handleOpenModal = (id) => {
-    setSmShow(true);
     setCurrentId(id);
-    setTitlePopup("حذف صورة");
-    setDescriptionPopup("هل أنت متأكد من حذف هذه الصورة ؟");
-   };
+    setSmShow(true);
+    setTitlePopup("حذف محافظة"); // Set your modal title dynamically
+    setDescriptionPopup("هل أنت متأكد من حذف هذه المحافظة ؟"); // Set your modal description dynamically
+  };
 
   const handleCloseModal = () => {
     setSmShow(false);
   };
-  const handleUpdate = (id) => {
-    navigate('/updateAbout', { state: { id } });
-  };
   
-  const handleInputChange = (event) => {
-    const query = event.target.value;
-    setSearchQuery(query);
-
-    // Filter About based on search query
-    const filteredResults = about.filter((slide) =>
-      slide.title.toLowerCase().includes(query.toLowerCase())
-    );
-
-    setSearchResults(filteredResults);
-  };
-  const dataToDisplay = searchQuery ? searchResults : about;
-
   useEffect(() => {
-    const fetchAbout = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/about");
-        setAbout(response.data);
+        const response = await axios.get("http://localhost:8080/cards/");
+        const data = response.data;
+        setGoverment(data);
       } catch (error) {
-        console.error("Error fetching departments:", error);
+        console.log(`Error getting data from frontend: ${error}`);
       }
     };
-    fetchAbout();
+    fetchData();
   }, []);
+  const handleDelete = async () => {
+    try {
+      await axios.delete(
+        `http://localhost:8080/cards/delete/${currentId}`
+      );
 
+      // Remove the deleted department from state
+      setGoverment((prevData) =>
+        prevData.filter((data) => data.id !== currentId)
+      );
 
+      Toastify({
+        text: "Goverment deleted successfully",
+        duration: 3000,
+        gravity: "top",
+        position: "right",
+        backgroundColor: "#F57D20",
+      }).showToast();
+
+      handleCloseModal(); 
+    } catch (error) {
+      console.error("Error deleting Goverment:", error);
+    }
+  };
+  const handleInputChange = (event) => {
+      const query = event.target.value;
+      setSearchQuery(query);
+
+      // Filter blogs based on search query
+      const filteredResults = goverment.filter((gov) =>
+        gov.governorate.toLowerCase().includes(query.toLowerCase())
+      );
+
+      setSearchResults(filteredResults);
+    };
+    const dataToDisplay= searchQuery ? searchResults : goverment
   return (
     <>
-      <NavBar title={"عن بصمة"} />
+      <NavBar title={"المحافظات"} />
       <section classNameName="margin_section">
         <div className="container ">
-        <div className="row">
+          <div className="row">
             <div className="col-lg-6 col-md-12 col-sm-12 ">
-              {/* <Link to="/addfaq">
+              <Link to="/addgoverment">
                 <Button className="add_btn">
                   <span className="plus_icon">+</span>
-                  اضف سؤال{" "}
+                  اضف محافظة{" "}
                 </Button>
-              </Link> */}
+              </Link>
             </div>
 
                        {/* search */}
@@ -105,25 +124,21 @@ function About() {
               <Table striped hover>
                 <thead>
                   <tr className="table_head_cardprice">
-                    <th className="desc_table_cardprice">عنوان  </th>
-                    <th className="desc_table_cardprice"> الوصف</th>
-                   
+                    <th className="desc_table_cardprice">المحافظة </th>
                     <th className="desc_table_cardprice">الإجراء</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {dataToDisplay.map((abou) => (
-                    <tr key={abou.id}>
-                      <td>{abou.title} </td>
-                      <td> {abou.descr}</td>
+                  {dataToDisplay.map((gov) => (
+                    <tr>
+                      <td>{gov.governorate} </td>
 
                       <td>
                         <i
-                          class="fa-regular fa-pen-to-square fa-lg ps-2"
-                          style={{ color: "#6dab93" }}
-                          onClick={() => handleUpdate(abou.id)}  ></i>
-                        
-                       
+                          className="fa-regular fa-trash-can fa-lg"
+                          style={{ color: "#944b43" }}
+                          onClick={() => handleOpenModal(gov.id)}
+                          ></i>
                       </td>
                     </tr>
                   ))}
@@ -137,11 +152,11 @@ function About() {
           onHide={handleCloseModal}
           title={titlePopup}
           description={descriptionPopup}
-
+          handleDelete={handleDelete}
         />
       </section>
     </>
   );
 }
 
-export default About;
+export default Goverment;

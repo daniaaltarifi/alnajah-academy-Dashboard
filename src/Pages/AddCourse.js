@@ -6,8 +6,7 @@ import Toastify from "toastify-js";
 import "toastify-js/src/toastify.css"; 
 import { useNavigate } from "react-router-dom";
 function AddCourse() {
-  const [courseTitle, setCourseTitle] = useState('');
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [img, setImg] = useState(null);
   const [selectedDefaultVideo, setSelectedDefaultVideo] = useState(null);
   const [displayInfo, setDisplayInfo] = useState([]);
   const [courses, setCourses] = useState([]);
@@ -15,51 +14,71 @@ function AddCourse() {
   const [department_id, setDepartmentId] = useState("");
   const [before_offer, setBefore_offer] = useState("");
   const [after_offer, setAfter_offer] = useState("");
-  const [descr, setdescr] = useState("");
+  const [descr, setDescr] = useState("");
   const [teacher_id, setTeacherId] = useState("");
-  const [videos, setVideos] = useState([{ title: '', url: null }]);
   const navigate = useNavigate();
 const [departmentData, setDepartmentData] = useState([])
 const [teacherData, setTeacherData] = useState([])
+const [currentContext, setCurrentContext] = useState(null); // or 'link'
+  const [videos, setVideos] = useState([]);
+  const [links, setLinks] = useState([]);
+  const [linkTitle, setLinkTitle] = useState('');
 
-  const handleVideoChange = (index, e) => {
-    const { name, value, files } = e.target;
-    const newVideos = [...videos];
-    if (name === 'title') {
-      newVideos[index] = { ...newVideos[index], title: value };
-    } else if (name === 'url') {
-      newVideos[index] = { ...newVideos[index], url: files[0] };
-    }
-    setVideos(newVideos);
-  };
-  const addVideoField = () => {
-    setVideos([...videos, { title: '', url: null }]);
-  };
+const handleVideoFileChange = (index, e) => {
+  const newVideos = [...videos];
+  newVideos[index].url = e.target.files[0];
+  setVideos(newVideos);
+};
+const handleLinkChange = (index, e) => {
+  const newLinks = [...links];
+  if (e.target.name === 'title') {
+    newLinks[index].title = e.target.value;
+    setLinks(newLinks);
+  } else if (e.target.name === 'link') {
+    newLinks[index].link = e.target.value;
+    setLinks(newLinks);
+  }
+};
 
-  const handleDeleteSelectedFile = (index) => {
+  
+const addVideoField = () => {
+  setVideos([...videos, { title: '', url: null }]);
+};
+
+// Add a new link field
+const addLinkField = () => {
+  setLinks([...links, { title: '', link: '' }]);
+};
+
+
+  const handleDeleteimg = (index) => {
     const newVideos = [...videos];
     newVideos[index] = { ...newVideos[index], url: null };
     setVideos(newVideos);
   };
   
-  const handleFileChange = (e) => {
+  const handleImg = (e) => {
     const file = e.target.files[0];
-    setSelectedFile(file);
+    setImg(file);
   };
-  const handleAddButtonClick = () => {
-    if (courseTitle && selectedFile) {
-      setDisplayInfo([
-        ...displayInfo,
-        {
-          title: courseTitle,
-          fileName: selectedFile.name // Store the original file name
-        }
-      ]);
-      // Clear the form fields after adding
-      setCourseTitle('');
-      setSelectedFile(null);
-    }
+  const handleDefaultVideo = (e) => {
+    const file = e.target.files[0];
+    setSelectedDefaultVideo(file);
   };
+  // const handleAddButtonClick = () => {
+  //   if (courseTitle && img) {
+  //     setDisplayInfo([
+  //       ...displayInfo,
+  //       {
+  //         title: courseTitle,
+  //         fileName: img.name // Store the original file name
+  //       }
+  //     ]);
+  //     // Clear the form fields after adding
+  //     setCourseTitle('');
+  //     setImg(null);
+  //   }
+  // };
   const handleDepartment = (e) => {
     const selectedDepartmentId = e.target.value;
     setDepartmentId(selectedDepartmentId);
@@ -90,7 +109,7 @@ const [teacherData, setTeacherData] = useState([])
     fetchTeacher()
   }, []);
   const handlePost = async () => {
-    if (!subject_name || !teacher_id || !department_id || !before_offer || !after_offer || !descr || !selectedFile || !displayInfo || !selectedDefaultVideo) {
+    if (!subject_name || !teacher_id || !department_id || !before_offer || !after_offer || !descr || !img  || !selectedDefaultVideo) {
       Toastify({
         text: "Please Fill All Field",
         duration: 3000,
@@ -109,13 +128,17 @@ const [teacherData, setTeacherData] = useState([])
       formData.append('before_offer', before_offer);
       formData.append('after_offer', after_offer);
       formData.append('descr', descr);
-      formData.append('img', selectedFile);
+      formData.append('img', img);
       formData.append('defaultvideo', selectedDefaultVideo);
       videos.forEach((video, index) => {
-        formData.append(`title`, video.title);
-        if (video.url) formData.append(`url`, video.url);
+        formData.append('url', video.url);
+        formData.append('title', video.title);
       });
-      console.log("displayInfo", subject_name);
+      links.forEach((link, index) => {
+        formData.append('link', link.link);
+        formData.append('title', link.title);
+      });
+      console.log("link", links);
   
       const response = await axios.post(
         "http://localhost:8080/courses/add",
@@ -126,7 +149,6 @@ const [teacherData, setTeacherData] = useState([])
           },
         }
       );
-      console.log("displayInfo", displayInfo);
 
       setCourses(response.data);
       Toastify({
@@ -145,8 +167,9 @@ const [teacherData, setTeacherData] = useState([])
       console.log("before_offer", before_offer);
       console.log("after_offer", after_offer);
       console.log("descr", descr);
-      console.log("img", selectedFile);
+      console.log("img", img);
       console.log("displayInfo", displayInfo);
+      console.log("link", links);
       console.log("defaultvideo", selectedDefaultVideo);
 
     }
@@ -204,16 +227,16 @@ const [teacherData, setTeacherData] = useState([])
         <div className="row mt-4">
           <div className="col-lg-4 col-md-6 col-sm-12">
             <p className="input_title_addcourse">السعر بعد الخصم </p>
-            <input type="text" className="input_addcourse" />{" "}
+            <input type="text" className="input_addcourse" onChange={(e)=>setBefore_offer(e.target.value)}/>{" "}
           </div>
           <div className="col-lg-4 col-md-6 col-sm-12">
             <p className="input_title_addcourse">السعر قبل الخصم </p>
-            <input type="text" className="input_addcourse" />{" "}
+            <input type="text" className="input_addcourse" onChange={(e)=>setAfter_offer(e.target.value)}/>{" "}
           </div>
-          <div className="col-lg-4 col-md-6 col-sm-12">
+          {/* <div className="col-lg-4 col-md-6 col-sm-12">
             <p className="input_title_addcourse">الكوبون </p>
             <input type="text" className="input_addcourse" />{" "}
-          </div>
+          </div> */}
         </div>
         <div className="row mt-4">
           <div className="col-lg-4 col-md-6 col-sm-12">
@@ -221,15 +244,16 @@ const [teacherData, setTeacherData] = useState([])
             <textarea
               type="text"
               className="input_textarea_addcourse"
+              onChange={(e)=>setDescr(e.target.value)}
             ></textarea>
           </div>
           <div className="col-lg-4 col-md-6 col-sm-12">
             <p className="input_title_addcourse">صورة المادة</p>
             <div className="file-input-container">
-              <input type="file" className="choose_file_addcourse" />{" "}
+              <input type="file" className="choose_file_addcourse"onChange={handleImg} />{" "}
               <span className="ps-5">اختر صورة </span>
-              {selectedFile && <span>{selectedFile.name}</span>}
-              {!selectedFile && (
+              {img && <span>{img.name}</span>}
+              {!img && (
                 <span className="selected_file_addcourse">
                   No file selected
                 </span>
@@ -242,16 +266,16 @@ const [teacherData, setTeacherData] = useState([])
               <input
                 type="file"
                 className="choose_file_addcourse"
-                onChange={handleFileChange}
+                onChange={handleDefaultVideo}
               />
               <span className="ps-5 selected_file_addcourse">اختر فيديو</span>
-              {selectedFile && (
+              {selectedDefaultVideo && (
                 <span className="selected_file_addcourse">
-                  {selectedFile.name}
+                  {selectedDefaultVideo.name}
                 </span>
               )}
-              {!selectedFile && (
-                <span className="selected_file_addcourse">
+              {!selectedDefaultVideo && (
+                <span className="selected_file_addcourse ">
                   No file selected
                 </span>
               )}
@@ -267,16 +291,23 @@ const [teacherData, setTeacherData] = useState([])
           <div className="col-lg-4 col-md-6 col-sm-12"></div>
           <div className="col-lg-8 col-md-6 col-sm-12">
           <div className="title_add_course">اضافة المواضيع</div>
-          {videos.map((video, index) => (
+          <div>
+  <button className="btn btn_add_video ms-5" onClick={() => setCurrentContext('video')}>Video</button>
+  <button className="btn btn_add_video " onClick={() => setCurrentContext('link')}>Link</button>
+</div>
+          {currentContext === 'video' && videos.map((video, index) => (
           <div key={index}>
-            <p className="input_title_addcourse">عنوان الموضوع  </p>
+            <p className="input_title_addcourse">عنوان الموضوع</p>
             <input
               type="text"
               className="input_addcourse"
-              name="title"
               value={video.title}
-              onChange={(e) => handleVideoChange(index, e)}
-              placeholder="Enter video title"
+              onChange={(e) => {
+                const updatedVideos = [...videos];
+                updatedVideos[index] = { ...updatedVideos[index], title: e.target.value };
+                setVideos(updatedVideos);
+              }}
+              placeholder="Enter title"
               required
             />
             <div className="file_input_addvideo">
@@ -284,37 +315,55 @@ const [teacherData, setTeacherData] = useState([])
               <input
                 type="file"
                 className="choose_file_addcourse"
-                name="url"
-                onChange={(e) => handleVideoChange(index, e)}
+                onChange={(e) => handleVideoFileChange(index, e)}
                 required
               />
-              <span className="ps-5 selected_file_addvideo">
-                قم بتحميل الملفات من هنا
-              </span>
-              {!video.url && (
-                <span className="selected_file_addcourse">
-                  No file selected
-                </span>
-              )}
+              <span className="ps-5 selected_file_addvideo">قم بتحميل الملفات من هنا</span>
+              {!video.url && <span className="selected_file_addcourse">No file selected</span>}
             </div>
             {video.url && (
               <div className="d-flex justify-content-around">
                 <p className="selected_file_addcourse">{video.url.name}</p>
                 <i
                   className="fa-solid fa-square-xmark fa-lg mt-2"
-                  onClick={() => handleDeleteSelectedFile(index)}
-                  style={{ color: "#944b43" }}
+                  onClick={() => handleDeleteimg(index, 'video')}
+                  style={{ color: '#944b43' }}
                 ></i>
               </div>
             )}
           </div>
         ))}
-         <button
+
+        {currentContext === 'link' && links.map((link, index) => (
+          <div key={index}>
+            <p className="input_title_addcourse">عنوان الموضوع</p>
+            <input
+              type="text"
+              name="title"
+              className="input_addcourse"
+              value={link.title}
+              onChange={(e) => handleLinkChange(index, e)}
+              placeholder="Enter title"
+              required
+            />
+            <input
+              type="text"
+              name="link"
+              className="input_addcourse"
+              value={link.link}
+              onChange={(e) => handleLinkChange(index, e)}
+              placeholder="Enter link URL"
+              required
+            />
+          </div>
+        ))}
+
+        <button
           type="button"
           className="btn btn_add_video float-start"
-          onClick={addVideoField}
+          onClick={currentContext === 'video' ? addVideoField : addLinkField}
         >
-          اضافة فيديو
+          {currentContext === 'video' ? 'Add Video' : 'Add Link'}
         </button>
           <button className="btn_addCourse px-5 py-2  mt-5"onClick={handlePost}> اضافة مادة </button>
       </div>

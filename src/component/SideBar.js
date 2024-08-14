@@ -109,6 +109,16 @@ const Sidebar = () => {
             <img src={require("../assets/question.png")} alt=""className="img-fluid icon_sidebar" /> 
           </Link>
         </li>
+        <li>
+        <Link to="/availablecards" onClick={handleBackground} className="background_icon">
+            <img src={require("../assets/credit-card.png")} alt=""className="img-fluid icon_sidebar" /> 
+          </Link>
+        </li>
+        <li>
+        <Link to="/goverment" onClick={handleBackground} className="background_icon">
+            <img src={require("../assets/capitol.png")} alt=""className="img-fluid icon_sidebar" /> 
+          </Link>
+        </li>
       </div>
     </div>
    

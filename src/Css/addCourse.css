@@ -104,9 +104,10 @@ padding-right:15px;
     .selected_file_addvideo {
       display: none;
     }
-    .selected_file_addcourse{
+    /* .selected_file_addcourse{
       padding-top: 2vh;
-    }
+      padding-bottom: 2vh;
+    } */
     .btn_addCourse{
       margin-top: 10vh;
     }
