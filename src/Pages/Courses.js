@@ -200,7 +200,7 @@ function Courses() {
                           <i
                             className="fa-regular fa-pen-to-square fa-lg ps-2"
                             style={{ color: "#6dab93" }}
-                            onClick={() => handleUpdate(course.id)}
+                            // onClick={() => handleUpdate(course.id)}
                           ></i>
                           <i
                             className="fa-regular fa-trash-can fa-lg"
