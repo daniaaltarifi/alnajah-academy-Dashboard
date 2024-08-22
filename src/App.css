@@ -17,5 +17,6 @@
 
 .main-content {
   padding: 20px;
+   overflow-x: auto;
 }
 

@@ -35,7 +35,7 @@ function Coupon() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/coupon/");
+        const response = await axios.get("https://ba9ma.kasselsoft.online/coupon/");
         const data = response.data;
         setCoupons(data);
       } catch (error) {
@@ -47,7 +47,7 @@ function Coupon() {
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `http://localhost:8080/coupon/delete/${currentId}`
+        `https://ba9ma.kasselsoft.online/coupon/delete/${currentId}`
       );
 
       // Remove the deleted department from state

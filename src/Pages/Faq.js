@@ -35,7 +35,7 @@ function Faq() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/faq/");
+        const response = await axios.get("https://ba9ma.kasselsoft.online/faq/");
         const data = response.data;
         setFaq(data);
       } catch (error) {
@@ -47,7 +47,7 @@ function Faq() {
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `http://localhost:8080/faq/delete/${currentId}`
+        `https://ba9ma.kasselsoft.online/faq/delete/${currentId}`
       );
 
       // Remove the deleted department from state
@@ -123,8 +123,9 @@ function Faq() {
             </div>
           </div>
           <div className="row mt-5">
-            <div className="col-lg-12 col-md-12 col-sm-12">
-              <Table striped hover>
+            <div className="col-lg-12 col-md-12 col-sm-12"  >
+
+              <Table striped hover >
                 <thead>
                   <tr className="table_head_cardprice">
                     <th className="desc_table_cardprice">السؤال </th>
@@ -135,10 +136,10 @@ function Faq() {
                 <tbody>
                   {dataToDisplay.map((quesans) => (
                     <tr>
-                      <td>{quesans.ques} </td>
-                      <td> {quesans.ans}</td>
+                      <td className="wrap-text">{quesans.ques} </td>
+                      <td className="wrap-text"> {quesans.ans}</td>
 
-                      <td>
+                      <td >
                         <i
                           class="fa-regular fa-pen-to-square fa-lg ps-2"
                           style={{ color: "#6dab93" }}
@@ -154,6 +155,7 @@ function Faq() {
                   ))}
                 </tbody>
               </Table>
+
             </div>
           </div>
         </div>

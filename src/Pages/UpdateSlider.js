@@ -59,7 +59,7 @@ function UpdateSlider() {
       formData.append("slider_img", slider_img);
 
       const response = await axios.put(
-        `http://localhost:8080/sliders/update/${slider_id}`,
+        `https://ba9ma.kasselsoft.online/sliders/update/${slider_id}`,
         formData, // Send the FormData object
         {
           headers: {

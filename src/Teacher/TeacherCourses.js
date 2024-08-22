@@ -43,7 +43,7 @@ function Courses() {
       }
       
       try {
-        const response = await axios.get(`http://localhost:8080/teacher/teachercourse/${teacherId}`);
+        const response = await axios.get(`https://ba9ma.kasselsoft.online/teacher/teachercourse/${teacherId}`);
         const data = response.data;
         setCourses(data);
         console.log(response.data)
@@ -75,7 +75,7 @@ function Courses() {
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `http://localhost:8080/teacher/deletecourseteacher/${currentId}`
+        `https://ba9ma.kasselsoft.online/teacher/deletecourseteacher/${currentId}`
       );
 
       // Remove the deleted department from state

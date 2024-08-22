@@ -6,6 +6,8 @@ import axios from "axios";
 import Toastify from "toastify-js";
 import "toastify-js/src/toastify.css";
 import DeletePopUp from "../component/DeletePopUp";
+import Spinner from "react-bootstrap/Spinner";
+
 function Comments() {
   const [activeButton, setActiveButton] = useState("btn1");
   const [commentblog, setCommentblog] = useState([]);
@@ -16,6 +18,7 @@ function Comments() {
   const [descriptionPopup, setDescriptionPopup] = useState("");
   const [currentId, setCurrentId] = useState(null);
   const [deleteFunction, setDeleteFunction] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const handleClick = (buttonId) => {
     setActiveButton(buttonId);
@@ -28,8 +31,10 @@ function Comments() {
   useEffect(() => {
     const fetchCommentBlogs = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/commentblog/");
+        const response = await axios.get("https://ba9ma.kasselsoft.online/commentblog/");
         setCommentblog(response.data);
+        setLoading(false);
+
       } catch (error) {
         console.error("Error fetching blogs comments:", error);
       }
@@ -38,7 +43,7 @@ function Comments() {
     const fetchCommentCourses = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8080/commentcourse/"
+          "https://ba9ma.kasselsoft.online/commentcourse/"
         );
         setCommentCourses(response.data);
       } catch (error) {
@@ -49,7 +54,7 @@ function Comments() {
     const fetchAllComment = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8080/connects/comment"
+          "https://ba9ma.kasselsoft.online/connects/comment"
         );
         setAllComments(response.data);
       } catch (error) {
@@ -61,12 +66,12 @@ function Comments() {
   const handleApproved = async (blogId) => {
     try {
       await axios.put(
-        `http://localhost:8080/commentblog/commentblogaction/${blogId}`,
+        `https://ba9ma.kasselsoft.online/commentblog/commentblogaction/${blogId}`,
         {
           action: "approved",
         }
       );
-      const response = await axios.get("http://localhost:8080/commentblog");
+      const response = await axios.get("https://ba9ma.kasselsoft.online/commentblog");
       setCommentblog(response.data);
     } catch (error) {
       console.error("Error updating blog status:", error);
@@ -75,12 +80,12 @@ function Comments() {
   const handleApprovedCommentsCourse = async (courseid) => {
     try {
       await axios.put(
-        `http://localhost:8080/commentcourse/action/${courseid}`,
+        `https://ba9ma.kasselsoft.online/commentcourse/action/${courseid}`,
         {
           action: "approved",
         }
       );
-      const response = await axios.get("http://localhost:8080/commentcourse");
+      const response = await axios.get("https://ba9ma.kasselsoft.online/commentcourse");
       setCommentCourses(response.data);
     } catch (error) {
       console.error("Error updating comment status:", error);
@@ -88,11 +93,11 @@ function Comments() {
   };
   const handleApprovedComments = async (commentid) => {
     try {
-      await axios.put(`http://localhost:8080/connects/action/${commentid}`, {
+      await axios.put(`https://ba9ma.kasselsoft.online/connects/action/${commentid}`, {
         action: "approved",
       });
       const response = await axios.get(
-        "http://localhost:8080/connects/comment"
+        "https://ba9ma.kasselsoft.online/connects/comment"
       );
       setAllComments(response.data);
     } catch (error) {
@@ -101,7 +106,7 @@ function Comments() {
   };
   const handleDeleteCourse = async (id) => {
     try {
-      await axios.delete(`http://localhost:8080/commentcourse/delete/${id}`);
+      await axios.delete(`https://ba9ma.kasselsoft.online/commentcourse/delete/${id}`);
       setCommentCourses((prevData) => prevData.filter((data) => data.id !== id));
       Toastify({
         text: "Comment deleted successfully",
@@ -118,7 +123,7 @@ function Comments() {
   };
   const handleDeleteBlog = async (id) => {
     try {
-      await axios.delete(`http://localhost:8080/commentblog/delete/${id}`);
+      await axios.delete(`https://ba9ma.kasselsoft.online/commentblog/delete/${id}`);
       setCommentblog((prevData) => prevData.filter((data) => data.id !== id));
       Toastify({
         text: "Comment deleted successfully",
@@ -135,7 +140,7 @@ function Comments() {
   };
   const handleDeleteComments = async (id) => {
     try {
-      await axios.delete(`http://localhost:8080/connects/delete/${id}`);
+      await axios.delete(`https://ba9ma.kasselsoft.online/connects/delete/${id}`);
       setAllComments((prevData) => prevData.filter((data) => data.id !== id));
       Toastify({
         text: "Comment deleted successfully",
@@ -200,6 +205,11 @@ function Comments() {
                   <th className="desc_table_cardprice">الاجراء</th>
                 </tr>
               </thead>
+              {loading ? (
+                  <div className="spinner-container">
+                    <Spinner animation="border" variant="warning" />
+                  </div>
+                ) : (
               <tbody>
                 {commentblog.map((blog) => (
                   <tr>
@@ -227,7 +237,8 @@ function Comments() {
                     )}
                   </tr>
                 ))}
-              </tbody>
+                </tbody>
+              )}
             </Table>
           ) : activeButton === "btn2" ? (
             <Table striped hover>

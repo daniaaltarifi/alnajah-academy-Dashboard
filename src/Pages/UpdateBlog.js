@@ -67,7 +67,7 @@ function UpdateBlog() {
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/department");
+        const response = await axios.get("https://ba9ma.kasselsoft.online/department");
         setDepartmentData(response.data);
       } catch (error) {
         console.error("Error fetching departments:", error);
@@ -100,7 +100,7 @@ function UpdateBlog() {
       tagsArray.forEach(tag => formData.append('tags[]', tag));
   
       const response = await axios.put(
-        `http://localhost:8080/blog/updateblogandtag/${blogId}`,
+        `https://ba9ma.kasselsoft.online/blog/updateblogandtag/${blogId}`,
         formData, // Send the FormData object
         {
           headers: {

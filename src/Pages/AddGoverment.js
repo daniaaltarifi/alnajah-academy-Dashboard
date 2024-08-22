@@ -22,7 +22,7 @@ const navigate=useNavigate()
     }
     try {
       const response = await axios.post(
-        "http://localhost:8080/cards/add",
+        "https://ba9ma.kasselsoft.online/cards/add",
         { governorate }
       );
       // setDepartmentData(response.data);

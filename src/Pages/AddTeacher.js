@@ -34,7 +34,7 @@ const navigate = useNavigate()
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/department");
+        const response = await axios.get("https://ba9ma.kasselsoft.online/department");
         setDepartmentData(response.data);
       } catch (error) {
         console.error("Error fetching departments:", error);
@@ -62,7 +62,7 @@ const navigate = useNavigate()
       formData.append('department_id', department_id);
       formData.append('img', selectedFile);
       const response = await axios.post(
-        "http://localhost:8080/teacher/add",
+        "https://ba9ma.kasselsoft.online/teacher/add",
         formData,
         {
           headers: {

@@ -97,7 +97,7 @@ const addLinkField = () => {
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/department");
+        const response = await axios.get("https://ba9ma.kasselsoft.online/department");
         setDepartmentData(response.data);
         console.log(departmentData)
       } catch (error) {
@@ -139,7 +139,7 @@ const addLinkField = () => {
       });
   
       const response = await axios.put(
-        `http://localhost:8080/teacher/updatecourseteacher/${updateTeacherId}`,
+        `https://ba9ma.kasselsoft.online/teacher/updatecourseteacher/${updateTeacherId}`,
         formData,
         {
           headers: {

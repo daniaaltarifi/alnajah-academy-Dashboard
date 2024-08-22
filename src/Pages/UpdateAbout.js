@@ -53,7 +53,7 @@ const navigate = useNavigate()
       formData.append('img', selectedFile);
 
       const response = await axios.put(
-        `http://localhost:8080/about/update/${about_id}`,
+        `https://ba9ma.kasselsoft.online/about/update/${about_id}`,
         formData, // Send the FormData object
         {
           headers: {

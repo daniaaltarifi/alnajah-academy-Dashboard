@@ -36,7 +36,7 @@ const [address, setaddress] = useState("")
   useEffect(() => {
     const fetchGoverment = async () => {
         try {
-          const response = await axios.get("http://localhost:8080/cards/");
+          const response = await axios.get("https://ba9ma.kasselsoft.online/cards/");
           setgovermentData(response.data);
         } catch (error) {
           console.error("Error fetching goverment:", error);
@@ -69,7 +69,7 @@ const [address, setaddress] = useState("")
     try {
     
       const response = await axios.put(
-        `http://localhost:8080/cards/update/availablecard/${availabalecardId}`,
+        `https://ba9ma.kasselsoft.online/cards/update/availablecard/${availabalecardId}`,
         { name,location,governorate_id,address,phone}
       );
       setavailablecard((prevAdd) =>

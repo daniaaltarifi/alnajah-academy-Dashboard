@@ -48,6 +48,7 @@ import AddAvailableCards from "./Pages/AddAvailableCard.js";
 import UpdateAvailableCard from "./Pages/UpdateAvailablecard.js";
 import Goverment from "./Pages/Goverment.js";
 import AddGoverment from "./Pages/AddGoverment.js";
+import ProtectedRoute from "./component/ProtectedRoute.js";
 function AppContent() {
   const location = useLocation();
   const { user, setUser } = useContext(UserContext);
@@ -80,43 +81,44 @@ const AppRouterAdmin = () => {
     <div className="App" dir="rtl">
       <SideBar />
       <div className="main-content">
-        <Routes>
-          <Route path="/Home" element={<Home />} />
-          <Route path="/department" element={<Department />} />
-          <Route path="/courses" element={<Courses />} />
-          <Route path="/addcourse" element={<AddCourse />} />
-          <Route path="/updatecourse" element={<UpdateCourse />} />
         
-          <Route path="/addteacher" element={<AddTeacher />} />
-          <Route path="/updateteacher" element={<UpdateTeacher />} />
-          <Route path="/order" element={<Order />} />
-          <Route path="/library" element={<Library />} />
-          <Route path="/addlibrary" element={<AddLibrary />} />
-          <Route path="/updatelibrary" element={<UpdateLibrary />} />
-          <Route path="/blogs" element={<Blogs />} />
-          <Route path="/addblog" element={<AddBlog />} />
-          <Route path="/updateblog" element={<UpdateBlog />} />
-          <Route path="/comments" element={<Comments />} />
-          <Route path="/profile/:id" element={<Profile />} />
-          <Route path="/users" element={<Users />} />
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/faq" element={<Faq />} />
-          <Route path="/addfaq" element={<AddFaq />} />
-          <Route path="/updatefaq" element={<UpdateFaq />} />
-          <Route path="/coupon" element={<Coupon />} />
-          <Route path="/addcoupon" element={<AddCouponCode />} />
-          <Route path="/updatecoupon" element={<UpdateCoupon />} />
-          <Route path="/teacher" element={<Teacher />} />
-          <Route path="/slider" element={<Slider />} />
-          <Route path="/addslider" element={<AddSlider />} />
-          <Route path="/updateslider" element={<UpdateSlider />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/updateabout" element={<UpdateAbout />} />
-          <Route path="/availablecards" element={<AvailableCards />} />
-          <Route path="/addavailablecard" element={<AddAvailableCards />} />
-          <Route path="/updateavailablecard" element={<UpdateAvailableCard />} />
-          <Route path="/goverment" element={<Goverment />} />
-          <Route path="/addgoverment" element={<AddGoverment />} />
+        <Routes>
+          <Route path="/Home" element={<ProtectedRoute element={<Home />} />} />
+          <Route path="/department" element={<ProtectedRoute element={<Department />}/> } />
+          <Route path="/courses" element={<ProtectedRoute element={<Courses />}/>} />
+          <Route path="/addcourse" element={<ProtectedRoute element={<AddCourse />} />}/>
+          <Route path="/updatecourse" element={<ProtectedRoute element={<UpdateCourse />}/>} />
+          
+          <Route path="/addteacher" element={<ProtectedRoute element={<AddTeacher />}/>} />
+          <Route path="/updateteacher" element={<ProtectedRoute element={<UpdateTeacher />}/>} />
+          <Route path="/order" element={<ProtectedRoute element={<Order />}/>} />
+          <Route path="/library" element={<ProtectedRoute element={<Library />} />}/>
+          <Route path="/addlibrary" element={<ProtectedRoute element={<AddLibrary />}/>} />
+          <Route path="/updatelibrary" element={<ProtectedRoute element={<UpdateLibrary />}/>} />
+          <Route path="/blogs" element={<ProtectedRoute element={<Blogs />} />}/>
+          <Route path="/addblog"element={<ProtectedRoute element={<AddBlog />}/>}  />
+          <Route path="/updateblog"  element={<ProtectedRoute element={<UpdateBlog />}/>} />
+          <Route path="/comments" element={<ProtectedRoute element={<Comments />} />}/>
+          <Route path="/profile/:id" element={<ProtectedRoute element={<Profile />}/>} />
+          <Route path="/users" element={<ProtectedRoute element={<Users />}/>} />
+          <Route path="/admin" element={<ProtectedRoute element={<Admin />} />}/>
+          <Route path="/faq" element={<ProtectedRoute element={<Faq />}/>} />
+          <Route path="/addfaq" element={<ProtectedRoute element={<AddFaq />} />}/>
+          <Route path="/updatefaq" element={<ProtectedRoute element={<UpdateFaq />} />}/>
+          <Route path="/coupon" element={<ProtectedRoute element={<Coupon />}/>} />
+          <Route path="/addcoupon"element={<ProtectedRoute element={<AddCouponCode />}/>}  />
+          <Route path="/updatecoupon" element={<ProtectedRoute element={<UpdateCoupon />} />}/>
+          <Route path="/teacher" element={<ProtectedRoute element={<Teacher />}/>} />
+          <Route path="/slider"element={<ProtectedRoute element={<Slider />}/>}  />
+          <Route path="/addslider" element={<ProtectedRoute element={<AddSlider />}/>} />
+          <Route path="/updateslider" element={<ProtectedRoute element={<UpdateSlider />}/>} />
+          <Route path="/about" element={<ProtectedRoute element={<About />} />}/>
+          <Route path="/updateabout" element={<ProtectedRoute element={<UpdateAbout />} />}/>
+          <Route path="/availablecards" element={<ProtectedRoute element={<AvailableCards />}/>} />
+          <Route path="/addavailablecard" element={<ProtectedRoute element={<AddAvailableCards />}/>} />
+          <Route path="/updateavailablecard" element={<ProtectedRoute element={<UpdateAvailableCard />} />}/>
+          <Route path="/goverment" element={<ProtectedRoute element={<Goverment />} />}/>
+          <Route path="/addgoverment" element={<ProtectedRoute element={<AddGoverment />}/>} />
 
 
         </Routes>
@@ -131,12 +133,10 @@ const AppRouterTeacher = () => {
       <SideTeacher />
       <div className="main-content">
         <Routes>
-        <Route path="/profile/:id" element={<Profile />} />
-         {/* <Route index element={<HomChef />} /> */}
-          <Route path="/teachercourses" element={<TeacherCourses />} />
-          <Route path="/teacheraddcourses" element={<TeacherAddCourse />} />
-          <Route path="/teacherupdatecourses" element={<TeacherUpdateCourse />} />
-          {/* Add more routes as needed */}
+        <Route path="/profile/:id" element={<ProtectedRoute element={<Profile />} />}/>
+          <Route path="/teachercourses" element={<ProtectedRoute element={<TeacherCourses />}/>} />
+          <Route path="/teacheraddcourses" element={<ProtectedRoute element={<TeacherAddCourse />}/>} />
+          <Route path="/teacherupdatecourses" element={<ProtectedRoute element={<TeacherUpdateCourse />}/>} />
         </Routes>
       </div>
     </div>

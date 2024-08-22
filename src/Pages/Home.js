@@ -38,13 +38,13 @@ function Home() {
     const fetchData = async () => {
       try {
         const [departmentResponse,coursesResponse,usersResponse,teachersResponse,libraryResponse,blogResponse,commentsResponse]=await Promise.all([
-         axios.get("http://localhost:8080/department/"),
-         axios.get("http://localhost:8080/courses/"),
-         axios.get("http://localhost:8080/api/getusers"),
-         axios.get("http://localhost:8080/teacher/"),
-         axios.get("http://localhost:8080/library/"),
-         axios.get("http://localhost:8080/blog/"),
-         axios.get("http://localhost:8080/connects/comment"),
+         axios.get("https://ba9ma.kasselsoft.online/department/"),
+         axios.get("https://ba9ma.kasselsoft.online/courses/"),
+         axios.get("https://ba9ma.kasselsoft.online/api/getusers"),
+         axios.get("https://ba9ma.kasselsoft.online/teacher/"),
+         axios.get("https://ba9ma.kasselsoft.online/library/"),
+         axios.get("https://ba9ma.kasselsoft.online/blog/"),
+         axios.get("https://ba9ma.kasselsoft.online/connects/comment"),
         ])
         const usersData = usersResponse.data;
         const student = usersData.filter(user => user.role === 'student');

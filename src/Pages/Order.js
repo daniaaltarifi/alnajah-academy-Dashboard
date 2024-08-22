@@ -5,6 +5,9 @@ import Table from "react-bootstrap/Table";
 import axios from "axios";
 import Toastify from "toastify-js";
 import "toastify-js/src/toastify.css";
+import DeletePopUp from "../component/DeletePopUp";
+import Spinner from "react-bootstrap/Spinner";
+
 function Order() {
   const [activeButton, setActiveButton] = useState("btn1");
   const [departmentOrder, setDepartmentOrder] = useState([]);
@@ -13,33 +16,50 @@ function Order() {
 
   const [selectedPayment, setSelectedPayment] = useState(null);
   const [newStatus, setNewStatus] = useState("");
+  const [smShow, setSmShow] = useState(false);
+  const [titlePopup, setTitlePopup] = useState(""); // State for modal title
+  const [descriptionPopup, setDescriptionPopup] = useState("");
+  const [currentId, setCurrentId] = useState(null); 
+  const [loading, setLoading] = useState(true);
+
   // Handler function to change the color of the clicked button
   const handleClick = (buttonId) => {
     setActiveButton(buttonId);
   };
 
+  const handleOpenModal = (id) => {
+    setCurrentId(id);
+    setSmShow(true);
+    setTitlePopup("حذف طلب شراء"); // Set your modal title dynamically
+    setDescriptionPopup("هل أنت متأكد من حذف طلب الشراء  ؟"); // Set your modal description dynamically
+  };
+  const handleCloseModal = () => {
+    setSmShow(false);
+  };
   // Function to determine button color
   const getButtonColor = (buttonId) => {
     return activeButton === buttonId ? "#833988" : "#F57D20";
   };
   const fetchDepartmentOrder = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/getcourseusers");
+      const response = await axios.get("https://ba9ma.kasselsoft.online/api/getcourseusers");
       const data = response.data;
       // Filter to only include unapproved payments
       const unapprovedPayments = data.filter(payment => payment.department_id !== null);
       setDepartmentOrder(unapprovedPayments);
+      setLoading(false);
     } catch (error) {
       console.log(`Error getting data from backend: ${error}`);
     }
   };
   const fetchCourseOrder = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/getcourseusers");
+      const response = await axios.get("https://ba9ma.kasselsoft.online/api/getcourseusers");
       const data = response.data;
       // Filter to only include unapproved payments
       const unapprovedPayments = data.filter(payment => payment.course_id !== null);
       setCourseOrder(unapprovedPayments);
+      setLoading(false);
     } catch (error) {
       console.log(`Error getting data from backend: ${error}`);
     }
@@ -48,28 +68,28 @@ function Order() {
     fetchDepartmentOrder();
     fetchCourseOrder()
   }, []);
-    const handleApproved = async (id) => {
-      try {
-        await axios.put(`http://localhost:8080/api/payments/${id}/approve`, { payment_status: 'approved' });
-        // Update payment status in the local state
-        setDepartmentOrder((prevPayments) =>
-          prevPayments.map((payment) =>
-            payment.id === id ? { ...payment, payment_status: 'approved' } : payment
-          )
-        );
-        await fetchDepartmentOrder();
-        await fetchCourseOrder();
+  //   const handleApproved = async (id) => {
+  //     try {
+  //       await axios.put(`https://ba9ma.kasselsoft.online/api/payments/${id}/approve`, { payment_status: 'approved' });
+  //       // Update payment status in the local state
+  //       setDepartmentOrder((prevPayments) =>
+  //         prevPayments.map((payment) =>
+  //           payment.id === id ? { ...payment, payment_status: 'approved' } : payment
+  //         )
+  //       );
+  //       await fetchDepartmentOrder();
+  //       await fetchCourseOrder();
 
-      } catch (error) {
-        console.error('Error updating payment status:', error);
-      }
+  //     } catch (error) {
+  //       console.error('Error updating payment status:', error);
+  //     }
 
-  };
-  const handleDeleteCourseUsers = async (id) => {
+  // };
+  const handleDeleteCourseUsers = async () => {
     try {
-      await axios.delete(`http://localhost:8080/api/delete/payments/${id}`);
-      setDepartmentOrder((prevData) => prevData.filter((data) => data.payment_id !== id));
-      setCourseOrder((prevData) => prevData.filter((data) => data.payment_id !== id));
+      await axios.delete(`https://ba9ma.kasselsoft.online/api/delete/payments/${currentId}`);
+      setDepartmentOrder((prevData) => prevData.filter((data) => data.payment_id !== currentId));
+      setCourseOrder((prevData) => prevData.filter((data) => data.payment_id !== currentId));
       Toastify({
         text: "Order deleted successfully",
         duration: 3000,
@@ -77,7 +97,7 @@ function Order() {
         position: "right",
         backgroundColor: "#F57D20",
       }).showToast();
-
+      handleCloseModal()
     } catch (error) {
       console.error("Error deleting department:", error);
     }
@@ -123,6 +143,11 @@ function Order() {
                   <th className="desc_table_cardprice">الاجراء</th>
                 </tr>
               </thead>
+              {loading ? (
+                  <div className="spinner-container">
+                    <Spinner animation="border" variant="warning" />
+                  </div>
+                ) : (
               <tbody>
               {courseOrder.map((course) => (
                   <tr key={course.id}>
@@ -131,9 +156,17 @@ function Order() {
                     <td>{course.address}</td>
                     <td>{course.phone}</td>
                     <td>{course.subject_name}</td>
-                    <td>{course.payment_status}</td>
-                  
                     <td>
+                     
+                        <i
+                          className="fa-regular fa-trash-can fa-lg"
+                          style={{ color: "#944b43" }}
+                          onClick={() => handleOpenModal(course.payment_id)}
+
+                          // onClick={()=>handleDeleteCourseUsers(course.payment_id)} 
+                          ></i>
+                      </td>
+                    {/* <td>
                        {course.payment_status !== "approved" && (
                         <div>
 
@@ -149,10 +182,11 @@ function Order() {
                         </div>
 
                       )}
-                    </td>
+                    </td> */}
                   </tr>
-                ))}
-              </tbody>
+               ))}
+               </tbody>
+             )}
             </Table>
           ) : activeButton === "btn2" ? (
             <Table striped hover>
@@ -163,11 +197,15 @@ function Order() {
                   <th className="desc_table_cardprice">العنوان</th>
                   <th className="desc_table_cardprice">رقم الهاتف</th>
                   <th className="desc_table_cardprice">القسم</th>
-                  <th className="desc_table_cardprice">حالة الطلب</th>
 
                   <th className="desc_table_cardprice">الاجراء</th>
                 </tr>
               </thead>
+              {loading ? (
+                  <div className="spinner-container">
+                    <Spinner animation="border" variant="warning" />
+                  </div>
+                ) : (
               <tbody>
                 {departmentOrder.map((department) => (
                   <tr key={department.id}>
@@ -176,9 +214,19 @@ function Order() {
                     <td>{department.address}</td>
                     <td>{department.phone}</td>
                     <td>{department.department_name}</td>
-                    <td>{department.payment_status}</td>
-                  
                     <td>
+                        <i
+                          className="fa-regular fa-trash-can fa-lg"
+                          style={{ color: "#944b43" }}
+                          onClick={() => handleOpenModal(department.payment_id)}
+
+                          // onClick={()=>handleDeleteCourseUsers(department.payment_id)}                          
+                           >
+
+                          </i>
+
+                      </td>
+                    {/* <td>
                        {department.payment_status !== "approved" && (
                         <div>
 
@@ -194,14 +242,22 @@ function Order() {
                         </div>
 
                       )}
-                    </td>
+                    </td> */}
                   </tr>
-                ))}
-              </tbody>
+                 ))}
+                 </tbody>
+               )}
             </Table>
           ) : null}
         </div>
       </div>
+      <DeletePopUp
+          show={smShow}
+          onHide={handleCloseModal}
+          title={titlePopup}
+          description={descriptionPopup}
+          handleDelete={handleDeleteCourseUsers}
+        />
     </>
   );
 }

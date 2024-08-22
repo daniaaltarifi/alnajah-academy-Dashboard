@@ -32,7 +32,7 @@ function Goverment() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/cards/");
+        const response = await axios.get("https://ba9ma.kasselsoft.online/cards/");
         const data = response.data;
         setGoverment(data);
       } catch (error) {
@@ -44,7 +44,7 @@ function Goverment() {
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `http://localhost:8080/cards/delete/${currentId}`
+        `https://ba9ma.kasselsoft.online/cards/delete/${currentId}`
       );
 
       // Remove the deleted department from state

@@ -41,21 +41,43 @@ const UserProvider = ({ children }) => {
     });
   };
 
-  const logout = () => {
-    localStorage.removeItem('auth');
-    localStorage.removeItem('roles');
-    localStorage.removeItem('userid');
-    localStorage.removeItem('curruntUser');
-    localStorage.removeItem('name');
-    localStorage.removeItem('id');
-    localStorage.removeItem('img');
-    setUser({
-      isLoggedIn: false,
-      userId: '',
-      userName: '',
-      img: '',
-    });
-    window.location.href = '/';
+  const logout = async() => {
+    const token = localStorage.getItem('auth'); // Retrieve the token from localStorage
+    try {
+      const response = await fetch('https://ba9ma.kasselsoft.online/api/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token }), // Send the token in the request body
+      });
+      const result = await response.json();
+      if (response.ok) {
+        // Clear localStorage
+        localStorage.removeItem('auth');
+        localStorage.removeItem('roles');
+        localStorage.removeItem('userid');
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('name');
+        localStorage.removeItem('id');
+        localStorage.removeItem('img');
+        setUser({
+          isLoggedIn: false,
+          userId: '',
+          userName: '',
+          img: '',
+        });
+        // Redirect to login page or show a success message
+        window.location.href = '/';
+        
+      } else {
+        // Handle errors
+        alert(result.message || 'Logout failed');
+      }
+    } catch (error) {
+      console.log('Logout error:', error);
+      alert('An error occurred during logout');
+    }
   };
   return (
     <UserContext.Provider value={{ user, updateUser, logout }}>

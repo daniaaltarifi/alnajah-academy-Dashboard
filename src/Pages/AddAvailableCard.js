@@ -24,7 +24,7 @@ const [AvailableCards, setAvailableCards] = useState([])
   useEffect(() => {
     const fetchGoverment = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/cards/");
+        const response = await axios.get("https://ba9ma.kasselsoft.online/cards/");
         setGovermentData(response.data);
       } catch (error) {
         console.error("Error fetching goverment:", error);
@@ -49,7 +49,7 @@ const [AvailableCards, setAvailableCards] = useState([])
     try {
      
       const response = await axios.post(
-        "http://localhost:8080/cards/add/availablecard",
+        "https://ba9ma.kasselsoft.online/cards/add/availablecard",
        { name,location,governorate_id,address,phone}
       );
 

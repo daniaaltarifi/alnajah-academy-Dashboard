@@ -21,7 +21,7 @@ const navigate=useNavigate()
     }
     try {
       const response = await axios.post(
-        "http://localhost:8080/coupon/add",
+        "https://ba9ma.kasselsoft.online/coupon/add",
         { coupon_code }
       );
       // setDepartmentData(response.data);

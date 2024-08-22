@@ -8,6 +8,8 @@ import DeletePopUp from "../component/DeletePopUp";
 import axios from "axios";
 import Toastify from "toastify-js";
 import "toastify-js/src/toastify.css"; 
+import Spinner from "react-bootstrap/Spinner";
+
 function Library() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -16,6 +18,7 @@ function Library() {
   const [descriptionPopup, setDescriptionPopup] = useState(""); 
   const [library, setLibrary] = useState([])
   const [currentId, setCurrentId] = useState(null); 
+  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
   const handleOpenModal = (id) => {
@@ -35,8 +38,9 @@ function Library() {
   useEffect(()=>{
     const fetchLibrary = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/library/");
+        const response = await axios.get("https://ba9ma.kasselsoft.online/library/");
         setLibrary(response.data);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching library:", error);
       }
@@ -60,7 +64,7 @@ fetchLibrary()
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `http://localhost:8080/library/delete/${currentId}`
+        `https://ba9ma.kasselsoft.online/library/delete/${currentId}`
       );
 
       // Remove the deleted department from state
@@ -139,6 +143,11 @@ fetchLibrary()
                         <th className="desc_table_cardprice">الإجراء</th>
                       </tr>
                     </thead>
+                    {loading ? (
+                  <div className="spinner-container">
+                    <Spinner animation="border" variant="warning" />
+                  </div>
+                ) : (
                     <tbody>
                       {dataToDisplay.map((library)=>(
                       <tr>
@@ -155,8 +164,9 @@ fetchLibrary()
                         </td>
                       </tr>
 
-                      ))}
-                    </tbody>
+))}
+</tbody>
+)}
                   </Table>
                   
     </div>

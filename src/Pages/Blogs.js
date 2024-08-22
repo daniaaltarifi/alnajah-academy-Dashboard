@@ -8,6 +8,8 @@ import DeletePopUp from "../component/DeletePopUp";
 import axios from "axios";
 import Toastify from "toastify-js";
 import "toastify-js/src/toastify.css";
+import Spinner from "react-bootstrap/Spinner";
+
 function Blogs() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -16,6 +18,7 @@ function Blogs() {
   const [descriptionPopup, setDescriptionPopup] = useState("");
   const [blogs, setBlogs] = useState([]);
   const [currentId, setCurrentId] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
   const handleOpenModal = (id) => {
@@ -48,8 +51,9 @@ function Blogs() {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/blog");
+        const response = await axios.get("https://ba9ma.kasselsoft.online/blog");
         setBlogs(response.data);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching departments:", error);
       }
@@ -59,12 +63,12 @@ function Blogs() {
   const handleApproved = async (blogId) => {
     try {
       // Update the blog status in the database using PUT
-      await axios.put(`http://localhost:8080/blog/action/${blogId}`, {
+      await axios.put(`https://ba9ma.kasselsoft.online/blog/action/${blogId}`, {
         action: "approved",
       });
 
       // Fetch the updated list of blogs
-      const response = await axios.get("http://localhost:8080/blog");
+      const response = await axios.get("https://ba9ma.kasselsoft.online/blog");
       setBlogs(response.data);
     } catch (error) {
       console.error("Error updating blog status:", error);
@@ -72,7 +76,7 @@ function Blogs() {
   };
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:8080/blog/delete/${currentId}`);
+      await axios.delete(`https://ba9ma.kasselsoft.online/blog/delete/${currentId}`);
 
       // Remove the deleted department from state
       setBlogs((prevData) => prevData.filter((data) => data.id !== currentId));
@@ -145,6 +149,11 @@ function Blogs() {
                     <th className="desc_table_cardprice">الإجراء</th>
                   </tr>
                 </thead>
+                {loading ? (
+                  <div className="spinner-container">
+                    <Spinner animation="border" variant="warning" />
+                  </div>
+                ) : (
                 <tbody>
                   {dataToDisplay.map((blog) => (
                     <tr key={blog.id}>
@@ -183,8 +192,9 @@ function Blogs() {
                         ></i>
                       </td>
                     </tr>
-                  ))}
-                </tbody>
+                   ))}
+                   </tbody>
+                 )}
               </Table>
             </div>
           </div>

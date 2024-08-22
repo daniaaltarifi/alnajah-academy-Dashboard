@@ -99,11 +99,11 @@ const Sidebar = () => {
             <img src={require("../assets/coupon.png")} alt=""className="img-fluid icon_sidebar" /> 
           </Link>
         </li>
-        <li>
+        {/* <li>
         <Link to="/slider" onClick={handleBackground} className="background_icon">
             <img src={require("../assets/banner.png")} alt=""className="img-fluid slider_img_sidebar" /> 
           </Link>
-        </li>
+        </li> */}
         <li>
         <Link to="/about" onClick={handleBackground} className="background_icon">
             <img src={require("../assets/question.png")} alt=""className="img-fluid icon_sidebar" /> 

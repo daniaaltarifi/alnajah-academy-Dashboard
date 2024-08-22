@@ -67,7 +67,7 @@ console.log("courseId: " + CourseId);
 useEffect(() => {
   const fetchDepartments = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/department");
+      const response = await axios.get("https://ba9ma.kasselsoft.online/department");
       setDepartmentData(response.data);
     } catch (error) {
       console.error("Error fetching departments:", error);
@@ -80,7 +80,7 @@ useEffect(() => {
 useEffect(() => {
   const fetchTeachers = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/teacher/");
+      const response = await axios.get("https://ba9ma.kasselsoft.online/teacher/");
       setTeacherData(response.data);
     } catch (error) {
       console.error("Error fetching Teachers:", error);
@@ -98,7 +98,7 @@ useEffect(() => {
   const fetchLinks = async () => {
     console.log("Fetching links for CourseId:", CourseId);
     try {
-      const response = await axios.get(`http://localhost:8080/courses/links/${CourseId}`);
+      const response = await axios.get(`https://ba9ma.kasselsoft.online/courses/links/${CourseId}`);
 
       const linksDataArray = response.data;
       
@@ -127,7 +127,7 @@ useEffect(() => {
   const fetchVideoFiles = async () => {
     console.log("Fetching video files for CourseId:", CourseId);
     try {
-      const response = await axios.get(`http://localhost:8080/courses/videos/${CourseId}`);
+      const response = await axios.get(`https://ba9ma.kasselsoft.online/courses/videos/${CourseId}`);
       const fileDataArray = response.data;
       console.log("Fetched file:55555555555555555", response.data);
       setvideoId(response.data.id)
@@ -164,7 +164,7 @@ useEffect(() => {
     const fetchCourseDetails = async () => {
       console.log("CourseId:", CourseId);
       try {
-        const response = await axios.get(`http://localhost:8080/courses/${CourseId}`);
+        const response = await axios.get(`https://ba9ma.kasselsoft.online/courses/${CourseId}`);
         const courseDataArray = response.data;
 
         // Ensure courseDataArray is not empty
@@ -318,7 +318,7 @@ videoLinks.forEach((link, index) => {
 
 
         const response = await axios.put(
-            `http://localhost:8080/courses/${CourseId}`,
+            `https://ba9ma.kasselsoft.online/courses/${CourseId}`,
             formData, // Send the FormData object
             {
                 headers: {
@@ -361,7 +361,7 @@ videoLinks.forEach((link, index) => {
 
 const deleteVideo = async (id) => {
   try {
-    await axios.delete(`http://localhost:8080/courses/videos/${id}`);
+    await axios.delete(`https://ba9ma.kasselsoft.online/courses/videos/${id}`);
     console.log('Video deleted successfully');
     setVideoFiles(videoFiles.filter(video => video.id !== id));
   } catch (error) {
@@ -371,7 +371,7 @@ const deleteVideo = async (id) => {
 
 const deleteLink = async (id) => {
   try {
-    await axios.delete(`http://localhost:8080/courses/videos/${id}`);
+    await axios.delete(`https://ba9ma.kasselsoft.online/courses/videos/${id}`);
     console.log('Link deleted successfully');
     setVideoLinks(videoLinks.filter(link => link.id !== id));
   } catch (error) {

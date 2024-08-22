@@ -8,6 +8,8 @@ import DeletePopUp from "../component/DeletePopUp";
 import axios from "axios";
 import Toastify from "toastify-js";
 import "toastify-js/src/toastify.css";
+import Spinner from "react-bootstrap/Spinner";
+
 function Teacher() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -19,6 +21,7 @@ function Teacher() {
   const [teacherId, settecherId] = useState(null);
   const [student_teacherCount, setstudent_teacherCount] = useState({});
   const [teachersWithCourseCounts, setTeachersWithCourseCounts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
   const handleOpenModal = (id) => {
@@ -49,13 +52,16 @@ function Teacher() {
   useEffect(() => {
     const fetchTeachers = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/teacher/");
+        const response = await axios.get(
+          "https://ba9ma.kasselsoft.online/teacher/"
+        );
         const teachersData = response.data;
         setTeachers(teachersData);
 
         // Fetch counts after setting teachers
         fetchStudentCounts(teachersData);
         fetchCourseCountsForAllTeachers(teachersData);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching teachers:", error);
       }
@@ -70,7 +76,7 @@ function Teacher() {
       teachers.map(async (teacher) => {
         try {
           const response = await axios.get(
-            `http://localhost:8080/teacher/student-counts/${teacher.id}`
+            `https://ba9ma.kasselsoft.online/teacher/student-counts/${teacher.id}`
           );
           counts[teacher.id] = response.data.student_count;
         } catch (error) {
@@ -91,7 +97,7 @@ function Teacher() {
 
       // Fetch course counts for all teacher IDs in parallel
       const courseCountPromises = teacherIds.map((id) =>
-        axios.get(`http://localhost:8080/courses/course-counts/${id}`)
+        axios.get(`https://ba9ma.kasselsoft.online/courses/course-counts/${id}`)
       );
 
       const courseCountsResponses = await Promise.all(courseCountPromises);
@@ -112,13 +118,15 @@ function Teacher() {
   };
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:8080/teacher/delete/${currentId}`);
+      await axios.delete(
+        `https://ba9ma.kasselsoft.online/teacher/delete/${currentId}`
+      );
 
       // Remove the deleted department from state
       setTeachers((prevData) =>
         prevData.filter((data) => data.id !== currentId)
       );
-window.location.reload();
+      window.location.reload();
       Toastify({
         text: "teacher deleted successfully",
         duration: 3000,
@@ -188,34 +196,44 @@ window.location.reload();
                     <th className="desc_table_cardprice">الإجراء</th>
                   </tr>
                 </thead>
-                <tbody>
-                  {dataToDisplay.map((teacher) => (
-                    <tr key={teacher.id}>
-                      <td>{teacher.teacher_name} </td>
-                      {/* <td> محمد أحمد</td> */}
-                      <td>{teacher.descr}</td>
-                    <td>{teacher.course_count !== undefined ? teacher.course_count : '0'}</td>
-                      <td>
-                        {student_teacherCount[teacher.id] !== undefined
-                          ? student_teacherCount[teacher.id]
-                          : "0"}
-                      </td>
+                {loading ? (
+                  <div className="spinner-container">
+                    <Spinner animation="border" variant="warning" />
+                  </div>
+                ) : (
+                  <tbody>
+                    {dataToDisplay.map((teacher) => (
+                      <tr key={teacher.id}>
+                        <td>{teacher.teacher_name} </td>
+                        {/* <td> محمد أحمد</td> */}
+                        <td>{teacher.descr}</td>
+                        <td>
+                          {teacher.course_count !== undefined
+                            ? teacher.course_count
+                            : "0"}
+                        </td>
+                        <td>
+                          {student_teacherCount[teacher.id] !== undefined
+                            ? student_teacherCount[teacher.id]
+                            : "0"}
+                        </td>
 
-                      <td>
-                        <i
-                          class="fa-regular fa-pen-to-square fa-lg ps-2"
-                          style={{ color: "#6dab93" }}
-                          onClick={() => handleUpdate(teacher.id)}
-                        ></i>
-                        <i
-                          className="fa-regular fa-trash-can fa-lg"
-                          style={{ color: "#944b43" }}
-                          onClick={() => handleOpenModal(teacher.id)}
-                        ></i>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
+                        <td>
+                          <i
+                            class="fa-regular fa-pen-to-square fa-lg ps-2"
+                            style={{ color: "#6dab93" }}
+                            onClick={() => handleUpdate(teacher.id)}
+                          ></i>
+                          <i
+                            className="fa-regular fa-trash-can fa-lg"
+                            style={{ color: "#944b43" }}
+                            onClick={() => handleOpenModal(teacher.id)}
+                          ></i>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                )}
               </Table>
             </div>
           </div>

@@ -35,7 +35,7 @@ function Department() {
   };
   const fetchData = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/department/");
+      const response = await axios.get("https://ba9ma.kasselsoft.online/department/");
       const data = response.data;
       setDepartmentData(data);
     } catch (error) {
@@ -59,7 +59,7 @@ function Department() {
     }
     try {
       const response = await axios.post(
-        "http://localhost:8080/department/add",
+        "https://ba9ma.kasselsoft.online/department/add",
         { title , price }
       );
       setDepartmentData(response.data);
@@ -89,7 +89,7 @@ function Department() {
     }
     try {
       const response = await axios.put(
-        `http://localhost:8080/department/update/${currentId}`, // Use currentId here
+        `https://ba9ma.kasselsoft.online/department/update/${currentId}`, // Use currentId here
         { title, price }
       );
       // Update the department data in state
@@ -114,7 +114,7 @@ function Department() {
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `http://localhost:8080/department/delete/${currentId}`
+        `https://ba9ma.kasselsoft.online/department/delete/${currentId}`
       );
 
       // Remove the deleted department from state

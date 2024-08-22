@@ -36,7 +36,7 @@ const [library, setLibrary] = useState([])
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/department");
+        const response = await axios.get("https://ba9ma.kasselsoft.online/department");
         setDepartmentData(response.data);
       } catch (error) {
         console.error("Error fetching departments:", error);
@@ -65,7 +65,7 @@ const [library, setLibrary] = useState([])
       formData.append('page_num', page_num);
       formData.append('file_book', selectedFile);
       const response = await axios.post(
-        "http://localhost:8080/library/add",
+        "https://ba9ma.kasselsoft.online/library/add",
         formData,
         {
           headers: {

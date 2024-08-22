@@ -33,7 +33,7 @@ function UpdateFaq() {
     }
     try {
       const response = await axios.put(
-        `http://localhost:8080/faq/update/${faqId}`, // Use faqId here
+        `https://ba9ma.kasselsoft.online/faq/update/${faqId}`, // Use faqId here
         { ques, ans }
       );
 

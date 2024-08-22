@@ -35,7 +35,7 @@ function AvailableCards() {
   useEffect(()=>{
     const fetchAvailableCards = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/cards/get/availablecard");
+        const response = await axios.get("https://ba9ma.kasselsoft.online/cards/get/availablecard");
         setAvailableCards(response.data);
       } catch (error) {
         console.error("Error fetching AvailableCards:", error);
@@ -60,7 +60,7 @@ fetchAvailableCards()
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `http://localhost:8080/cards/delete/availablecards/${currentId}`
+        `https://ba9ma.kasselsoft.online/cards/delete/availablecards/${currentId}`
       );
 
       // Remove the deleted department from state

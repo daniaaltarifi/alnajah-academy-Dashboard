@@ -33,7 +33,7 @@ function UpdateCoupon() {
     }
     try {
       const response = await axios.put(
-        `http://localhost:8080/coupon/update/${couponId}`, // Use couponId here
+        `https://ba9ma.kasselsoft.online/coupon/update/${couponId}`, // Use couponId here
         { coupon_code, ans }
       );
       // Update the department data in state

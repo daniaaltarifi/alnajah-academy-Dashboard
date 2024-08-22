@@ -34,7 +34,7 @@ const [page_num, setPage_num] = useState("")
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/department");
+        const response = await axios.get("https://ba9ma.kasselsoft.online/department");
         setDepartmentData(response.data);
       } catch (error) {
         console.error("Error fetching departments:", error);
@@ -74,7 +74,7 @@ const [page_num, setPage_num] = useState("")
       formData.append('file_book', selectedFile); // Append the selected image file
 
       const response = await axios.put(
-        `http://localhost:8080/library/update/${libraryId}`,
+        `https://ba9ma.kasselsoft.online/library/update/${libraryId}`,
         formData, // Send the FormData object
         {
           headers: {

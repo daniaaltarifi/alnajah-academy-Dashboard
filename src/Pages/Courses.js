@@ -37,7 +37,7 @@ function Courses() {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/courses/");
+        const response = await axios.get("https://ba9ma.kasselsoft.online/courses/");
         const data = response.data;
         setCourses(data);
         fetchStudentCountsCourses(data);
@@ -55,7 +55,7 @@ function Courses() {
       courses.map(async (course) => {
         try {
           const response = await axios.get(
-            `http://localhost:8080/courses/users-counts/${course.id}`
+            `https://ba9ma.kasselsoft.online/courses/users-counts/${course.id}`
           );
           counts[course.id] = response.data.student_count;
         } catch (error) {
@@ -75,7 +75,7 @@ function Courses() {
 
       // Fetch lesson counts for all course IDs in parallel
       const courseCountPromises = courseIds.map((id) =>
-        axios.get(`http://localhost:8080/courses/lesson-counts/${id}`)
+        axios.get(`https://ba9ma.kasselsoft.online/courses/lesson-counts/${id}`)
       );
       const courseCountsResponses = await Promise.all(courseCountPromises);
       const courseCountsData = courseCountsResponses.map(
@@ -109,7 +109,7 @@ function Courses() {
   };
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:8080/courses/delete/${currentId}`);
+      await axios.delete(`https://ba9ma.kasselsoft.online/courses/delete/${currentId}`);
 
       // Remove the deleted department from state
       setCourses((prevData) =>
@@ -174,7 +174,7 @@ function Courses() {
           </div>
           <div className="row mt-5">
             <div className="col-lg-12 col-md-12 col-sm-12">
-              <Table striped hover>
+              <Table striped hover >
                 <thead>
                   <tr className="table_head_cardprice">
                     <th className="desc_table_cardprice"> المادة</th>

@@ -90,7 +90,7 @@ const addLinkField = () => {
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/department");
+        const response = await axios.get("https://ba9ma.kasselsoft.online/department");
         setDepartmentData(response.data);
       } catch (error) {
         console.error("Error fetching departments:", error);
@@ -98,7 +98,7 @@ const addLinkField = () => {
     };
     const fetchTeacher= async () => {
       try {
-        const response = await axios.get("http://localhost:8080/teacher/");
+        const response = await axios.get("https://ba9ma.kasselsoft.online/teacher/");
         setTeacherData(response.data);
       } catch (error) {
         console.error("Error fetching departments:", error);
@@ -141,7 +141,7 @@ const addLinkField = () => {
       console.log("link", links);
   
       const response = await axios.post(
-        "http://localhost:8080/courses/add",
+        "https://ba9ma.kasselsoft.online/courses/add",
         formData,
         {
           headers: {

@@ -23,7 +23,7 @@ const navigate = useNavigate()
   const fileInputRef = useRef(null);
   useEffect(() => {
     if (user.userId) {
-      axios.get(`http://localhost:8080/api/profile/${user.userId}`)
+      axios.get(`https://ba9ma.kasselsoft.online/api/profile/${user.userId}`)
         .then(response => {
           setProfile({
             name: response.data.name,
@@ -33,7 +33,7 @@ const navigate = useNavigate()
             confirmPassword: ''
           });
           // Set the image URL from the profile data
-          setImageUrl(`http://localhost:8080/${response.data.img}`);
+          setImageUrl(`https://ba9ma.kasselsoft.online/${response.data.img}`);
         })
         .catch(error => {
           console.error('There was an error fetching the profile!', error);
@@ -50,7 +50,7 @@ const navigate = useNavigate()
 
 //   useEffect(() => {
 //     if (userId) {
-//       axios.get(`http://localhost:8080/api/profile/${userId}`)
+//       axios.get(`https://ba9ma.kasselsoft.online/api/profile/${userId}`)
 //         .then(response => {
 //           setProfile({
 //             name: response.data.name,
@@ -60,7 +60,7 @@ const navigate = useNavigate()
 //             confirmPassword: ''
 //           });
 //           // Set the image URL from the profile data
-//           setImageUrl(`http://localhost:8080/${response.data.img}`);
+//           setImageUrl(`https://ba9ma.kasselsoft.online/${response.data.img}`);
 //         })
 //         .catch(error => {
 //           console.error('There was an error fetching the profile!', error);
@@ -81,13 +81,13 @@ const handleUpdate = async (e) => {
   }
 
   try {
-    const response = await axios.put(`http://localhost:8080/api/profile/${user.userId}`, formData, {
+    const response = await axios.put(`https://ba9ma.kasselsoft.online/api/profile/${user.userId}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
     });
     // Update the image URL with the new image URL from the server
-      setImageUrl(`http://localhost:8080/${response.data.img}`);
+      setImageUrl(`https://ba9ma.kasselsoft.online/${response.data.img}`);
 setSuccessMessage('تم تعديل حسابك');
     updateUser(profile.name,userId,response.data.img)
 setProfile(prevState => ({

@@ -12,9 +12,14 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:8080/api/login', {
+      const res = await axios.post('https://ba9ma.kasselsoft.online/api/login', {
         email, role, password
       });
+      // Check for device count error
+      if (res.status === 403 && res.data.message === 'You are logged in on too many devices. Please log out from another device.') {
+        setError('You are logged in on too many devices. Please log out from another device.');
+        return;
+      }
            // Store authentication data in local storage
       localStorage.setItem('auth', res.data.token);
       localStorage.setItem('id', res.data.id);
@@ -39,11 +44,15 @@ function Login() {
         } else if (res.data.role === 'teacher') {
           window.location.href = '/teachercourses';
         } else {
-          window.location.href = '/'; // Default redirect for other roles
+          setError("غير مصرح لك بالدخول");
         }
       }
     }catch (err) {
-      setError("البريد الالكتروني أو كلمة المرور غير صحيحة");
+      if (err.response && err.response.status === 403) {
+        setError('لقد قمت بتسجيل الدخول على عدد كبير من الأجهزة. يرجى تسجيل الخروج من جهاز آخر.');
+      } else {
+        setError("البريد الالكتروني أو كلمة المرور غير صحيحة");
+      }
       console.error('Login error:', err);
     }
   };

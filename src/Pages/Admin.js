@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import NavBar from "../component/NavBar";
 import Button from "react-bootstrap/Button";
 import { Link, useNavigate } from "react-router-dom";
@@ -7,6 +7,11 @@ import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import axios from "axios";
+import DeletePopUp from "../component/DeletePopUp";
+import Spinner from "react-bootstrap/Spinner";
+import Toastify from "toastify-js";
+import "toastify-js/src/toastify.css";
+
 
 function Admin() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -22,22 +27,40 @@ function Admin() {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [smShow, setSmShow] = useState(false);
+  const [currentId, setCurrentId] = useState(null);
+  const [titlePopup, setTitlePopup] = useState("");
+  const [descriptionPopup, setDescriptionPopup] = useState("");
   const navigate = useNavigate();
-
-  useEffect(()=>{
+  const handleOpenModal = (id) => {
+    setCurrentId(id);
+    setSmShow(true);
+    setTitlePopup("حذف ادمن"); // Set your modal title dynamically
+    setDescriptionPopup("هل أنت متأكد من حذف هذا الادمن ؟");
+  };
+  const handleCloseModal = () => {
+    setSmShow(false);
+  };
+  useEffect(() => {
     const fetchAdmin = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/getusers");
-        const usersdata=response.data;
-        const admin = usersdata.filter(user => user.role === 'admin');
+        const response = await axios.get(
+          "https://ba9ma.kasselsoft.online/api/getusers"
+        );
+        const usersdata = response.data;
+        const admin = usersdata.filter((user) => user.role === "admin");
 
         setAdmin(admin);
+        setLoading(false);
+
       } catch (error) {
         console.error("Error fetching admins :", error);
       }
     };
-fetchAdmin()
-  },[])
+    fetchAdmin();
+  }, []);
   const validateName = (name) => {
     if (name.trim() === "") {
       setNameError("الرجاء أدخال الاسم !");
@@ -88,40 +111,75 @@ fetchAdmin()
     }
 
     try {
-      const res = await axios.post("http://localhost:8080/api/register", {
-        name,
-        email,
-        password,
-        role,
-        confirmPassword,
-      });
-      setAdmin(prevAdmins => [...prevAdmins, res.data]);
+      const res = await axios.post(
+        "https://ba9ma.kasselsoft.online/api/register",
+        {
+          name,
+          email,
+          password,
+          role,
+          confirmPassword,
+        }
+      );
+      setAdmin((prevAdmins) => [...prevAdmins, res.data]);
       handleClose();
       // Store authentication data in local storage
-      localStorage.setItem("auth", res.data.token);
-      localStorage.setItem("name", name);
-      localStorage.setItem("id", res.data.id);
+      // localStorage.setItem("auth", res.data.token);
+      // localStorage.setItem("name", name);
+      // localStorage.setItem("id", res.data.id);
       window.location.reload();
       handleClose();
     } catch (err) {
-      console.error(err);
+      if (
+        err.response &&
+        err.response.status === 400 &&
+        err.response.data === "Email already in use"
+      ) {
+        setEmailError(
+          "البريد الإلكتروني مستخدم بالفعل. يرجى إدخال بريد إلكتروني آخر."
+        );
+      } else {
+        console.error(err);
+        setError("حدث خطأ ما. يرجى المحاولة مرة أخرى.");
+      }
     }
   };
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const handleInputChange = (event) => {
-      const query = event.target.value;
-      setSearchQuery(query);
+    const query = event.target.value;
+    setSearchQuery(query);
 
-      // Filter blogs based on search query
-      const filteredResults = admin.filter((adm) =>
-        adm.name.toLowerCase().includes(query.toLowerCase())
+    // Filter blogs based on search query
+    const filteredResults = admin.filter((adm) =>
+      adm.name.toLowerCase().includes(query.toLowerCase())
+    );
+
+    setSearchResults(filteredResults);
+  };
+  const dataToDisplay = searchQuery ? searchResults : admin;
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`https://ba9ma.kasselsoft.online/api/deleteadmin/${currentId}`);
+
+      // Remove the deleted department from state
+      setAdmin((prevData) =>
+        prevData.filter((data) => data.id !== currentId)
       );
 
-      setSearchResults(filteredResults);
-    };
-    const dataToDisplay = searchQuery ? searchResults : admin;
+      Toastify({
+        text: "Admin deleted successfully",
+        duration: 3000,
+        gravity: "top",
+        position: "right",
+        backgroundColor: "#F57D20",
+      }).showToast();
 
+      handleCloseModal(); // Close the modal after deletion
+    } catch (error) {
+      console.error("Error deleting department:", error);
+    }
+  };
   return (
     <>
       <NavBar title={"المسجلين"} />
@@ -149,13 +207,14 @@ fetchAdmin()
                     <Form.Label className="text_field ">اسم الادمن</Form.Label>
                     <Form.Control
                       type="text"
-                      className={`input_filed_modal  ${nameError ? "error" : ""}`}
+                      className={`input_filed_modal  ${
+                        nameError ? "error" : ""
+                      }`}
                       onBlur={() => validateName(name)}
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                     />
-                   {nameError && <p className="error_message">{nameError}</p>}
-
+                    {nameError && <p className="error_message">{nameError}</p>}
                   </Form.Group>
                   <Form.Group
                     className="mb-3"
@@ -166,14 +225,16 @@ fetchAdmin()
                     </Form.Label>
                     <Form.Control
                       type="email"
-                      className={`input_filed_modal ${emailError ? "error" : ""}`}
+                      className={`input_filed_modal ${
+                        emailError ? "error" : ""
+                      }`}
                       onChange={(e) => setEmail(e.target.value)}
                       onBlur={() => validateEmail(email)}
                       value={email}
                     />
-                     {emailError && (
-                    <span className="error_message">{emailError}</span>
-                  )}
+                    {emailError && (
+                      <span className="error_message">{emailError}</span>
+                    )}
                   </Form.Group>{" "}
                   <Form.Group
                     className="mb-3"
@@ -184,14 +245,16 @@ fetchAdmin()
                     </Form.Label>
                     <Form.Control
                       type="password"
-                      className={`input_filed_modal ${passwordError ? "error" : ""}`}
+                      className={`input_filed_modal ${
+                        passwordError ? "error" : ""
+                      }`}
                       onBlur={() => validatePassword(password)}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                     />
-                     {passwordError && (
-                    <p className="error_message">{passwordError}</p>
-                  )}
+                    {passwordError && (
+                      <p className="error_message">{passwordError}</p>
+                    )}
                   </Form.Group>{" "}
                   <Form.Group
                     className="mb-3"
@@ -203,15 +266,14 @@ fetchAdmin()
                     <Form.Control
                       type="password"
                       className={`input_filed_modal ${
-                      confirmPasswordError ? "error" : ""
-                    }`}
+                        confirmPasswordError ? "error" : ""
+                      }`}
                       value={confirmPassword}
-
                       onChange={(e) => setConfirmPassword(e.target.value)}
                     />
-                     {confirmPasswordError && (
-                    <p className="error_message">{confirmPasswordError}</p>
-                  )}
+                    {confirmPasswordError && (
+                      <p className="error_message">{confirmPasswordError}</p>
+                    )}
                   </Form.Group>{" "}
                 </Form>
               </Modal.Body>
@@ -219,6 +281,8 @@ fetchAdmin()
                 {/* <Button variant="secondary" onClick={handleClose}>
             Close
           </Button> */}
+                {error && <p className="error_message">{error}</p>}
+
                 <Button onClick={handleRegister} className="buy_department_btn">
                   اضافة{" "}
                 </Button>
@@ -239,15 +303,14 @@ fetchAdmin()
                   placeholder="ابحث عن "
                   value={searchQuery}
                   className="search_blog"
-                    onChange={handleInputChange}
+                  onChange={handleInputChange}
                 />
                 <a
                   className="btn btn-s purple_btn search_btn_blog"
-                    onChange={handleInputChange}
+                  onChange={handleInputChange}
                 >
                   بحث{" "}
                 </a>
-            
               </div>
 
               {/* End search */}
@@ -256,24 +319,50 @@ fetchAdmin()
           <div className="row mt-5">
             <div className="col-lg-12 col-md-12 col-sm-12">
               <Table striped hover>
-                <thead>
+              <thead>
                   <tr className="table_head_cardprice">
                     <th className="desc_table_cardprice">اسم الادمن </th>
                     <th className="desc_table_cardprice"> الايميل</th>
+                    <th className="desc_table_cardprice"> الاجراء</th>
                   </tr>
                 </thead>
-                <tbody>
-                {dataToDisplay.map((user) => (
-                    <tr key={user.id}>
-                      <td>{user.name} </td>
-                      <td> {user.email}</td>
-                    </tr>
-                  ))}
-                </tbody>
+                {loading ? (
+                  <div className="spinner-container">
+                    <Spinner animation="border" variant="warning" />
+                  </div>
+                ) : (
+                  <tbody>
+                    {dataToDisplay.length === 0 ? (
+                      <tr>
+                        <td colSpan="2">No Admins found</td>
+                      </tr>
+                    ) : (
+                      dataToDisplay.map((user) => (
+                        <tr key={user.id}>
+                          <td>{user.name} </td>
+                          <td> {user.email}</td>
+                          <td>
+                            <i
+                              className="fa-regular fa-trash-can fa-lg"
+                              style={{ color: "#944b43" }}
+                              onClick={() => handleOpenModal(user.id)}
+                            />
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                )}
               </Table>
             </div>
           </div>
         </div>
+        <DeletePopUp  show={smShow}
+        onHide={handleCloseModal}
+        title={titlePopup}
+        description={descriptionPopup}
+        handleDelete={handleDelete}
+        />
       </section>
     </>
   );

@@ -6,8 +6,12 @@ import "../Css/search.css";
 import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
 import axios from "axios";
-
+import Spinner from "react-bootstrap/Spinner";
+import Toastify from "toastify-js";
+import "toastify-js/src/toastify.css";
 import Modal from "react-bootstrap/Modal";
+import DeletePopUp from "../component/DeletePopUp";
+
 function Users() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -22,6 +26,21 @@ function Users() {
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const [users, setUsers] = useState([]);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [smShow, setSmShow] = useState(false);
+  const [currentId, setCurrentId] = useState(null);
+  const [titlePopup, setTitlePopup] = useState("");
+  const [descriptionPopup, setDescriptionPopup] = useState("");
+  const handleOpenModal = (id) => {
+    setCurrentId(id);
+    setSmShow(true);
+    setTitlePopup("حذف طالب"); // Set your modal title dynamically
+    setDescriptionPopup("هل أنت متأكد من حذف هذا الطالب ؟");
+  }
+  const handleCloseModal = () => {
+    setSmShow(false);
+  };
   const validateName = (name) => {
     if (name.trim() === "") {
       setNameError("الرجاء أدخال الاسم !");
@@ -73,56 +92,95 @@ function Users() {
     }
 
     try {
-      const res = await axios.post("http://localhost:8080/api/register", {
-        name,
-        email,
-        password,
-        role,
-        confirmPassword,
-      });
+      const res = await axios.post(
+        "https://ba9ma.kasselsoft.online/api/register",
+        {
+          name,
+          email,
+          password,
+          role,
+          confirmPassword,
+        }
+      );
       setUsers(res.data);
       // Store authentication data in local storage
-      localStorage.setItem("auth", res.data.token);
-      localStorage.setItem("name", name);
-      localStorage.setItem("id", res.data.id);
+      // localStorage.setItem("auth", res.data.token);
+      // localStorage.setItem("name", name);
+      // localStorage.setItem("id", res.data.id);
       window.location.reload();
 
       handleClose();
     } catch (err) {
-      console.error(err);
+      if (
+        err.response &&
+        err.response.status === 400 &&
+        err.response.data === "Email already in use"
+      ) {
+        setEmailError(
+          "البريد الإلكتروني مستخدم بالفعل. يرجى إدخال بريد إلكتروني آخر."
+        );
+      } else {
+        console.error(err);
+        setError("حدث خطأ ما. يرجى المحاولة مرة أخرى.");
+      }
     }
   };
-  useEffect(()=>{
+  useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/getusers");
-        const usersdata=response.data;
-        const student = usersdata.filter(user => user.role === 'student');
+        const response = await axios.get(
+          "https://ba9ma.kasselsoft.online/api/getusers"
+        );
+        const usersdata = response.data;
+        const student = usersdata.filter((user) => user.role === "student");
 
         setUsers(student);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching users :", error);
       }
     };
-fetchUsers()
-  },[])
+    fetchUsers();
+  }, []);
+
   const navigate = useNavigate();
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const handleInputChange = (event) => {
-      const query = event.target.value;
-      setSearchQuery(query);
+    const query = event.target.value;
+    setSearchQuery(query);
 
-      // Filter blogs based on search query
-      const filteredResults = users.filter((user) =>
-        user.name.toLowerCase().includes(query.toLowerCase())
+    // Filter blogs based on search query
+    const filteredResults = users.filter((user) =>
+      user.name.toLowerCase().includes(query.toLowerCase())
+    );
+
+    setSearchResults(filteredResults);
+  };
+  const dataToDisplay = searchQuery ? searchResults : users;
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`http://localhost:8080/api/delete/${currentId}`);
+
+      // Remove the deleted department from state
+      setUsers((prevData) =>
+        prevData.filter((data) => data.id !== currentId)
       );
 
-      setSearchResults(filteredResults);
-    };
-    const dataToDisplay = searchQuery ? searchResults : users;
+      Toastify({
+        text: "Student deleted successfully",
+        duration: 3000,
+        gravity: "top",
+        position: "right",
+        backgroundColor: "#F57D20",
+      }).showToast();
 
+      handleCloseModal(); // Close the modal after deletion
+    } catch (error) {
+      console.error("Error deleting department:", error);
+    }
+  };
   return (
     <>
       <NavBar title={"المسجلين"} />
@@ -150,13 +208,14 @@ fetchUsers()
                     <Form.Label className="text_field ">اسم الطالب</Form.Label>
                     <Form.Control
                       type="text"
-                      className={`input_filed_modal  ${nameError ? "error" : ""}`}
+                      className={`input_filed_modal  ${
+                        nameError ? "error" : ""
+                      }`}
                       onBlur={() => validateName(name)}
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                     />
-                   {nameError && <p className="error_message">{nameError}</p>}
-
+                    {nameError && <p className="error_message">{nameError}</p>}
                   </Form.Group>
                   <Form.Group
                     className="mb-3"
@@ -167,14 +226,16 @@ fetchUsers()
                     </Form.Label>
                     <Form.Control
                       type="email"
-                      className={`input_filed_modal ${emailError ? "error" : ""}`}
+                      className={`input_filed_modal ${
+                        emailError ? "error" : ""
+                      }`}
                       onChange={(e) => setEmail(e.target.value)}
                       onBlur={() => validateEmail(email)}
                       value={email}
                     />
-                     {emailError && (
-                    <span className="error_message">{emailError}</span>
-                  )}
+                    {emailError && (
+                      <span className="error_message">{emailError}</span>
+                    )}
                   </Form.Group>{" "}
                   <Form.Group
                     className="mb-3"
@@ -185,14 +246,16 @@ fetchUsers()
                     </Form.Label>
                     <Form.Control
                       type="password"
-                      className={`input_filed_modal ${passwordError ? "error" : ""}`}
+                      className={`input_filed_modal ${
+                        passwordError ? "error" : ""
+                      }`}
                       onBlur={() => validatePassword(password)}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                     />
-                     {passwordError && (
-                    <p className="error_message">{passwordError}</p>
-                  )}
+                    {passwordError && (
+                      <p className="error_message">{passwordError}</p>
+                    )}
                   </Form.Group>{" "}
                   <Form.Group
                     className="mb-3"
@@ -204,15 +267,14 @@ fetchUsers()
                     <Form.Control
                       type="password"
                       className={`input_filed_modal ${
-                      confirmPasswordError ? "error" : ""
-                    }`}
+                        confirmPasswordError ? "error" : ""
+                      }`}
                       value={confirmPassword}
-
                       onChange={(e) => setConfirmPassword(e.target.value)}
                     />
-                     {confirmPasswordError && (
-                    <p className="error_message">{confirmPasswordError}</p>
-                  )}
+                    {confirmPasswordError && (
+                      <p className="error_message">{confirmPasswordError}</p>
+                    )}
                   </Form.Group>{" "}
                 </Form>
               </Modal.Body>
@@ -220,6 +282,8 @@ fetchUsers()
                 {/* <Button variant="secondary" onClick={handleClose}>
             Close
           </Button> */}
+                {error && <p className="error_message">{error}</p>}
+
                 <Button onClick={handleRegister} className="buy_department_btn">
                   اضافة{" "}
                 </Button>
@@ -240,41 +304,65 @@ fetchUsers()
                   placeholder="ابحث عن "
                   value={searchQuery}
                   className="search_blog"
-                    onChange={handleInputChange}
+                  onChange={handleInputChange}
                 />
                 <a
                   className="btn btn-s purple_btn search_btn_blog"
-                    onChange={handleInputChange}
+                  onChange={handleInputChange}
                 >
                   بحث{" "}
                 </a>
-               
               </div>
 
               {/* End search */}
             </div>
           </div>
+
           <div className="row mt-5">
             <div className="col-lg-12 col-md-12 col-sm-12">
+           
               <Table striped hover>
                 <thead>
                   <tr className="table_head_cardprice">
                     <th className="desc_table_cardprice">اسم الطالب </th>
                     <th className="desc_table_cardprice"> الايميل</th>
+                    <th className="desc_table_cardprice"> الاجراء</th>
                   </tr>
                 </thead>
+                {loading ? (
+        <div className="spinner-container">
+          <Spinner animation="border" variant="warning" />
+        </div>
+      ) : (
                 <tbody>
-                  {dataToDisplay.map((user) => (
+                {dataToDisplay.length === 0 ? (
+              <tr>
+                <td colSpan="2">No users found</td>
+              </tr>
+            ) : (
+                  dataToDisplay.map((user) => (
                     <tr key={user.id}>
                       <td>{user.name} </td>
                       <td> {user.email}</td>
+                      <td> 
+                      <i className="fa-regular fa-trash-can fa-lg" style={{color:"#944b43"}}   onClick={() => handleOpenModal(user.id)}/>
+
+                      </td>
                     </tr>
-                  ))}
+                ))
+              )}
                 </tbody>
+      )}
               </Table>
             </div>
           </div>
         </div>
+        <DeletePopUp  show={smShow}
+        onHide={handleCloseModal}
+        title={titlePopup}
+        description={descriptionPopup}
+        handleDelete={handleDelete}
+        />
       </section>
     </>
   );

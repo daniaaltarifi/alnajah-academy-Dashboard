@@ -54,7 +54,7 @@ function AddBlog() {
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/department");
+        const response = await axios.get("https://ba9ma.kasselsoft.online/department");
         setDepartmentData(response.data);
       } catch (error) {
         console.error("Error fetching departments:", error);
@@ -87,7 +87,7 @@ function AddBlog() {
       tagsArray.forEach(tag => formData.append('tags[]', tag));
   
       const response = await axios.post(
-        "http://localhost:8080/blog/add",
+        "https://ba9ma.kasselsoft.online/blog/add",
         formData,
         {
           headers: {
