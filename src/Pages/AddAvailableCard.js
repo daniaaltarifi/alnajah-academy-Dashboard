@@ -14,6 +14,7 @@ const [location, setLocation] = useState("")
 const [governorate_id , setGovernorate_id ] = useState("")
 const [address, setAddress] = useState("")
 const [phone, setPhone] = useState("")
+const [mapslink, setMapslink] = useState("")
 const [govermentData, setGovermentData] = useState([])
 const [AvailableCards, setAvailableCards] = useState([])
 
@@ -24,7 +25,7 @@ const [AvailableCards, setAvailableCards] = useState([])
   useEffect(() => {
     const fetchGoverment = async () => {
       try {
-        const response = await axios.get("https://ba9ma.kasselsoft.online/cards/");
+        const response = await axios.get("https://ba9maacademy.kasselsoft.online/cards/");
         setGovermentData(response.data);
       } catch (error) {
         console.error("Error fetching goverment:", error);
@@ -34,9 +35,8 @@ const [AvailableCards, setAvailableCards] = useState([])
     fetchGoverment();
   }, []);
   const handlePost = async () => {
-    console.log("governorate_id",governorate_id)
 
-    if (!name || !location || !governorate_id  || !address || !phone) {
+    if (!name || !location || !mapslink || !governorate_id  || !address || !phone ) {
       Toastify({
         text: "Please Fill All Field",
         duration: 3000, // Duration in milliseconds
@@ -49,8 +49,8 @@ const [AvailableCards, setAvailableCards] = useState([])
     try {
      
       const response = await axios.post(
-        "https://ba9ma.kasselsoft.online/cards/add/availablecard",
-       { name,location,governorate_id,address,phone}
+        "https://ba9maacademy.kasselsoft.online/cards/add/availablecard",
+       { name,location,mapslink,governorate_id,address,phone}
       );
 
       setAvailableCards(response.data);
@@ -61,11 +61,10 @@ const [AvailableCards, setAvailableCards] = useState([])
         position: 'right', // 'left', 'center', 'right'
         backgroundColor: "#833988",
       }).showToast();
-      navigate('/availablecards')
+      navigate('/goverment')
 
     } catch (error) {
       console.log(`Error fetching post data ${error}`);
-      console.log("governorate_id",governorate_id)
 
     }
   };
@@ -88,6 +87,14 @@ const [AvailableCards, setAvailableCards] = useState([])
             <input type="text"value={location} className="input_addcourse" onChange={(e)=>setLocation(e.target.value)}/>{" "}
           </div>
           <div className="col-lg-4 col-md-6 col-sm-12">
+            <p className="input_title_addcourse">رابط الموقع </p>
+            <input type="text"value={mapslink} className="input_addcourse" onChange={(e)=>setMapslink(e.target.value)}/>{" "}
+          </div>
+      
+        </div>
+      
+        <div className="row mt-4">
+        <div className="col-lg-4 col-md-6 col-sm-12">
             <p className="input_title_addcourse">المحافظة </p>
             <select
               name="department"
@@ -104,9 +111,6 @@ const [AvailableCards, setAvailableCards] = useState([])
               ))}
             </select>
           </div>
-        </div>
-      
-        <div className="row mt-4">
         <div className="col-lg-4 col-md-6 col-sm-12">
             <p className="input_title_addcourse">العنوان</p>
             <input type="text" value={address} className="input_addcourse" onChange={(e)=>setAddress(e.target.value)}/>{" "}

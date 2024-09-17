@@ -5,6 +5,7 @@ import NavBar from '../component/NavBar.js';
 import '../Css/home.css'
 import axios from "axios";
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 function Home() {
   const [departmentData, setDepartmentData] = useState([]);
   const [coursesData, setCoursesData] = useState([]);
@@ -16,35 +17,35 @@ function Home() {
 
   const length=[
     {
-      id:1,title:"الأقسام",numLength:departmentData.length
+      id:1,title:"الأقسام",numLength:departmentData.length,link:"/department"
     },
     {
-      id:2,title:"المواد",numLength:coursesData.length
+      id:2,title:"المواد",numLength:coursesData.length,link:"/courses"
     }, {
-      id:3,title:"الطلاب",numLength:users.length
+      id:3,title:"الطلاب",numLength:users.length,link:"/users"
     }, {
-      id:4,title:"المعلمين",numLength:teachers.length
+      id:4,title:"المعلمين",numLength:teachers.length,link:"/teacher"
     },
     {
-      id:5,title:"الكتب",numLength:libraries.length
+      id:5,title:"الكتب",numLength:libraries.length,link:"/library"
     },
     {
-      id:6,title:"المقالات",numLength:blogs.length
+      id:6,title:"المقالات",numLength:blogs.length,link:"/blogs"
     }, {
-      id:7,title:"التعليقات",numLength:comments.length
+      id:7,title:"التعليقات",numLength:comments.length,link:"/comments"
     },
   ]
   useEffect(()=>{
     const fetchData = async () => {
       try {
         const [departmentResponse,coursesResponse,usersResponse,teachersResponse,libraryResponse,blogResponse,commentsResponse]=await Promise.all([
-         axios.get("https://ba9ma.kasselsoft.online/department/"),
-         axios.get("https://ba9ma.kasselsoft.online/courses/"),
-         axios.get("https://ba9ma.kasselsoft.online/api/getusers"),
-         axios.get("https://ba9ma.kasselsoft.online/teacher/"),
-         axios.get("https://ba9ma.kasselsoft.online/library/"),
-         axios.get("https://ba9ma.kasselsoft.online/blog/"),
-         axios.get("https://ba9ma.kasselsoft.online/connects/comment"),
+         axios.get("https://ba9maacademy.kasselsoft.online/department/"),
+         axios.get("https://ba9maacademy.kasselsoft.online/courses/"),
+         axios.get("https://ba9maacademy.kasselsoft.online/api/getusers"),
+         axios.get("https://ba9maacademy.kasselsoft.online/teacher/"),
+         axios.get("https://ba9maacademy.kasselsoft.online/library/"),
+         axios.get("https://ba9maacademy.kasselsoft.online/blog/"),
+         axios.get("https://ba9maacademy.kasselsoft.online/connects/comment"),
         ])
         const usersData = usersResponse.data;
         const student = usersData.filter(user => user.role === 'student');
@@ -67,20 +68,17 @@ fetchData()
             <NavBar title="الاحصاءات"/>
 <section className="margin_section">
 
-    <div className="container-fluid ">
-    <div className="row d-flex justify-content-center align-items-center">
-      {length.map((card,id)=>(
-
-      <div className="col-lg-3 col-md-6 col-sm-12 box_home"key={card.id}>
-        <div className="d-flex">
-
-        <img src={require('../assets/department.png')} alt="department" className="img-fluid icon_home" />
-
-     <p className="title_section_home">{card.title}</p>
-        </div>
-     <p className="num_length_home">{card.numLength}</p>
-      </div>
-      ))}
+<div className="container-fluid">
+      <div className="row d-flex justify-content-center align-items-center">
+        {length.map((card) => (
+          <div className="col-lg-4 col-md-6 col-sm-12 mb-4" key={card.id}>
+            <Link to={card.link} className="box_home d-flex  align-items-center text-center" style={{textDecoration:"none"}}>
+              <img src={require('../assets/department.png')} alt="department" className="img-fluid icon_home" />
+              <p className="title_section_home">{card.title}</p>
+              <p className="num_length_home">{card.numLength}</p>
+            </Link>
+          </div>
+        ))}
       
      
     </div>

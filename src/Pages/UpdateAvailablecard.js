@@ -18,17 +18,42 @@ const [address, setaddress] = useState("")
   const [availablecard, setavailablecard] = useState([])
   const [govermentData, setgovermentData] = useState([])
   const [availabalecardId, setAvailableCardId] = useState('');
+  const [mapslink, setMapslink] = useState("")
 
   const handleGoverment = (e) => {
     const selectedgovermentId = e.target.value;
     setgovernorate_id(selectedgovermentId);
   };
 
+
+   // Fetch available card data by ID when component mounts
+   useEffect(() => {
+    if (locationState.state && locationState.state.id) {
+      setAvailableCardId(locationState.state.id);
+      fetchCardDetails(locationState.state.id);
+    } else {
+      console.warn('No ID found in location.state');
+    }
+  }, [locationState.state]);
+
+  const fetchCardDetails = async (id) => {
+    try {
+      const response = await axios.get(`https://ba9maacademy.kasselsoft.online/cards/get/availablecard/${id}`);
+      const card = response.data[0];
+      setName(card.name);
+      setLocation(card.location);
+      setMapslink(card.mapslink);
+      setgovernorate_id(card.governorate_id);
+      setaddress(card.address);
+      setphone(card.phone);
+    } catch (error) {
+      console.error("Error fetching card details:", error);
+    }
+  };
   useEffect(() => {
     // Check if location.state exists and contains the id
     if (locationState.state && locationState.state.id) {
         setAvailableCardId(locationState.state.id);
-        console.log("availabalecardId",availabalecardId)
     } else {
       console.warn('No ID found in location.state');
     }
@@ -36,7 +61,7 @@ const [address, setaddress] = useState("")
   useEffect(() => {
     const fetchGoverment = async () => {
         try {
-          const response = await axios.get("https://ba9ma.kasselsoft.online/cards/");
+          const response = await axios.get("https://ba9maacademy.kasselsoft.online/cards/");
           setgovermentData(response.data);
         } catch (error) {
           console.error("Error fetching goverment:", error);
@@ -46,31 +71,14 @@ const [address, setaddress] = useState("")
       fetchGoverment();
   }, []);
   
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    setSelectedFile(file);
-  };
-  
 
-  const handleDeleteSelectedFile=()=>{
-    setSelectedFile(null);
-  }
   const handleUpdate = async () => {
-    if (!name || !location || !governorate_id || !address || !phone) {
-      Toastify({
-        text: "Please Fill All Field",
-        duration: 3000, // Duration in milliseconds
-        gravity: "top", // 'top' or 'bottom'
-        position: 'right', // 'left', 'center', 'right'
-        backgroundColor: "#CA1616",
-      }).showToast();
-      return;
-    }
+    
     try {
     
       const response = await axios.put(
-        `https://ba9ma.kasselsoft.online/cards/update/availablecard/${availabalecardId}`,
-        { name,location,governorate_id,address,phone}
+        `https://ba9maacademy.kasselsoft.online/cards/update/availablecard/${availabalecardId}`,
+        { name,location,mapslink,governorate_id,address,phone}
       );
       setavailablecard((prevAdd) =>
         prevAdd.map((data) =>
@@ -84,7 +92,7 @@ const [address, setaddress] = useState("")
         position: 'right', // 'left', 'center', 'right'
         backgroundColor: "#5EC693",
       }).showToast();
-navigate('/availablecards')
+navigate('/goverment')
     } catch (error) {
       console.log(`Error in fetch edit data: ${error}`);
     }
@@ -101,13 +109,21 @@ navigate('/availablecards')
         <div className="row mt-4">
           <div className="col-lg-4 col-md-6 col-sm-12">
             <p className="input_title_addcourse" >اسم المكتبة</p>
-            <input type="text" className="input_addcourse" onChange={(e)=>setName(e.target.value)} />{" "}
+            <input type="text" className="input_addcourse" value={name} onChange={(e)=>setName(e.target.value)} />{" "}
           </div>
           <div className="col-lg-4 col-md-6 col-sm-12">
             <p className="input_title_addcourse">الموقع</p>
-            <input type="text" className="input_addcourse" onChange={(e)=>setLocation(e.target.value)}/>{" "}
+            <input type="text" className="input_addcourse" value={location} onChange={(e)=>setLocation(e.target.value)}/>{" "}
           </div>
           <div className="col-lg-4 col-md-6 col-sm-12">
+            <p className="input_title_addcourse">رابط الموقع </p>
+            <input type="text"value={mapslink} className="input_addcourse" onChange={(e)=>setMapslink(e.target.value)}/>{" "}
+          </div>
+         
+        </div>
+      
+        <div className="row mt-4">
+        <div className="col-lg-4 col-md-6 col-sm-12">
             <p className="input_title_addcourse">المحافظة </p>
             <select
               name="department"
@@ -124,16 +140,13 @@ navigate('/availablecards')
               ))}
             </select>
           </div>
-        </div>
-      
-        <div className="row mt-4">
         <div className="col-lg-4 col-md-6 col-sm-12">
-            <p className="input_title_addcourse">ألعنوان</p>
-            <input type="text" className="input_addcourse" onChange={(e)=>setaddress(e.target.value)}/>{" "}
+            <p className="input_title_addcourse">العنوان</p>
+            <input type="text" className="input_addcourse" value={address} onChange={(e)=>setaddress(e.target.value)}/>{" "}
           </div>
-          <div className="col-lg-8 col-md-6 col-sm-12">
+          <div className="col-lg-4 col-md-6 col-sm-12">
           <p className="input_title_addcourse">الرقم </p>
-          <input type="text" className="input_addcourse" onChange={(e)=>setphone(e.target.value)}/>{" "}
+          <input type="text" className="input_addcourse" value={phone} onChange={(e)=>setphone(e.target.value)}/>{" "}
 
          
           </div>

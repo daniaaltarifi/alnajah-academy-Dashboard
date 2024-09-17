@@ -20,7 +20,7 @@ const [orders,setOrders]=useState([])
   };
   const fetchOrder = async () => {
     try {
-      const response = await axios.get("https://ba9ma.kasselsoft.online/api/getcourseusers");
+      const response = await axios.get("https://ba9maacademy.kasselsoft.online/api/getcourseusers");
       const data = response.data;
       // Filter to only include unapproved payments
       const unapprovedOrders = data.filter(order => order.payment_status !== 'approved');
@@ -36,7 +36,6 @@ const [orders,setOrders]=useState([])
       );
 
       setOrders(uniqueOrders);
-      console.log("data",data)
     } catch (error) {
       console.log(`Error getting data from backend: ${error}`);
     }

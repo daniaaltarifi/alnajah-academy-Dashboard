@@ -54,6 +54,49 @@ function UpdateBlog() {
     }
   };
   
+
+  
+  useEffect(() => {
+    if (!blogId) return;
+  
+    const fetchBlogDetails = async () => {
+      try {
+        const response = await axios.get(`https://ba9maacademy.kasselsoft.online/blog/blogdetails/${blogId}`);
+  
+        const blogDataArray = response.data;
+  
+        // Check if the response data is an array and has at least one item
+        if (Array.isArray(blogDataArray) && blogDataArray.length > 0) {
+          const blogData = blogDataArray[0]; // Access the first item in the array
+  
+          // Log the blog data
+  
+          setTitle(blogData.title || "");
+          setAuthor(blogData.author || "");
+          setDescr(blogData.descr || "");
+          setDepartment_id(blogData.department_id || "");
+  
+          // Assuming blogData.tags is an array of tags
+          if (Array.isArray(blogData.tags)) {
+            setDisplayInfo(blogData.tags.map((tag, index) => ({
+              id: index, // Using index as a temporary unique identifier
+              title: tag
+            })));
+          } else {
+            setDisplayInfo([]);
+          }
+        } else {
+          console.warn("No blog data found in response");
+        }
+      } catch (error) {
+        console.error("Error fetching blog details:", error);
+      }
+    };
+  
+    fetchBlogDetails();
+  }, [blogId]);
+  
+
   const handleDeleteCourse = (id) => {
     // Filter out the tag with the specified ID
     const updatedDisplayInfo = displayInfo.filter((entry) => entry.id !== id);
@@ -67,7 +110,7 @@ function UpdateBlog() {
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await axios.get("https://ba9ma.kasselsoft.online/department");
+        const response = await axios.get("https://ba9maacademy.kasselsoft.online/department");
         setDepartmentData(response.data);
       } catch (error) {
         console.error("Error fetching departments:", error);
@@ -77,54 +120,55 @@ function UpdateBlog() {
     fetchDepartments();
   }, []);
   const handleUpdate = async () => {
-    if (!title || !author || !descr || !department_id || !selectedFile || !displayInfo) {
-      Toastify({
-        text: "Please Fill All Field",
-        duration: 3000,
-        gravity: "top",
-        position: 'right',
-        backgroundColor: "#CA1616",
-      }).showToast();
-      return;
-    }
-  
+    
     try {
       const formData = new FormData();
       formData.append('title', title);
       formData.append('author', author);
       formData.append('descr', descr);
       formData.append('department_id', department_id);
-      formData.append('img', selectedFile);
+
+      // Conditionally append the image file only if one is selected
+      if (selectedFile) {
+         formData.append('img', selectedFile);
+      }
       
+      // Handle tags
       const tagsArray = Array.isArray(displayInfo) ? displayInfo.map(tag => tag.title) : [];
       tagsArray.forEach(tag => formData.append('tags[]', tag));
-  
+
+      // Send the PUT request
       const response = await axios.put(
-        `https://ba9ma.kasselsoft.online/blog/updateblogandtag/${blogId}`,
-        formData, // Send the FormData object
-        {
-          headers: {
-            "Content-Type": "multipart/form-data", // Set the content type to multipart/form-data
-          },
-        }
+         `https://ba9maacademy.kasselsoft.online/blog/updateblogandtag/${blogId}`,
+         formData,
+         {
+            headers: {
+               "Content-Type": "multipart/form-data",
+            },
+         }
       );
-  
+
       setBlogs((prevAdd) =>
-        prevAdd.map((data) =>
-          data.id === blogId ? response.data : data
-        )
-      );      Toastify({
-        text: "Updated completely",
-        duration: 3000,
-        gravity: "top",
-        position: 'right',
-        backgroundColor: "#833988",
+         prevAdd.map((data) =>
+            data.id === blogId ? response.data : data
+         )
+      );
+
+      Toastify({
+         text: "Updated completely",
+         duration: 3000,
+         gravity: "top",
+         position: 'right',
+         backgroundColor: "#833988",
       }).showToast();
+
       navigate('/blogs');
-    } catch (error) {
-      console.log(`Error fetching post data ${error}`);
-    }
+   } catch (error) {
+      console.log(`Error fetching post data: ${error}`);
+   }
   };
+  
+
   
 
   return (
@@ -139,11 +183,11 @@ function UpdateBlog() {
         <div className="row mt-4">
           <div className="col-lg-4 col-md-6 col-sm-12">
             <p className="input_title_addcourse">عنوان المقال</p>
-            <input type="text" className="input_addcourse" onChange={(e)=>setTitle(e.target.value)}/>{" "}
+            <input type="text" className="input_addcourse"value={title} onChange={(e)=>setTitle(e.target.value)}/>{" "}
           </div>
           <div className="col-lg-4 col-md-6 col-sm-12">
             <p className="input_title_addcourse">صاحب المقال</p>
-            <input type="text" className="input_addcourse" onChange={(e)=>setAuthor(e.target.value)} />{" "}
+            <input type="text" className="input_addcourse" value={author} onChange={(e)=>setAuthor(e.target.value)} />{" "}
           </div>
           <div className="col-lg-4 col-md-6 col-sm-12">
             <p className="input_title_addcourse">القسم </p>
@@ -169,6 +213,7 @@ function UpdateBlog() {
             <p className="input_title_addcourse">الوصف</p>
             <textarea
               type="text"
+              value={descr}
               className="input_textarea_addcourse"
               onChange={(e)=>setDescr(e.target.value)}
             ></textarea>
@@ -179,7 +224,7 @@ function UpdateBlog() {
               <input
                 type="text"
                 className="input_addtag"
-                value={tags}
+              
                 onChange={(e) => setTags(e.target.value)}
               />
               <button

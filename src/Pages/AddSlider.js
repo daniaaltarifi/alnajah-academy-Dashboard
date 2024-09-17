@@ -16,6 +16,7 @@ const [teacher_name, setTeacher_name] = useState("")
 const [descr, setDescr] = useState("")
 const [page, setPage] = useState("")
 const [title, setTitle] = useState("")
+const [btn_name, setBtn_name] = useState("")
 
 const navigate = useNavigate()
   const handleFileChange = (e) => {
@@ -53,10 +54,11 @@ const navigate = useNavigate()
       formData.append('title', title);
       formData.append('descr', descr);
       formData.append('page', page);
+      formData.append('btn_name', btn_name);
       formData.append('img', img);
       formData.append('slider_img', slider_img);
       const response = await axios.post(
-        "https://ba9ma.kasselsoft.online/sliders/add",
+        "https://ba9maacademy.kasselsoft.online/sliders/add",
         formData,
         {
           headers: {
@@ -96,6 +98,10 @@ const navigate = useNavigate()
           <div className="col-lg-4 col-md-6 col-sm-12">
             <p className="input_title_addcourse">الصفحة</p>
             <input type="text" className="input_addcourse" onChange={(e)=>setPage(e.target.value)} />{" "}
+          </div>
+          <div className="col-lg-4 col-md-6 col-sm-12">
+            <p className="input_title_addcourse">زر التنقل</p>
+            <input type="text" className="input_addcourse" onChange={(e)=>setBtn_name(e.target.value)} />{" "}
           </div>
         </div>
       

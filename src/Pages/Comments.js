@@ -31,8 +31,9 @@ function Comments() {
   useEffect(() => {
     const fetchCommentBlogs = async () => {
       try {
-        const response = await axios.get("https://ba9ma.kasselsoft.online/commentblog/");
+        const response = await axios.get("https://ba9maacademy.kasselsoft.online/commentblog/");
         setCommentblog(response.data);
+        console.log("comment blog",response.data);
         setLoading(false);
 
       } catch (error) {
@@ -43,9 +44,11 @@ function Comments() {
     const fetchCommentCourses = async () => {
       try {
         const response = await axios.get(
-          "https://ba9ma.kasselsoft.online/commentcourse/"
+          "https://ba9maacademy.kasselsoft.online/commentcourse/"
         );
         setCommentCourses(response.data);
+        setLoading(false);
+
       } catch (error) {
         console.error("Error fetching blogs comments:", error);
       }
@@ -54,9 +57,11 @@ function Comments() {
     const fetchAllComment = async () => {
       try {
         const response = await axios.get(
-          "https://ba9ma.kasselsoft.online/connects/comment"
+          "https://ba9maacademy.kasselsoft.online/connects/comment"
         );
         setAllComments(response.data);
+        setLoading(false);
+
       } catch (error) {
         console.error("Error fetching blogs comments:", error);
       }
@@ -66,12 +71,12 @@ function Comments() {
   const handleApproved = async (blogId) => {
     try {
       await axios.put(
-        `https://ba9ma.kasselsoft.online/commentblog/commentblogaction/${blogId}`,
+        `https://ba9maacademy.kasselsoft.online/commentblog/commentblogaction/${blogId}`,
         {
           action: "approved",
         }
       );
-      const response = await axios.get("https://ba9ma.kasselsoft.online/commentblog");
+      const response = await axios.get("https://ba9maacademy.kasselsoft.online/commentblog");
       setCommentblog(response.data);
     } catch (error) {
       console.error("Error updating blog status:", error);
@@ -80,12 +85,12 @@ function Comments() {
   const handleApprovedCommentsCourse = async (courseid) => {
     try {
       await axios.put(
-        `https://ba9ma.kasselsoft.online/commentcourse/action/${courseid}`,
+        `https://ba9maacademy.kasselsoft.online/commentcourse/action/${courseid}`,
         {
           action: "approved",
         }
       );
-      const response = await axios.get("https://ba9ma.kasselsoft.online/commentcourse");
+      const response = await axios.get("https://ba9maacademy.kasselsoft.online/commentcourse");
       setCommentCourses(response.data);
     } catch (error) {
       console.error("Error updating comment status:", error);
@@ -93,11 +98,11 @@ function Comments() {
   };
   const handleApprovedComments = async (commentid) => {
     try {
-      await axios.put(`https://ba9ma.kasselsoft.online/connects/action/${commentid}`, {
+      await axios.put(`https://ba9maacademy.kasselsoft.online/connects/action/${commentid}`, {
         action: "approved",
       });
       const response = await axios.get(
-        "https://ba9ma.kasselsoft.online/connects/comment"
+        "https://ba9maacademy.kasselsoft.online/connects/comment"
       );
       setAllComments(response.data);
     } catch (error) {
@@ -106,7 +111,7 @@ function Comments() {
   };
   const handleDeleteCourse = async (id) => {
     try {
-      await axios.delete(`https://ba9ma.kasselsoft.online/commentcourse/delete/${id}`);
+      await axios.delete(`https://ba9maacademy.kasselsoft.online/commentcourse/delete/${id}`);
       setCommentCourses((prevData) => prevData.filter((data) => data.id !== id));
       Toastify({
         text: "Comment deleted successfully",
@@ -123,7 +128,7 @@ function Comments() {
   };
   const handleDeleteBlog = async (id) => {
     try {
-      await axios.delete(`https://ba9ma.kasselsoft.online/commentblog/delete/${id}`);
+      await axios.delete(`https://ba9maacademy.kasselsoft.online/commentblog/delete/${id}`);
       setCommentblog((prevData) => prevData.filter((data) => data.id !== id));
       Toastify({
         text: "Comment deleted successfully",
@@ -140,7 +145,7 @@ function Comments() {
   };
   const handleDeleteComments = async (id) => {
     try {
-      await axios.delete(`https://ba9ma.kasselsoft.online/connects/delete/${id}`);
+      await axios.delete(`https://ba9maacademy.kasselsoft.online/connects/delete/${id}`);
       setAllComments((prevData) => prevData.filter((data) => data.id !== id));
       Toastify({
         text: "Comment deleted successfully",
@@ -219,7 +224,12 @@ function Comments() {
                     <td>{blog.comment}</td>
                     <td>{blog.created_date}</td>
                     {blog.action === "approved" ? (
-                      <td>Approved</td>
+                      <td>Approved
+                          <i
+                          className="fa-regular fa-trash-can fa-lg"
+                          style={{ color: "#944b43" }}
+                          onClick={()=>handleDeleteBlog(blog.id)} ></i>
+                      </td>
                     ) : (
                       <td>
                         <button
@@ -246,8 +256,7 @@ function Comments() {
                 <tr className="table_head_cardprice">
                   <th className="desc_table_cardprice">الاسم</th>
                   <th className="desc_table_cardprice">الايميل</th>
-                  <th className="desc_table_cardprice">المادة /الاستاذ</th>
-                  <th className="desc_table_cardprice">القسم</th>
+                  <th className="desc_table_cardprice">المادة </th>
                   <th className="desc_table_cardprice">التعليق</th>
                   <th className="desc_table_cardprice">التاريخ</th>
                   <th className="desc_table_cardprice">الاجراء</th>
@@ -259,11 +268,15 @@ function Comments() {
                     <td>{course.name}</td>
                     <td>{course.email}</td>
                     <td>{course.course_name}</td>
-                    <td>{course.department_name}</td>
                     <td>{course.comment}</td>
                     <td>{course.created_date}</td>
                     {course.action === "approved" ? (
-                      <td>Approved</td>
+                      <td>Approved
+                          <i
+                          className="fa-regular fa-trash-can fa-lg"
+                          style={{ color: "#944b43" }}
+                          onClick={()=>handleDeleteCourse(course.id)} ></i>
+                      </td>
                     ) : (
                       <td>
                         <button
@@ -306,7 +319,13 @@ function Comments() {
                     <td>{comment.comment.substring(0, 50)}</td>
                     <td>{comment.created_date}</td>
                     {comment.action === "approved" ? (
-                      <td>Approved</td>
+                      <td>Approved
+                         <i
+                          className="fa-regular fa-trash-can fa-lg"
+                          style={{ color: "#944b43" }}
+                          onClick={()=>handleDeleteComments(comment.id)} ></i>
+                      </td>
+                      
                     ) : (
                       <td>
                         <button

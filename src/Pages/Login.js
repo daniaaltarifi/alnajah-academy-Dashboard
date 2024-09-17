@@ -2,35 +2,47 @@ import "../Css/auth.css";
 import { Link } from "react-router-dom";
 import React, { useState } from 'react';
 import axios from 'axios';
-
+import DeviceDetector from 'device-detector-js';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [role, setRole] = useState('');
+  const [show, setShow] = useState(false);
 
-  const handleLogin = async (e) => {
+
+  const getDeviceInfo = () => {
+    const deviceDetector = new DeviceDetector();
+    const userAgent = navigator.userAgent;
+    const device = deviceDetector.parse(userAgent);
+  
+    return {
+      deviceType: device.device.type || 'unknown',
+      os: device.os.name || 'unknown',
+      osVersion: device.os.version || 'unknown',
+      browser: device.client.name || 'unknown',
+      browserVersion: device.client.version || 'unknown',
+    };
+  };
+    const handleLogin = async (e) => {
     e.preventDefault();
+    const deviceInfo = getDeviceInfo();
+
     try {
-      const res = await axios.post('https://ba9ma.kasselsoft.online/api/login', {
-        email, role, password
+      const res = await axios.post('https://ba9maacademy.kasselsoft.online/api/login', {
+        email, role, password,deviceInfo
       });
       // Check for device count error
-      if (res.status === 403 && res.data.message === 'You are logged in on too many devices. Please log out from another device.') {
-        setError('You are logged in on too many devices. Please log out from another device.');
-        return;
-      }
+      // if (res.status === 403 && res.data.message === 'You are logged in on too many devices. Please log out from another device.') {
+      //   setError('You are logged in on too many devices. Please log out from another device.');
+      //   return;
+      // }
+      
            // Store authentication data in local storage
-      localStorage.setItem('auth', res.data.token);
-      localStorage.setItem('id', res.data.id);
-      localStorage.setItem('name', res.data.name);
-      localStorage.setItem('role', res.data.role);
-      localStorage.setItem('img', res.data.img);
-
-      localStorage.setItem('email', email);  // Store email in local storage
-
-      // Check if the response contains the token
-      if (res.data.token) {
+ 
+        if (res.data.token) {
         localStorage.setItem('auth', res.data.token);
         localStorage.setItem('name', res.data.name);
         localStorage.setItem('role', res.data.role);
@@ -48,14 +60,64 @@ function Login() {
         }
       }
     }catch (err) {
-      if (err.response && err.response.status === 403) {
-        setError('لقد قمت بتسجيل الدخول على عدد كبير من الأجهزة. يرجى تسجيل الخروج من جهاز آخر.');
-      } else {
+      // if (err.response && err.response.status === 403) {
+      //   setError('تسجيل الدخول غير متاح على هذا الجهاز');
+      // } else {
         setError("البريد الالكتروني أو كلمة المرور غير صحيحة");
-      }
+      // }
       console.error('Login error:', err);
     }
   };
+  // const handleLogin = async (e) => {
+  //   e.preventDefault();
+  //   const deviceInfo = getDeviceInfo();
+
+  //   try {
+  //     const res = await axios.post('https://ba9maacademy.kasselsoft.online/api/login', {
+  //       email, role, password,deviceInfo
+  //     });
+  //     // Check for device count error
+  //     // if (res.status === 403 && res.data.message === 'You are logged in on too many devices. Please log out from another device.') {
+  //     //   setError('You are logged in on too many devices. Please log out from another device.');
+  //     //   return;
+  //     // }
+      
+  //          // Store authentication data in local storage
+  //     localStorage.setItem('auth', res.data.token);
+  //     localStorage.setItem('id', res.data.id);
+  //     localStorage.setItem('name', res.data.name);
+  //     localStorage.setItem('role', res.data.role);
+  //     localStorage.setItem('img', res.data.img);
+
+  //     localStorage.setItem('email', email);  // Store email in local storage
+
+  //     // Check if the response contains the token
+  //     if (res.data.token) {
+  //       localStorage.setItem('auth', res.data.token);
+  //       localStorage.setItem('name', res.data.name);
+  //       localStorage.setItem('role', res.data.role);
+  //       localStorage.setItem('id', res.data.id);
+  //       localStorage.setItem('img', res.data.img);
+
+  //       localStorage.setItem('email', email);  // Store email in local storage again  
+  //       // Redirect based on role
+  //       if (res.data.role === 'admin') {
+  //         window.location.href = '/Home';
+  //       } else if (res.data.role === 'teacher') {
+  //         window.location.href = '/teachercourses';
+  //       } else {
+  //         setError("غير مصرح لك بالدخول");
+  //       }
+  //     }
+  //   }catch (err) {
+  //     if (err.response && err.response.status === 403) {
+  //       setError('تسجيل الدخول غير متاح على هذا الجهاز');
+  //     } else {
+  //       setError("البريد الالكتروني أو كلمة المرور غير صحيحة");
+  //     }
+  //     console.error('Login error:', err);
+  //   }
+  // };
   return (
     <>
       <section className="login_cont ">
@@ -102,6 +164,7 @@ function Login() {
                   value={password} onChange={(e) => setPassword(e.target.value)}
                 
                 />
+                <Link to="/forgotPassword" className="forget_pass_auth">نسيت كلمة المرور؟</Link>
                             </div>
               {error && <p className="error_message">{error}</p>}
               <button type="button" onClick={handleLogin} className="btn purple_btn mb-2">تسجيل الدخول</button>
@@ -111,6 +174,7 @@ function Login() {
             <div className="col-lg-1"></div>
           </div>
         </div>
+       
       </section>
     </>
   );

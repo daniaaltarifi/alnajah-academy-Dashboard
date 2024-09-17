@@ -7,11 +7,15 @@
     border-radius: 10px;
     font-size: 20px;
     font-weight: 700;
+    margin-top: 10vh;
+
 }
 .input_title_addcourse{
     color: #833988;
     font-size: 15px;
 line-height:45px;
+/* margin-top: 10vh; */
+
 }
 .input_addcourse{
     border-radius: 20px;
@@ -26,8 +30,8 @@ padding-right:15px;
 }
 .input_textarea_addcourse{
     border-radius: 20px;
-    height: 145px;
-    width: 80%;
+    height: 90%;
+    width: 100%;
     border: 1px solid #a3a3a3;
 padding-right:15px;
 }
@@ -95,11 +99,13 @@ padding-right:15px;
   border-radius: 15px;
   color: #fff;
   border: none;
-  
+  position: relative;
+  padding-right: 3rem; 
  }
   .btn_addCourse:hover{
     background-color: #F57D20;
   }
+ 
  @media screen and (max-width: 768px) {
     .selected_file_addvideo {
       display: none;
@@ -110,5 +116,12 @@ padding-right:15px;
     } */
     .btn_addCourse{
       margin-top: 10vh;
+    }
+    .input_title_addcourse{
+      margin-top: 10vh;
+
+    }
+    .title_add_course{
+      margin-top: 25vh;
     }
   }

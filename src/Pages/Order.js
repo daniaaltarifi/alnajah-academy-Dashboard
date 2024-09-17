@@ -21,6 +21,8 @@ function Order() {
   const [descriptionPopup, setDescriptionPopup] = useState("");
   const [currentId, setCurrentId] = useState(null); 
   const [loading, setLoading] = useState(true);
+  const [noCoursesMessage, setNoCoursesMessage] = useState('');
+  const [noDepartmentMessage, setNoDepartmentessage] = useState('');
 
   // Handler function to change the color of the clicked button
   const handleClick = (buttonId) => {
@@ -40,26 +42,45 @@ function Order() {
   const getButtonColor = (buttonId) => {
     return activeButton === buttonId ? "#833988" : "#F57D20";
   };
-  const fetchDepartmentOrder = async () => {
-    try {
-      const response = await axios.get("https://ba9ma.kasselsoft.online/api/getcourseusers");
-      const data = response.data;
-      // Filter to only include unapproved payments
-      const unapprovedPayments = data.filter(payment => payment.department_id !== null);
+const fetchDepartmentOrder = async () => {
+  setLoading(true);
+  setNoDepartmentessage(''); // Clear previous message
+  
+  try {
+    const response = await axios.get("https://ba9maacademy.kasselsoft.online/api/getcourseusers");
+    const data = response.data;
+    // Filter to only include unapproved payments
+    const unapprovedPayments = data.filter(payment => payment.department_id !== null);
+
+    if (unapprovedPayments.length === 0) {
+      setNoDepartmentessage('لا يوجد طلبات شراء');
+      setDepartmentOrder([]);
+    } else {
       setDepartmentOrder(unapprovedPayments);
-      setLoading(false);
-    } catch (error) {
-      console.log(`Error getting data from backend: ${error}`);
+      setNoDepartmentessage('');
     }
-  };
+  } catch (error) {
+    console.log(`Error getting data from backend: ${error}`);
+    setNoDepartmentessage('حدث خطأ أثناء جلب البيانات');
+  } finally {
+    setLoading(false);
+  }
+};
+
   const fetchCourseOrder = async () => {
     try {
-      const response = await axios.get("https://ba9ma.kasselsoft.online/api/getcourseusers");
+      const response = await axios.get("https://ba9maacademy.kasselsoft.online/api/getcourseusers");
       const data = response.data;
       // Filter to only include unapproved payments
       const unapprovedPayments = data.filter(payment => payment.course_id !== null);
       setCourseOrder(unapprovedPayments);
+      setNoCoursesMessage('');
       setLoading(false);
+      if (unapprovedPayments.length === 0) {
+        setNoCoursesMessage('لا يوجد طلبات شراء');
+      } else {
+        setCourseOrder(unapprovedPayments);
+      }
     } catch (error) {
       console.log(`Error getting data from backend: ${error}`);
     }
@@ -68,26 +89,10 @@ function Order() {
     fetchDepartmentOrder();
     fetchCourseOrder()
   }, []);
-  //   const handleApproved = async (id) => {
-  //     try {
-  //       await axios.put(`https://ba9ma.kasselsoft.online/api/payments/${id}/approve`, { payment_status: 'approved' });
-  //       // Update payment status in the local state
-  //       setDepartmentOrder((prevPayments) =>
-  //         prevPayments.map((payment) =>
-  //           payment.id === id ? { ...payment, payment_status: 'approved' } : payment
-  //         )
-  //       );
-  //       await fetchDepartmentOrder();
-  //       await fetchCourseOrder();
 
-  //     } catch (error) {
-  //       console.error('Error updating payment status:', error);
-  //     }
-
-  // };
   const handleDeleteCourseUsers = async () => {
     try {
-      await axios.delete(`https://ba9ma.kasselsoft.online/api/delete/payments/${currentId}`);
+      await axios.delete(`https://ba9maacademy.kasselsoft.online/api/delete/payments/${currentId}`);
       setDepartmentOrder((prevData) => prevData.filter((data) => data.payment_id !== currentId));
       setCourseOrder((prevData) => prevData.filter((data) => data.payment_id !== currentId));
       Toastify({
@@ -134,29 +139,35 @@ function Order() {
           {activeButton === "btn1" ? (
             <Table striped hover>
               <thead>
-                <tr className="table_head_cardprice">
-                  <th className="desc_table_cardprice">اسم الطالب</th>
-                  <th className="desc_table_cardprice">الايميل</th>
-                  <th className="desc_table_cardprice">العنوان</th>
-                  <th className="desc_table_cardprice">رقم الهاتف</th>
-                  <th className="desc_table_cardprice">اسم المادة</th>
-                  <th className="desc_table_cardprice">الاجراء</th>
-                </tr>
+              <tr className="table_head_cardprice">
+      <th className="desc_table_cardprice">اسم الطالب</th>
+      <th className="desc_table_cardprice">الايميل</th>
+      <th className="desc_table_cardprice">العنوان</th>
+      <th className="desc_table_cardprice">رقم الهاتف</th>
+      <th className="desc_table_cardprice">اسم المادة</th>
+      <th className="desc_table_cardprice">رمز الكوبون</th> {/* Add Coupon Code Column */}
+      <th className="desc_table_cardprice">الاجراء</th>
+    </tr>
               </thead>
               {loading ? (
                   <div className="spinner-container">
                     <Spinner animation="border" variant="warning" />
                   </div>
+                ) : noCoursesMessage ? (
+                  <div className="no-data-message ">
+                    <p >{noCoursesMessage}</p>
+                  </div>
                 ) : (
               <tbody>
               {courseOrder.map((course) => (
-                  <tr key={course.id}>
-                    <td>{course.student_name}</td>
-                    <td>{course.email}</td>
-                    <td>{course.address}</td>
-                    <td>{course.phone}</td>
-                    <td>{course.subject_name}</td>
-                    <td>
+                   <tr key={course.id}>
+                   <td>{course.student_name}</td>
+                   <td>{course.email}</td>
+                   <td>{course.address}</td>
+                   <td>{course.phone}</td>
+                   <td>{course.subject_name}</td>
+                   <td>{course.coupon_code}</td> {/* Display Coupon Code */}
+                   <td>
                      
                         <i
                           className="fa-regular fa-trash-can fa-lg"
@@ -166,23 +177,7 @@ function Order() {
                           // onClick={()=>handleDeleteCourseUsers(course.payment_id)} 
                           ></i>
                       </td>
-                    {/* <td>
-                       {course.payment_status !== "approved" && (
-                        <div>
-
-                        <button  type="button"
-                        className="btn btn-success ms-2" onClick={() => handleApproved(course.payment_id
-                        )}>
-                          Accept
-                        </button>
-                         <button type="button" className="btn btn-danger" onClick={()=>handleDeleteCourseUsers(course.payment_id)} 
-                         >
-                           رفض
-                         </button>
-                        </div>
-
-                      )}
-                    </td> */}
+                  
                   </tr>
                ))}
                </tbody>
@@ -191,30 +186,35 @@ function Order() {
           ) : activeButton === "btn2" ? (
             <Table striped hover>
               <thead>
-                <tr className="table_head_cardprice">
-                  <th className="desc_table_cardprice">اسم الطالب</th>
-                  <th className="desc_table_cardprice">الايميل</th>
-                  <th className="desc_table_cardprice">العنوان</th>
-                  <th className="desc_table_cardprice">رقم الهاتف</th>
-                  <th className="desc_table_cardprice">القسم</th>
-
-                  <th className="desc_table_cardprice">الاجراء</th>
-                </tr>
+              <tr className="table_head_cardprice">
+      <th className="desc_table_cardprice">اسم الطالب</th>
+      <th className="desc_table_cardprice">الايميل</th>
+      <th className="desc_table_cardprice">العنوان</th>
+      <th className="desc_table_cardprice">رقم الهاتف</th>
+      <th className="desc_table_cardprice">القسم</th>
+      <th className="desc_table_cardprice">رمز الكوبون</th> {/* Add Coupon Code Column */}
+      <th className="desc_table_cardprice">الاجراء</th>
+    </tr>
               </thead>
               {loading ? (
                   <div className="spinner-container">
                     <Spinner animation="border" variant="warning" />
                   </div>
+                 ) : noDepartmentMessage ? (
+                  <div className="no-data-message ">
+                    <p >{noDepartmentMessage}</p>
+                  </div>
                 ) : (
               <tbody>
                 {departmentOrder.map((department) => (
-                  <tr key={department.id}>
-                    <td>{department.student_name}</td>
-                    <td>{department.email}</td>
-                    <td>{department.address}</td>
-                    <td>{department.phone}</td>
-                    <td>{department.department_name}</td>
-                    <td>
+      <tr key={department.id}>
+        <td>{department.student_name}</td>
+        <td>{department.email}</td>
+        <td>{department.address}</td>
+        <td>{department.phone}</td>
+        <td>{department.department_name}</td>
+        <td>{department.coupon_code}</td> {/* Display Coupon Code */}
+        <td>
                         <i
                           className="fa-regular fa-trash-can fa-lg"
                           style={{ color: "#944b43" }}
@@ -226,23 +226,7 @@ function Order() {
                           </i>
 
                       </td>
-                    {/* <td>
-                       {department.payment_status !== "approved" && (
-                        <div>
-
-                        <button  type="button"
-                        className="btn btn-success ms-2" onClick={() => handleApproved(department.payment_id
-                        )}>
-                          Accept
-                        </button>
-                         <button type="button" className="btn btn-danger" onClick={()=>handleDeleteCourseUsers(department.payment_id)} 
-                         >
-                           رفض
-                         </button>
-                        </div>
-
-                      )}
-                    </td> */}
+                   
                   </tr>
                  ))}
                  </tbody>

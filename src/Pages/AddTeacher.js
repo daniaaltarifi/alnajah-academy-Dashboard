@@ -13,6 +13,7 @@ function AddTeacher() {
   const [teachers, setTeachers] = useState([])
 const [teacher_name, setTeacher_name] = useState("")
 const [descr, setDescr] = useState("")
+const [email, setEmail] = useState("")
 const navigate = useNavigate()
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -34,7 +35,7 @@ const navigate = useNavigate()
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await axios.get("https://ba9ma.kasselsoft.online/department");
+        const response = await axios.get("https://ba9maacademy.kasselsoft.online/department");
         setDepartmentData(response.data);
       } catch (error) {
         console.error("Error fetching departments:", error);
@@ -45,7 +46,7 @@ const navigate = useNavigate()
   }, []);
   const handlePost = async () => {
 
-    if (!teacher_name || !descr || !department_id || !selectedFile) {
+    if (!teacher_name || !descr || !department_id || !email || !selectedFile) {
       Toastify({
         text: "Please Fill All Field",
         duration: 3000, // Duration in milliseconds
@@ -60,9 +61,10 @@ const navigate = useNavigate()
       formData.append('teacher_name', teacher_name);
       formData.append('descr', descr);
       formData.append('department_id', department_id);
+      formData.append('email', email);
       formData.append('img', selectedFile);
       const response = await axios.post(
-        "https://ba9ma.kasselsoft.online/teacher/add",
+        "https://ba9maacademy.kasselsoft.online/teacher/add",
         formData,
         {
           headers: {
@@ -103,6 +105,10 @@ const navigate = useNavigate()
             <p className="input_title_addcourse">اسم المادة</p>
             <input type="text" className="input_addcourse" onChange={(e)=>setTeacher_name(e.target.value)} />{" "}
           </div> */}
+            <div className="col-lg-4 col-md-6 col-sm-12">
+            <p className="input_title_addcourse">الايميل</p>
+            <input type="text" className="input_addcourse" onChange={(e)=>setEmail(e.target.value)} />{" "}
+          </div>
           <div className="col-lg-4 col-md-6 col-sm-12">
             <p className="input_title_addcourse">القسم </p>
             <select
@@ -120,6 +126,7 @@ const navigate = useNavigate()
               ))}
             </select>
           </div>
+        
         </div>
       
         <div className="row mt-4">
@@ -130,6 +137,7 @@ const navigate = useNavigate()
               className="input_textarea_addcourse"onChange={(e)=>setDescr(e.target.value)}
             ></textarea>
           </div>
+          
           <div className="col-lg-8 col-md-6 col-sm-12">
           <p className="input_title_addcourse">صورة الاستاذ </p>
 

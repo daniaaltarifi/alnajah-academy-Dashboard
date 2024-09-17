@@ -5,6 +5,8 @@ import axios from "axios";
 import Toastify from "toastify-js";
 import "toastify-js/src/toastify.css"; 
 import { useNavigate } from "react-router-dom";
+import Spinner from "react-bootstrap/Spinner";
+
 function TeacherAddCourse() {
   const [courseTitle, setCourseTitle] = useState('');
   const [defaultvideo, setDefaultVideo] = useState(null);
@@ -23,6 +25,12 @@ const [teacherCourse, setTeacherCourse] = useState([])
 const [currentContext, setCurrentContext] = useState(null); // or 'link'
   const [videos, setVideos] = useState([]);
   const [links, setLinks] = useState([]);
+  const [fileBook, setFileBook] = useState(null);
+
+  const [loading, setLoading] = useState(false);
+
+
+
 const navigate=useNavigate()
 useEffect(() => {
   const storedTeacherId = localStorage.getItem('email');
@@ -60,13 +68,11 @@ const addLinkField = () => {
   const handleImg = (e) => {
     const file = e.target.files[0];
     setImg(file);
-    console.log("img",img)
     
   };
   const handelDefaultVideo = (e) => {
     const file = e.target.files[0];
     setDefaultVideo(file);
-    console.log("default video",defaultvideo)
   };
 
 
@@ -89,9 +95,8 @@ const addLinkField = () => {
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await axios.get("https://ba9ma.kasselsoft.online/department");
+        const response = await axios.get("https://ba9maacademy.kasselsoft.online/department");
         setDepartmentData(response.data);
-        console.log(departmentData)
       } catch (error) {
         console.error("Error fetching departments:", error);
       }
@@ -100,8 +105,16 @@ const addLinkField = () => {
     fetchDepartments();
   }, []);
  
+
+  const handleFileBookChange = (e) => {
+    const file = e.target.files[0];
+    setFileBook(file);
+  };
+  
   const handlePost = async () => {
-    if (!subject_name || !teacher_id || !department_id || !before_offer || !after_offer || !descr || !img || !displayInfo || !defaultvideo) {
+    setLoading(true)
+
+    if (!subject_name || !teacher_id || !department_id || !before_offer || !after_offer || !descr || !img || !displayInfo || !defaultvideo|| !fileBook) {
       Toastify({
         text: "Please Fill All Field",
         duration: 3000,
@@ -122,6 +135,7 @@ const addLinkField = () => {
       formData.append('descr', descr);
       formData.append('img', img);
       formData.append('defaultvideo', defaultvideo);
+      formData.append('file_book', fileBook);
       videos.forEach((video, index) => {
         formData.append('url', video.url);
         formData.append('title', video.title);
@@ -130,10 +144,9 @@ const addLinkField = () => {
         formData.append('link', link.link);
         formData.append('title', link.title);
       });
-      console.log("link", links);
   
       const response = await axios.post(
-        "https://ba9ma.kasselsoft.online/teacher/addcourseteacher",
+        "https://ba9maacademy.kasselsoft.online/teacher/addcourseteacher",
         formData,
         {
           headers: {
@@ -141,7 +154,6 @@ const addLinkField = () => {
           },
         }
       );
-      console.log("displayInfo", displayInfo);
 
       setTeacherCourse(response.data);
       Toastify({
@@ -154,16 +166,7 @@ const addLinkField = () => {
       navigate('/teachercourses');
     } catch (error) {
       console.log(`Error fetching post data: ${error}`);
-      console.log("subject_name", subject_name);
-      console.log("teacher_id", teacher_id);
-      console.log("department_id", department_id);
-      console.log("before_offer", before_offer);
-      console.log("after_offer", after_offer);
-      console.log("descr", descr);
-      console.log("img", img);
-      console.log("displayInfo", displayInfo);
-      console.log("link", links);
-      console.log("defaultvideo", defaultvideo);
+     
 
     }
   };
@@ -218,14 +221,23 @@ const addLinkField = () => {
          
         </div>
         <div className="row mt-4">
+         
           <div className="col-lg-4 col-md-6 col-sm-12">
-            <p className="input_title_addcourse">الوصف</p>
-            <textarea
-              type="text"
-              className="input_textarea_addcourse"
-              onChange={(e)=>setDescr(e.target.value)}
-            ></textarea>
-          </div>
+  <p className="input_title_addcourse">كتاب المادة</p>
+  <div className="file-input-container">
+    <input
+      type="file"
+      className="choose_file_addcourse"
+      onChange={handleFileBookChange}
+    />
+    <span className="ps-5">اختر ملف كتاب</span>
+    {fileBook && <span className="selected_file_addcourse">{fileBook.name}</span>}
+    {!fileBook && (
+      <span className="selected_file_addcourse">No file selected</span>
+    )}
+  </div>
+</div>
+
           <div className="col-lg-4 col-md-6 col-sm-12">
             <p className="input_title_addcourse">صورة المادة</p>
             <div className="file-input-container">
@@ -260,92 +272,97 @@ const addLinkField = () => {
               )}
             </div>
           </div>
+          <div className="col-lg-12 col-md-6 col-sm-12">
+            <p className="input_title_addcourse">الوصف</p>
+            <textarea
+              type="text"
+              className="input_textarea_addcourse"
+              onChange={(e)=>setDescr(e.target.value)}
+            ></textarea>
+          </div>
         </div>
-        <hr />
+        {/* <hr /> */}
       </div>
 
       {/* video_section */}
-      <div className="container">
-        <div className="row">
-          <div className="col-lg-4 col-md-6 col-sm-12"></div>
+      <div className="container cont_add_course_change">
+        <div className="row ">
+       
           <div className="col-lg-8 col-md-6 col-sm-12">
           <div className="title_add_course">اضافة المواضيع</div>
-          <div>
-  <button className="btn btn_add_video ms-5" onClick={() => setCurrentContext('video')}>Video</button>
-  <button className="btn btn_add_video " onClick={() => setCurrentContext('link')}>Link</button>
-</div>
-          {currentContext === 'video' && videos.map((video, index) => (
-          <div key={index}>
-            <p className="input_title_addcourse">عنوان الموضوع</p>
-            <input
-              type="text"
-              className="input_addcourse"
-              value={video.title}
-              onChange={(e) => {
-                const updatedVideos = [...videos];
-                updatedVideos[index] = { ...updatedVideos[index], title: e.target.value };
-                setVideos(updatedVideos);
-              }}
-              placeholder="Enter title"
-              required
-            />
-            <div className="file_input_addvideo">
-              <button className="btn_choose_video">اختيار ملف</button>
-              <input
-                type="file"
-                className="choose_file_addcourse"
-                onChange={(e) => handleVideoFileChange(index, e)}
-                required
-              />
-              <span className="ps-5 selected_file_addvideo">قم بتحميل الملفات من هنا</span>
-              {!video.url && <span className="selected_file_addcourse">No file selected</span>}
-            </div>
-            {video.url && (
-              <div className="d-flex justify-content-around">
-                <p className="selected_file_addcourse">{video.url.name}</p>
-                <i
-                  className="fa-solid fa-square-xmark fa-lg mt-2"
-                  onClick={() => handleDeleteimg(index, 'video')}
-                  style={{ color: '#944b43' }}
-                ></i>
-              </div>
-            )}
-          </div>
-        ))}
+       
+          <button onClick={addVideoField} className="btn btn_add_video ms-5">إضافة فيديو جديد</button>
 
-        {currentContext === 'link' && links.map((link, index) => (
-          <div key={index}>
-            <p className="input_title_addcourse">عنوان الموضوع</p>
-            <input
-              type="text"
-              name="title"
-              className="input_addcourse"
-              value={link.title}
-              onChange={(e) => handleLinkChange(index, e)}
-              placeholder="Enter title"
-              required
-            />
-            <input
-              type="text"
-              name="link"
-              className="input_addcourse"
-              value={link.link}
-              onChange={(e) => handleLinkChange(index, e)}
-              placeholder="Enter link URL"
-              required
-            />
-          </div>
-        ))}
 
-        <button
-          type="button"
-          className="btn btn_add_video float-start"
-          onClick={currentContext === 'video' ? addVideoField : addLinkField}
-        >
-          {currentContext === 'video' ? 'Add Video' : 'Add Link'}
-        </button>
-          <button className="btn_addCourse px-5 py-2  mt-5"onClick={handlePost}> اضافة مادة </button>
-      </div>
+                
+{videos.map((video, index) => (
+             <div key={index}>
+                 <p className="input_title_addcourse">عنوان الموضوع</p>
+                 <input
+      type="text"
+      className="input_addcourse"
+      value={video.title}
+      onChange={(e) => {
+        const updatedVideos = [...videos];
+        updatedVideos[index] = { ...updatedVideos[index], title: e.target.value };
+        setVideos(updatedVideos);
+      }}
+      placeholder="Enter title"
+      required
+    />
+
+                 {/* File input for video */}
+                 <div className="file_input_addvideo">
+                     <button className="btn_choose_video">اختيار ملف</button>
+                     <input
+                         type="file"
+                         className="choose_file_addcourse"
+                         onChange={(e) => handleVideoFileChange(index, e)}
+                         required
+                     />
+                     {!video.url && <span className="selected_file_addcourse">No file selected</span>}
+                 </div>
+
+               
+             </div>
+         ))}
+
+<button onClick={addLinkField} className="btn btn_add_video ms-5">إضافة رابط جديد</button>
+         {links.map((link, index) => (
+             <div key={index}>
+                 <p className="input_title_addcourse">عنوان الموضوع</p>
+                 <input
+      type="text"
+      name="title"
+      className="input_addcourse"
+      value={link.title}
+      onChange={(e) => handleLinkChange(index, e)}
+      placeholder="Enter title"
+      required
+    />
+                 <input
+      type="text"
+      name="link"
+      className="input_addcourse"
+      value={link.link}
+      onChange={(e) => handleLinkChange(index, e)}
+      placeholder="Enter link URL"
+      required
+    />
+
+               
+             </div>
+         ))}
+
+
+<div className="col-lg-12">
+<button className="btn_addCourse px-5 py-2  mt-5"onClick={handlePost} >  {loading && (
+                             <Spinner animation="border" variant="warning"   size="sm" // Small size spinner
+                             className="spinner_course"/>
+                            )}
+                            اضافة مادة </button>
+                             {/* Show spinner if loading */}
+                             </div>      </div>
           </div>
         </div>
     </>

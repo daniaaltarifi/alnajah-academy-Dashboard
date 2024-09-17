@@ -35,7 +35,7 @@ function AvailableCards() {
   useEffect(()=>{
     const fetchAvailableCards = async () => {
       try {
-        const response = await axios.get("https://ba9ma.kasselsoft.online/cards/get/availablecard");
+        const response = await axios.get("https://ba9maacademy.kasselsoft.online/cards/get/availablecard");
         setAvailableCards(response.data);
       } catch (error) {
         console.error("Error fetching AvailableCards:", error);
@@ -60,7 +60,7 @@ fetchAvailableCards()
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `https://ba9ma.kasselsoft.online/cards/delete/availablecards/${currentId}`
+        `https://ba9maacademy.kasselsoft.online/cards/delete/availablecards/${currentId}`
       );
 
       // Remove the deleted department from state
@@ -132,6 +132,7 @@ fetchAvailableCards()
                       <tr className="table_head_cardprice">
                         <th className="desc_table_cardprice">اسم المكتبة </th>
                         <th className="desc_table_cardprice"> الموقع</th>
+                        <th className="desc_table_cardprice"> رابط الموقع</th>
                         <th className="desc_table_cardprice">المحافظة</th>
                         <th className="desc_table_cardprice">العنوان </th>
                         <th className="desc_table_cardprice">الرقم</th>
@@ -144,6 +145,7 @@ fetchAvailableCards()
                       <tr>
                         <td>{AvailableCards.name} </td>
                         <td> {AvailableCards.location}</td>
+                        <td> {AvailableCards.mapslink}</td>
                         <td>{AvailableCards.governorate_name}</td>
                         <td>{AvailableCards.address}</td>
                         <td>{AvailableCards.phone} </td>

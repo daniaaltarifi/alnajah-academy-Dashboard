@@ -93,7 +93,7 @@ function Users() {
 
     try {
       const res = await axios.post(
-        "https://ba9ma.kasselsoft.online/api/register",
+        "https://ba9maacademy.kasselsoft.online/api/register",
         {
           name,
           email,
@@ -129,7 +129,7 @@ function Users() {
     const fetchUsers = async () => {
       try {
         const response = await axios.get(
-          "https://ba9ma.kasselsoft.online/api/getusers"
+          "https://ba9maacademy.kasselsoft.online/api/getusers"
         );
         const usersdata = response.data;
         const student = usersdata.filter((user) => user.role === "student");
@@ -161,7 +161,7 @@ function Users() {
   const dataToDisplay = searchQuery ? searchResults : users;
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:8080/api/delete/${currentId}`);
+      await axios.delete(`https://ba9maacademy.kasselsoft.online/api/delete/${currentId}`);
 
       // Remove the deleted department from state
       setUsers((prevData) =>
@@ -178,7 +178,7 @@ function Users() {
 
       handleCloseModal(); // Close the modal after deletion
     } catch (error) {
-      console.error("Error deleting department:", error);
+      console.error("Error deleting Student:", error);
     }
   };
   return (

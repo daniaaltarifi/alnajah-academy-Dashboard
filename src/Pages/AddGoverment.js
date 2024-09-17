@@ -22,7 +22,7 @@ const navigate=useNavigate()
     }
     try {
       const response = await axios.post(
-        "https://ba9ma.kasselsoft.online/cards/add",
+        "https://ba9maacademy.kasselsoft.online/cards/add",
         { governorate }
       );
       // setDepartmentData(response.data);

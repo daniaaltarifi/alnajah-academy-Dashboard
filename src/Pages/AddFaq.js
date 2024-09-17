@@ -22,7 +22,7 @@ const navigate=useNavigate()
     }
     try {
       const response = await axios.post(
-        "https://ba9ma.kasselsoft.online/faq/add",
+        "https://ba9maacademy.kasselsoft.online/faq/add",
         { ques,ans }
       );
       // setDepartmentData(response.data);

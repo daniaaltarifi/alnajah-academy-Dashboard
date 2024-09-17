@@ -12,20 +12,48 @@ function UpdateSlider() {
   const [displayInfo, setDisplayInfo] = useState([]);
   const [sliderData, setSliderData] = useState([]);
   const [sliders, setSliders] = useState([]);
-  const [title, seTtitle] = useState("");
+  const [title, seTitle] = useState("");
   const [descr, setDescr] = useState("");
   const [page, setPage] = useState("");
   const [slider_id, setSlider_id] = useState("");
+const [btn_name, setBtn_name] = useState("")
+
   const location = useLocation();
 
   useEffect(() => {
-    // Check if location.state exists and contains the id
-    if (location.state && location.state.page) {
-      setSlider_id(location.state.page);
+    if (location.state && location.state.id) {
+      setSlider_id(location.state.id);
     } else {
       console.warn("No ID found in location.state");
     }
   }, [location.state]);
+  useEffect(() => {
+    // if (location.state && location.state.id) {
+      const fetchslider= async () => {
+        try {
+          const response = await axios.get(`https://ba9maacademy.kasselsoft.online/sliders/sliderbyid/${slider_id}`);
+          const contact = response.data;
+          // Check if the response contains expected data
+          if (Array.isArray(contact) && contact.length > 0) {
+            const contactDetails = contact[0]; // Adjust based on actual data structure
+            seTitle(contactDetails.title);
+            setDescr(contactDetails.descr);
+            setPage(contactDetails.page);
+            setBtn_name(contactDetails.btn_name);
+            setImg(contactDetails.img);
+            setSlider_img(contactDetails.slider_img);
+          
+          } else {
+            console.warn('No contact data available');
+          }
+        } catch (error) {
+          console.error('Error fetching contact data:', error);
+        }
+      };
+
+      fetchslider();
+ 
+  }, [slider_id]);
   const navigate = useNavigate();
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -38,50 +66,70 @@ function UpdateSlider() {
   const handleDeleteimg = () => {
     setImg(null);
   };
+  const handleDeleteImg = async () => {
+    try {
+      const response = await axios.delete(`https://ba9maacademy.kasselsoft.online/sliders/deleteimg/${slider_id}`);
 
-  const handleUpdate = async () => {
-    if (!slider_id || !slider_img) {
-      Toastify({
-        text: "Please Fill All Field",
-        duration: 3000, // Duration in milliseconds
-        gravity: "top", // 'top' or 'bottom'
-        position: "right", // 'left', 'center', 'right'
-        backgroundColor: "#CA1616",
-      }).showToast();
-      return;
+      if (response.status === 200) {
+        setImg(null); // Clear the image state
+      } else {
+        throw new Error('Failed to delete image');
+      }
+    } catch (error) {
+      console.error('Failed to delete image:', error.message);
     }
+  };
+  const handleUpdate = async () => {
+    // if (!slider_id) {
+    //   Toastify({
+    //     text: "Please Fill All Fields",
+    //     duration: 3000,
+    //     gravity: "top",
+    //     position: "right",
+    //     backgroundColor: "#CA1616",
+    //   }).showToast();
+    //   return;
+    // }
+  
     try {
       const formData = new FormData();
       formData.append("title", title);
       formData.append("descr", descr);
       formData.append("page", page);
-      formData.append("img", img);
-      formData.append("slider_img", slider_img);
+      formData.append('btn_name', btn_name);
 
+    formData.append("img", img);
+  formData.append("slider_img", slider_img);
+  
       const response = await axios.put(
-        `https://ba9ma.kasselsoft.online/sliders/update/${slider_id}`,
-        formData, // Send the FormData object
+        `https://ba9maacademy.kasselsoft.online/sliders/update/${slider_id}`,
+        formData,
         {
           headers: {
-            "Content-Type": "multipart/form-data", // Set the content type to multipart/form-data
+            "Content-Type": "multipart/form-data",
           },
         }
       );
+  
+      // Update the state with the new slider data
       setSliders((prevAdd) =>
         prevAdd.map((data) => (data.id === slider_id ? response.data : data))
       );
+  
       Toastify({
         text: "Updated completely",
-        duration: 3000, // Duration in milliseconds
-        gravity: "top", // 'top' or 'bottom'
-        position: "right", // 'left', 'center', 'right'
+        duration: 3000,
+        gravity: "top",
+        position: "right",
         backgroundColor: "#833988",
       }).showToast();
+  
       navigate("/slider");
     } catch (error) {
-      console.log(`Error in fetch edit data: ${error}`);
+      console.error(`Error in fetch edit data: ${error}`);
     }
   };
+  
   useEffect(() => {
    
     const inputElement = document.getElementById('page_disabled');
@@ -104,7 +152,8 @@ function UpdateSlider() {
             <input
               type="text"
               className="input_addcourse"
-              onChange={(e) => seTtitle(e.target.value)}
+              value={title}
+              onChange={(e) => seTitle(e.target.value)}
             />{" "}
           </div>
           <div className="col-lg-4 col-md-6 col-sm-12">
@@ -113,9 +162,13 @@ function UpdateSlider() {
               type="text"
               className="input_addcourse"
               id="page_disabled"
-              value={slider_id}
-              onChange={(e) => setSlider_id(e.target.value)}
+              value={page}
+              onChange={(e) => setPage(e.target.value)}
             />{" "}
+          </div>
+          <div className="col-lg-4 col-md-6 col-sm-12">
+            <p className="input_title_addcourse">زر التنقل</p>
+            <input type="text" className="input_addcourse"value={btn_name} onChange={(e)=>setBtn_name(e.target.value)} />{" "}
           </div>
           {/* <div className="col-lg-4 col-md-6 col-sm-12">
             <p className="input_title_addcourse">اسم المادة</p>
@@ -146,6 +199,7 @@ function UpdateSlider() {
             <textarea
               type="text"
               className="input_textarea_addcourse"
+              value={descr}
               onChange={(e) => setDescr(e.target.value)}
             ></textarea>
           </div>
@@ -174,7 +228,7 @@ function UpdateSlider() {
                 <p className="selected_file_addcourse">{img.name}</p>
                 <i
                   className="fa-solid fa-square-xmark fa-lg mt-2"
-                  onClick={handleDeleteimg}
+                  onClick={handleDeleteImg}
                   style={{ color: "#944b43" }}
                 ></i>
               </div>

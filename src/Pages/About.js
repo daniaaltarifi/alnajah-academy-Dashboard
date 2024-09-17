@@ -48,7 +48,7 @@ function About() {
   useEffect(() => {
     const fetchAbout = async () => {
       try {
-        const response = await axios.get("https://ba9ma.kasselsoft.online/about");
+        const response = await axios.get("https://ba9maacademy.kasselsoft.online/about");
         setAbout(response.data);
       } catch (error) {
         console.error("Error fetching departments:", error);

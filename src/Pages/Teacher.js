@@ -53,7 +53,7 @@ function Teacher() {
     const fetchTeachers = async () => {
       try {
         const response = await axios.get(
-          "https://ba9ma.kasselsoft.online/teacher/"
+          "https://ba9maacademy.kasselsoft.online/teacher/"
         );
         const teachersData = response.data;
         setTeachers(teachersData);
@@ -76,7 +76,7 @@ function Teacher() {
       teachers.map(async (teacher) => {
         try {
           const response = await axios.get(
-            `https://ba9ma.kasselsoft.online/teacher/student-counts/${teacher.id}`
+            `https://ba9maacademy.kasselsoft.online/teacher/student-counts/${teacher.id}`
           );
           counts[teacher.id] = response.data.student_count;
         } catch (error) {
@@ -97,7 +97,7 @@ function Teacher() {
 
       // Fetch course counts for all teacher IDs in parallel
       const courseCountPromises = teacherIds.map((id) =>
-        axios.get(`https://ba9ma.kasselsoft.online/courses/course-counts/${id}`)
+        axios.get(`https://ba9maacademy.kasselsoft.online/courses/course-counts/${id}`)
       );
 
       const courseCountsResponses = await Promise.all(courseCountPromises);
@@ -119,7 +119,7 @@ function Teacher() {
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `https://ba9ma.kasselsoft.online/teacher/delete/${currentId}`
+        `https://ba9maacademy.kasselsoft.online/teacher/delete/${currentId}`
       );
 
       // Remove the deleted department from state
@@ -190,6 +190,7 @@ function Teacher() {
                     <th className="desc_table_cardprice">الأستاذ </th>
                     {/* <th className="desc_table_cardprice"> المادة</th> */}
                     <th className="desc_table_cardprice">الوصف</th>
+                    <th className="desc_table_cardprice">الايميل</th>
                     <th className="desc_table_cardprice">عدد المواد </th>
                     <th className="desc_table_cardprice">عدد الطلاب</th>
 
@@ -207,6 +208,7 @@ function Teacher() {
                         <td>{teacher.teacher_name} </td>
                         {/* <td> محمد أحمد</td> */}
                         <td>{teacher.descr}</td>
+                        <td>{teacher.email}</td>
                         <td>
                           {teacher.course_count !== undefined
                             ? teacher.course_count

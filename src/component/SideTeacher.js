@@ -39,7 +39,11 @@ const SideTeacher = () => {
             <img src={require("../assets/teacher.png")} alt=""className="img-fluid icon_sidebar" /> 
           </Link>
         </li>
-        
+        <li>
+        <Link to="/teacheraddblog" onClick={handleBackground} className="background_icon">
+            <img src={require("../assets/blog.png")} alt=""className="img-fluid icon_sidebar" /> 
+          </Link>
+        </li>
      
       </div>
     </div>

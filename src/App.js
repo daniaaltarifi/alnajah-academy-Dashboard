@@ -49,10 +49,30 @@ import UpdateAvailableCard from "./Pages/UpdateAvailablecard.js";
 import Goverment from "./Pages/Goverment.js";
 import AddGoverment from "./Pages/AddGoverment.js";
 import ProtectedRoute from "./component/ProtectedRoute.js";
+import DynamicBlog from "./Pages/DynamicBlog.js";
+import UpdateDynamicBlog from "./Pages/UpdateDynamicBlog.js";
+import ContactUs from "./Pages/ContactUs.js";
+import UpdateContactUs from "./Pages/UpdateContactUs.js";
+import BoxUnderSlider from "./Pages/BoxUnderSlider.js";
+import UpdateBoxUnderSlider from "./Pages/UpdateBoxUnderSlider.js";
+import BasmaTraining from "./Pages/BasmaTraining.js";
+import UpdateBasmaTraining from "./Pages/UpdateBasmaTraining.js";
+import Whoweare from "./Pages/Whoweare.js";
+import UpdateWhoweare from "./Pages/UpdateWhoweare.js";
+import AboutTeacher from "./Pages/AboutTeacher.js";
+import UpdateAboutTeacher from "./Pages/UpdateAboutTeacher.js";
+import PurchaseSteps from "./Pages/PurchaseSteps.js";
+import AddPurchaseSteps from "./Pages/AddPurchaseSteps.js";
+import UpdatePurchaseSteps from "./Pages/UpdatePurchaseSteps.js";
+import TeacherAddBlog from "./Teacher/TeacherAddBlog.js";
+import ResetPassword from "./Pages/ResetPassword.js";
+import ForgetPassword from "./Pages/ForgetPassword.js";
 function AppContent() {
   const location = useLocation();
   const { user, setUser } = useContext(UserContext);
   const showApp = location.pathname !== "/";
+  const showForgetPassword = location.pathname !== "/forgotPassword";
+  const showResetPassword = location.pathname !== "/resetPassword/:token";
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -64,7 +84,12 @@ function AppContent() {
   if (!showApp) {
     return <Login />;
   }
-
+  if (!showForgetPassword) {
+    return <ForgetPassword />;
+  }
+  if (!showResetPassword) {
+    return <ResetPassword />;
+  }
   if (user.role === "admin") {
     return <AppRouterAdmin />;
   }
@@ -84,6 +109,8 @@ const AppRouterAdmin = () => {
         
         <Routes>
           <Route path="/Home" element={<ProtectedRoute element={<Home />} />} />
+          {/* <Route path='/resetPassword/:token' element={<ResetPassword />}/> */}
+          {/* <Route path="/forgotPassword"  element={<ForgetPassword />}/> */}
           <Route path="/department" element={<ProtectedRoute element={<Department />}/> } />
           <Route path="/courses" element={<ProtectedRoute element={<Courses />}/>} />
           <Route path="/addcourse" element={<ProtectedRoute element={<AddCourse />} />}/>
@@ -112,13 +139,32 @@ const AppRouterAdmin = () => {
           <Route path="/slider"element={<ProtectedRoute element={<Slider />}/>}  />
           <Route path="/addslider" element={<ProtectedRoute element={<AddSlider />}/>} />
           <Route path="/updateslider" element={<ProtectedRoute element={<UpdateSlider />}/>} />
-          <Route path="/about" element={<ProtectedRoute element={<About />} />}/>
+          {/* <Route path="/about" element={<ProtectedRoute element={<About />} />}/> */}
           <Route path="/updateabout" element={<ProtectedRoute element={<UpdateAbout />} />}/>
-          <Route path="/availablecards" element={<ProtectedRoute element={<AvailableCards />}/>} />
+          {/* <Route path="/availablecards" element={<ProtectedRoute element={<AvailableCards />}/>} /> */}
           <Route path="/addavailablecard" element={<ProtectedRoute element={<AddAvailableCards />}/>} />
           <Route path="/updateavailablecard" element={<ProtectedRoute element={<UpdateAvailableCard />} />}/>
           <Route path="/goverment" element={<ProtectedRoute element={<Goverment />} />}/>
           <Route path="/addgoverment" element={<ProtectedRoute element={<AddGoverment />}/>} />
+          <Route path="/dynamicblog" element={<ProtectedRoute element={<DynamicBlog />}/>} />
+          <Route path="/updatedynamicblog" element={<ProtectedRoute element={<UpdateDynamicBlog />}/>} />
+          <Route path="/contactus" element={<ProtectedRoute element={<ContactUs />}/>} />
+          <Route path="/updatecontactus" element={<ProtectedRoute element={<UpdateContactUs />}/>} />
+          <Route path="/boxslider" element={<ProtectedRoute element={<BoxUnderSlider />}/>} />
+          <Route path="/updateboxslider" element={<ProtectedRoute element={<UpdateBoxUnderSlider />}/>} />
+          <Route path="/basmatraining" element={<ProtectedRoute element={<BasmaTraining />}/>} />
+          <Route path="/updatebasmatraining" element={<ProtectedRoute element={<UpdateBasmaTraining />}/>} />
+          <Route path="/whoweare" element={<ProtectedRoute element={<Whoweare />}/>} />
+          <Route path="/updatewhoweare" element={<ProtectedRoute element={<UpdateWhoweare />}/>} />
+          <Route path="/aboutteacher" element={<ProtectedRoute element={<AboutTeacher />}/>} />
+          <Route path="/updateaboutteacher" element={<ProtectedRoute element={<UpdateAboutTeacher />}/>} />
+          <Route path="/purchasesteps" element={<ProtectedRoute element={<PurchaseSteps />}/>} />
+          <Route path="/addpurchasesteps" element={<ProtectedRoute element={<AddPurchaseSteps />}/>} />
+          <Route path="/updatepurchasesteps" element={<ProtectedRoute element={<UpdatePurchaseSteps />}/>} />
+
+
+
+
 
 
         </Routes>
@@ -137,6 +183,8 @@ const AppRouterTeacher = () => {
           <Route path="/teachercourses" element={<ProtectedRoute element={<TeacherCourses />}/>} />
           <Route path="/teacheraddcourses" element={<ProtectedRoute element={<TeacherAddCourse />}/>} />
           <Route path="/teacherupdatecourses" element={<ProtectedRoute element={<TeacherUpdateCourse />}/>} />
+          <Route path="/teacheraddblog" element={<ProtectedRoute element={<TeacherAddBlog />}/>} />
+
         </Routes>
       </div>
     </div>

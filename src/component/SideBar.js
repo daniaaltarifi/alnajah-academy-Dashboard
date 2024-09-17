@@ -99,25 +99,65 @@ const Sidebar = () => {
             <img src={require("../assets/coupon.png")} alt=""className="img-fluid icon_sidebar" /> 
           </Link>
         </li>
-        {/* <li>
+        <li>
         <Link to="/slider" onClick={handleBackground} className="background_icon">
             <img src={require("../assets/banner.png")} alt=""className="img-fluid slider_img_sidebar" /> 
           </Link>
-        </li> */}
-        <li>
+        </li>
+        {/* <li>
         <Link to="/about" onClick={handleBackground} className="background_icon">
             <img src={require("../assets/question.png")} alt=""className="img-fluid icon_sidebar" /> 
           </Link>
-        </li>
-        <li>
+        </li> */}
+        {/* <li>
         <Link to="/availablecards" onClick={handleBackground} className="background_icon">
             <img src={require("../assets/credit-card.png")} alt=""className="img-fluid icon_sidebar" /> 
           </Link>
-        </li>
+        </li> */}
         <li>
         <Link to="/goverment" onClick={handleBackground} className="background_icon">
             <img src={require("../assets/capitol.png")} alt=""className="img-fluid icon_sidebar" /> 
           </Link>
+        </li>
+        <li>
+        <Link to="/dynamicblog" onClick={handleBackground} className="background_icon">
+            <img src={require("../assets/blog.png")} alt=""className="img-fluid icon_sidebar" /> 
+          </Link>
+        </li>
+        <li>
+        <Link to="/contactus" onClick={handleBackground} className="background_icon">
+            <img src={require("../assets/support.png")} alt=""className="img-fluid icon_sidebar" /> 
+          </Link>
+        </li>
+        <li>
+        <Link to="/boxslider" onClick={handleBackground} className="background_icon">
+            <img src={require("../assets/shipping.png")} alt=""className="img-fluid icon_sidebar" /> 
+          </Link>
+         
+        </li>
+        <li>
+        <Link to="/basmatraining" onClick={handleBackground} className="background_icon">
+            <img src={require("../assets/training.png")} alt=""className="img-fluid icon_sidebar" /> 
+          </Link>
+         
+        </li>
+        <li>
+        <Link to="/whoweare" onClick={handleBackground} className="background_icon">
+            <img src={require("../assets/info.png")} alt=""className="img-fluid icon_sidebar" /> 
+          </Link>
+         
+        </li>
+        {/* <li>
+        <Link to="/aboutteacher" onClick={handleBackground} className="background_icon">
+            <img src={require("../assets/teacherabout.png")} alt=""className="img-fluid icon_sidebar" /> 
+          </Link>
+         
+        </li> */}
+        <li>
+        <Link to="/purchasesteps" onClick={handleBackground} className="background_icon">
+            <img src={require("../assets/buy.png")} alt=""className="img-fluid icon_sidebar" /> 
+          </Link>
+         
         </li>
       </div>
     </div>

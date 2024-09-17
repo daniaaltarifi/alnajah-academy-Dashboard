@@ -47,7 +47,7 @@ function Admin() {
     const fetchAdmin = async () => {
       try {
         const response = await axios.get(
-          "https://ba9ma.kasselsoft.online/api/getusers"
+          "https://ba9maacademy.kasselsoft.online/api/getusers"
         );
         const usersdata = response.data;
         const admin = usersdata.filter((user) => user.role === "admin");
@@ -112,7 +112,7 @@ function Admin() {
 
     try {
       const res = await axios.post(
-        "https://ba9ma.kasselsoft.online/api/register",
+        "https://ba9maacademy.kasselsoft.online/api/register",
         {
           name,
           email,
@@ -160,7 +160,7 @@ function Admin() {
   const dataToDisplay = searchQuery ? searchResults : admin;
   const handleDelete = async () => {
     try {
-      await axios.delete(`https://ba9ma.kasselsoft.online/api/deleteadmin/${currentId}`);
+      await axios.delete(`https://ba9maacademy.kasselsoft.online/api/deleteadmin/${currentId}`);
 
       // Remove the deleted department from state
       setAdmin((prevData) =>

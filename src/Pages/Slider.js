@@ -28,8 +28,8 @@ function Slider() {
   const handleCloseModal = () => {
     setSmShow(false);
   };
-  const handleUpdate = (page) => {
-    navigate('/updateslider', { state: { page } });
+  const handleUpdate = (id) => {
+    navigate('/updateslider', { state: { id } });
   };
   
   const handleInputChange = (event) => {
@@ -48,7 +48,7 @@ function Slider() {
   useEffect(() => {
     const fetchSlider = async () => {
       try {
-        const response = await axios.get("https://ba9ma.kasselsoft.online/sliders");
+        const response = await axios.get("https://ba9maacademy.kasselsoft.online/sliders");
         setSlider(response.data);
       } catch (error) {
         console.error("Error fetching departments:", error);
@@ -60,7 +60,7 @@ function Slider() {
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `https://ba9ma.kasselsoft.online/sliders/delete/${currentId}`
+        `https://ba9maacademy.kasselsoft.online/sliders/delete/${currentId}`
       );
 
       // Remove the deleted department from state
@@ -131,6 +131,7 @@ function Slider() {
                     <th className="desc_table_cardprice">عنوان  </th>
                     <th className="desc_table_cardprice"> الوصف</th>
                     <th className="desc_table_cardprice">الصفحة</th>
+                    <th className="desc_table_cardprice">زر التنقل</th>
                    
                     <th className="desc_table_cardprice">الإجراء</th>
                   </tr>
@@ -141,12 +142,17 @@ function Slider() {
                       <td>{slide.title} </td>
                       <td> {slide.descr}</td>
                       <td>{slide.page}</td>
+                      {slide.btn_name ? (
+  <td>{slide.btn_name}</td>
+) : <td></td>}
+
+
 
                       <td>
                         <i
                           class="fa-regular fa-pen-to-square fa-lg ps-2"
                           style={{ color: "#6dab93" }}
-                          onClick={() => handleUpdate(slide.page)}  ></i>
+                          onClick={() => handleUpdate(slide.id)}  ></i>
                            <i
                           className="fa-regular fa-trash-can fa-lg"
                           style={{ color: "#944b43" }}

@@ -5,21 +5,41 @@ import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import Toastify from "toastify-js";
 import "toastify-js/src/toastify.css";
+
 function UpdateFaq() {
   const navigate = useNavigate();
   const location = useLocation();
   const [faqId, setFaqId] = useState("");
   const [ques, setQues] = useState("");
   const [ans, setAns] = useState("");
-  const [faq, setFaq] = useState([]);
+
+  // Fetch FAQ details by ID
   useEffect(() => {
-    // Check if location.state exists and contains the id
     if (location.state && location.state.id) {
       setFaqId(location.state.id);
+      fetchFaqById(location.state.id);
     } else {
       console.warn("No ID found in location.state");
     }
   }, [location.state]);
+
+  const fetchFaqById = async (id) => {
+    try {
+      const response = await axios.get(`https://ba9maacademy.kasselsoft.online/faq/${id}`);
+      setQues(response.data.ques);
+      setAns(response.data.ans);
+    } catch (error) {
+      console.error(`Error fetching FAQ data: ${error}`);
+      Toastify({
+        text: "Error fetching FAQ data",
+        duration: 3000,
+        gravity: "top",
+        position: "right",
+        backgroundColor: "#CA1616",
+      }).showToast();
+    }
+  };
+
   const handleUpdate = async () => {
     if (!ques || !ans) {
       Toastify({
@@ -31,15 +51,11 @@ function UpdateFaq() {
       }).showToast();
       return;
     }
+
     try {
       const response = await axios.put(
-        `https://ba9ma.kasselsoft.online/faq/update/${faqId}`, // Use faqId here
+        `https://ba9maacademy.kasselsoft.online/faq/update/${faqId}`,
         { ques, ans }
-      );
-
-      // Update the department data in state
-      setFaq((prevAdd) =>
-        prevAdd.map((data) => (data.id === faqId ? response.data : data))
       );
 
       Toastify({
@@ -54,6 +70,7 @@ function UpdateFaq() {
       console.log(`Error updating data: ${error}`);
     }
   };
+
   return (
     <>
       <NavBar title={"الاسئلة المتكررة"} />
@@ -69,6 +86,7 @@ function UpdateFaq() {
             <input
               type="text"
               className="input_addcourse"
+              value={ques}
               onChange={(e) => setQues(e.target.value)}
             />{" "}
           </div>
@@ -80,6 +98,7 @@ function UpdateFaq() {
             <input
               type="text"
               className="input_addcourse"
+              value={ans}
               onChange={(e) => setAns(e.target.value)}
             />{" "}
           </div>

@@ -5,6 +5,7 @@ import axios from "axios";
 import Toastify from "toastify-js";
 import "toastify-js/src/toastify.css"; 
 import { useNavigate } from "react-router-dom";
+
 function AddLibrary() {
   const navigate = useNavigate();
   const [book_name, setBook_name] = useState('');
@@ -36,7 +37,7 @@ const [library, setLibrary] = useState([])
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await axios.get("https://ba9ma.kasselsoft.online/department");
+        const response = await axios.get("https://ba9maacademy.kasselsoft.online/department");
         setDepartmentData(response.data);
       } catch (error) {
         console.error("Error fetching departments:", error);
@@ -64,8 +65,19 @@ const [library, setLibrary] = useState([])
       formData.append('department_id', department_id);
       formData.append('page_num', page_num);
       formData.append('file_book', selectedFile);
+      const maxSize = 100 * 1024 * 1024; // 100 MB
+      if (selectedFile.size > maxSize) {
+        Toastify({
+          text: "File size exceeds 100 MB",
+          duration: 3000,
+          gravity: "top",
+          position: 'right',
+          backgroundColor: "#CA1616",
+        }).showToast();
+        return;
+      }
       const response = await axios.post(
-        "https://ba9ma.kasselsoft.online/library/add",
+        "https://ba9maacademy.kasselsoft.online/library/add",
         formData,
         {
           headers: {

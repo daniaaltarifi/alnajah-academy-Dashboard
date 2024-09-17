@@ -36,17 +36,15 @@ function Courses() {
   };
   useEffect(() => {
     const fetchCourses = async () => {
-      console.log(teacherId)
             if (!teacherId) {
         console.error('Teacher ID not found in local storage');
         return;
       }
       
       try {
-        const response = await axios.get(`https://ba9ma.kasselsoft.online/teacher/teachercourse/${teacherId}`);
+        const response = await axios.get(`https://ba9maacademy.kasselsoft.online/teacher/teachercourse/${teacherId}`);
         const data = response.data;
         setCourses(data);
-        console.log(response.data)
       
       } catch (error) {
         console.log(`Error getting data from frontend: ${error}`);
@@ -59,7 +57,6 @@ function Courses() {
  
 
   useEffect(() => {
-    console.log(lessonCounts); // Log the updated lesson counts
   }, [lessonCounts]);
 
   const dataToDisplay = searchQuery ? searchResults : courses;
@@ -75,7 +72,7 @@ function Courses() {
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `https://ba9ma.kasselsoft.online/teacher/deletecourseteacher/${currentId}`
+        `https://ba9maacademy.kasselsoft.online/teacher/deletecourseteacher/${currentId}`
       );
 
       // Remove the deleted department from state

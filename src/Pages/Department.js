@@ -35,7 +35,7 @@ function Department() {
   };
   const fetchData = async () => {
     try {
-      const response = await axios.get("https://ba9ma.kasselsoft.online/department/");
+      const response = await axios.get("https://ba9maacademy.kasselsoft.online/department/");
       const data = response.data;
       setDepartmentData(data);
     } catch (error) {
@@ -59,7 +59,7 @@ function Department() {
     }
     try {
       const response = await axios.post(
-        "https://ba9ma.kasselsoft.online/department/add",
+        "https://ba9maacademy.kasselsoft.online/department/add",
         { title , price }
       );
       setDepartmentData(response.data);
@@ -89,7 +89,7 @@ function Department() {
     }
     try {
       const response = await axios.put(
-        `https://ba9ma.kasselsoft.online/department/update/${currentId}`, // Use currentId here
+        `https://ba9maacademy.kasselsoft.online/department/update/${currentId}`, // Use currentId here
         { title, price }
       );
       // Update the department data in state
@@ -110,38 +110,36 @@ function Department() {
       console.log(`Error updating data: ${error}`);
     }
   };
+  const [message, setMessage] = useState('');
 
   const handleDelete = async () => {
     try {
-      await axios.delete(
-        `https://ba9ma.kasselsoft.online/department/delete/${currentId}`
-      );
-
-      // Remove the deleted department from state
-      setDepartmentData((prevData) =>
-        prevData.filter((data) => data.id !== currentId)
-      );
-
-      Toastify({
-        text: "Department deleted successfully",
-        duration: 3000,
-        gravity: "top",
-        position: "right",
-        backgroundColor: "#F57D20",
-      }).showToast();
-
-      handleCloseModal(); // Close the modal after deletion
+      await axios.delete(`https://ba9maacademy.kasselsoft.online/department/delete/${currentId}?confirm=true`);
+      setSmShow(false);
+      setUserIds([]);
     } catch (error) {
       console.error("Error deleting department:", error);
     }
   };
+  
+  const [userIds, setUserIds] = useState([]);
 
-  const handleOpenModal = (id) => {
+
+  const handleOpenModal = async (id) => {
     setCurrentId(id);
-    setTitlePopup("حذف قسم"); // Set your modal title dynamically
-    setDescriptionPopup("هل أنت متأكد من حذف هذا القسم ؟"); // Set your modal description dynamically
-    setSmShow(true);
+    try {
+      const response = await axios.delete(`https://ba9maacademy.kasselsoft.online/department/delete/${id}`);
+      const { message, userIds } = response.data;
+
+      setMessage(message);
+      setUserIds(userIds);
+
+      setSmShow(true);
+    } catch (error) {
+      console.error("Error checking payments:", error);
+    }
   };
+
   return (
     <>
       <NavBar title="الأقسام" />
@@ -220,12 +218,12 @@ function Department() {
                       style={{ color: "#fff" }}
                     ></i>
                   </button>
-
+                
                   <DeletePopUp
                     show={smShow}
                     onHide={handleCloseModal}
-                    title={titlePopup}
-                    description={descriptionPopup}
+                    title={message}
+                    // description={descriptionPopup}
                     handleDelete={handleDelete}
                   />
                 </div>

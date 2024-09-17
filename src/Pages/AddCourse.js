@@ -4,6 +4,8 @@ import "../Css/addCourse.css";
 import axios from "axios";
 import Toastify from "toastify-js";
 import "toastify-js/src/toastify.css"; 
+import Spinner from "react-bootstrap/Spinner";
+
 import { useNavigate } from "react-router-dom";
 function AddCourse() {
   const [img, setImg] = useState(null);
@@ -23,10 +25,27 @@ const [currentContext, setCurrentContext] = useState(null); // or 'link'
   const [videos, setVideos] = useState([]);
   const [links, setLinks] = useState([]);
   const [linkTitle, setLinkTitle] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [fileBook, setFileBook] = useState(null);
+  // const [selectedFileToLink, setSelectedFile] = useState(null);
 
+  const MAX_FILE_SIZE = 1 * 1024 * 1024 * 1024; // 2 GB in bytes
+
+
+ 
 const handleVideoFileChange = (index, e) => {
   const newVideos = [...videos];
   newVideos[index].url = e.target.files[0];
+  if (newVideos[index].url && newVideos[index].url.size > MAX_FILE_SIZE) {
+    Toastify({
+      text: "File size exceeds the 1 GB limit",
+      duration: 3000,
+      gravity: "top",
+      position: 'right',
+      background: "red",
+    }).showToast();
+    return; // Prevent file from being uploaded
+  }
   setVideos(newVideos);
 };
 const handleLinkChange = (index, e) => {
@@ -40,16 +59,31 @@ const handleLinkChange = (index, e) => {
   }
 };
 
-  
+
+
+// Handle book file change for video or link
+// const handleFileBookChange = (type, index, event) => {
+//   const file = event.target.files[0];
+//   if (type === 'video') {
+//     const updatedVideos = [...videos];
+//     updatedVideos[index].file_book = file;
+//     setVideos(updatedVideos);
+//   } else if (type === 'link') {
+//     const updatedLinks = [...links];
+//     updatedLinks[index].file_book = file;
+//     setLinks(updatedLinks);
+//   }
+// };
+
+// Adding a new video field
+
 const addVideoField = () => {
   setVideos([...videos, { title: '', url: null }]);
 };
 
-// Add a new link field
 const addLinkField = () => {
-  setLinks([...links, { title: '', link: '' }]);
+  setLinks([...links, { title: '', link: ''}]);
 };
-
 
   const handleDeleteimg = (index) => {
     const newVideos = [...videos];
@@ -61,24 +95,27 @@ const addLinkField = () => {
     const file = e.target.files[0];
     setImg(file);
   };
+
   const handleDefaultVideo = (e) => {
     const file = e.target.files[0];
+    if (file && file.size > MAX_FILE_SIZE) {
+      Toastify({
+        text: "File size exceeds the 1 GB limit",
+        duration: 3000,
+        gravity: "top",
+        position: 'right',
+        background: "#CA1616",
+      }).showToast();
+      return; // Prevent file from being uploaded
+    }
     setSelectedDefaultVideo(file);
   };
-  // const handleAddButtonClick = () => {
-  //   if (courseTitle && img) {
-  //     setDisplayInfo([
-  //       ...displayInfo,
-  //       {
-  //         title: courseTitle,
-  //         fileName: img.name // Store the original file name
-  //       }
-  //     ]);
-  //     // Clear the form fields after adding
-  //     setCourseTitle('');
-  //     setImg(null);
-  //   }
-  // };
+  
+  const handleFileBookChange = (e) => {
+    const file = e.target.files[0];
+    setFileBook(file);
+  };
+ 
   const handleDepartment = (e) => {
     const selectedDepartmentId = e.target.value;
     setDepartmentId(selectedDepartmentId);
@@ -90,7 +127,7 @@ const addLinkField = () => {
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await axios.get("https://ba9ma.kasselsoft.online/department");
+        const response = await axios.get("https://ba9maacademy.kasselsoft.online/department");
         setDepartmentData(response.data);
       } catch (error) {
         console.error("Error fetching departments:", error);
@@ -98,7 +135,7 @@ const addLinkField = () => {
     };
     const fetchTeacher= async () => {
       try {
-        const response = await axios.get("https://ba9ma.kasselsoft.online/teacher/");
+        const response = await axios.get("https://ba9maacademy.kasselsoft.online/teacher/");
         setTeacherData(response.data);
       } catch (error) {
         console.error("Error fetching departments:", error);
@@ -109,7 +146,9 @@ const addLinkField = () => {
     fetchTeacher()
   }, []);
   const handlePost = async () => {
-    if (!subject_name || !teacher_id || !department_id || !before_offer || !after_offer || !descr || !img  || !selectedDefaultVideo) {
+    setLoading(true)
+
+    if (!subject_name || !teacher_id || !department_id || !before_offer || !after_offer || !descr || !img  || !selectedDefaultVideo|| !fileBook) {
       Toastify({
         text: "Please Fill All Field",
         duration: 3000,
@@ -130,6 +169,10 @@ const addLinkField = () => {
       formData.append('descr', descr);
       formData.append('img', img);
       formData.append('defaultvideo', selectedDefaultVideo);
+      formData.append('file_book', fileBook);
+     
+  
+
       videos.forEach((video, index) => {
         formData.append('url', video.url);
         formData.append('title', video.title);
@@ -138,10 +181,9 @@ const addLinkField = () => {
         formData.append('link', link.link);
         formData.append('title', link.title);
       });
-      console.log("link", links);
   
       const response = await axios.post(
-        "https://ba9ma.kasselsoft.online/courses/add",
+        "https://ba9maacademy.kasselsoft.online/courses/add",
         formData,
         {
           headers: {
@@ -149,7 +191,6 @@ const addLinkField = () => {
           },
         }
       );
-
       setCourses(response.data);
       Toastify({
         text: "Added completely",
@@ -160,17 +201,25 @@ const addLinkField = () => {
       }).showToast();
       navigate('/courses');
     } catch (error) {
-      console.log(`Error fetching post data: ${error}`);
-      console.log("subject_name", subject_name);
-      console.log("teacher_id", teacher_id);
-      console.log("department_id", department_id);
-      console.log("before_offer", before_offer);
-      console.log("after_offer", after_offer);
-      console.log("descr", descr);
-      console.log("img", img);
-      console.log("displayInfo", displayInfo);
-      console.log("link", links);
-      console.log("defaultvideo", selectedDefaultVideo);
+      if (error.response && error.response.status === 413) {
+        Toastify({
+          text: "File size exceeds the limit of 1 GB",
+          duration: 3000,
+          gravity: "top",
+          position: 'right',
+          backgroundColor: "#CA1616",
+        }).showToast();
+      } else {
+        Toastify({
+          text: "An error occurred while uploading the file",
+          duration: 3000,
+          gravity: "top",
+          position: 'right',
+          backgroundColor: "#CA1616",
+        }).showToast();
+      }
+      console.error(`Error fetching post data: ${error}`);
+   
 
     }
   };
@@ -206,6 +255,7 @@ const addLinkField = () => {
               ))}
             </select>
           </div>
+          
           <div className="col-lg-4 col-md-6 col-sm-12">
             <p className="input_title_addcourse">القسم </p>
             <select
@@ -233,13 +283,10 @@ const addLinkField = () => {
             <p className="input_title_addcourse">السعر قبل الخصم </p>
             <input type="text" className="input_addcourse" onChange={(e)=>setAfter_offer(e.target.value)}/>{" "}
           </div>
-          {/* <div className="col-lg-4 col-md-6 col-sm-12">
-            <p className="input_title_addcourse">الكوبون </p>
-            <input type="text" className="input_addcourse" />{" "}
-          </div> */}
+         
         </div>
         <div className="row mt-4">
-          <div className="col-lg-4 col-md-6 col-sm-12">
+          <div className="col-lg-12 col-md-12 col-sm-12">
             <p className="input_title_addcourse">الوصف</p>
             <textarea
               type="text"
@@ -247,6 +294,10 @@ const addLinkField = () => {
               onChange={(e)=>setDescr(e.target.value)}
             ></textarea>
           </div>
+          </div>
+       
+          <div className="row mt-5">
+
           <div className="col-lg-4 col-md-6 col-sm-12">
             <p className="input_title_addcourse">صورة المادة</p>
             <div className="file-input-container">
@@ -281,7 +332,24 @@ const addLinkField = () => {
               )}
             </div>
           </div>
+          <div className="col-lg-4 col-md-6 col-sm-12">
+  <p className="input_title_addcourse">كتاب المادة</p>
+  <div className="file-input-container">
+    <input
+      type="file"
+      className="choose_file_addcourse"
+      onChange={handleFileBookChange}
+    />
+    <span className="ps-5">اختر ملف كتاب</span>
+    {fileBook && <span className="selected_file_addcourse">{fileBook.name}</span>}
+    {!fileBook && (
+      <span className="selected_file_addcourse">No file selected</span>
+    )}
+  </div>
+</div> 
         </div>
+
+
         <hr />
       </div>
 
@@ -292,80 +360,79 @@ const addLinkField = () => {
           <div className="col-lg-8 col-md-6 col-sm-12">
           <div className="title_add_course">اضافة المواضيع</div>
           <div>
-  <button className="btn btn_add_video ms-5" onClick={() => setCurrentContext('video')}>Video</button>
-  <button className="btn btn_add_video " onClick={() => setCurrentContext('link')}>Link</button>
+
+
+
+
+            
+          <button onClick={addVideoField} className="btn btn_add_video ms-5">إضافة فيديو جديد</button>
+  <button onClick={addLinkField} className="btn btn_add_video ms-5">إضافة رابط جديد</button>
 </div>
-          {currentContext === 'video' && videos.map((video, index) => (
-          <div key={index}>
-            <p className="input_title_addcourse">عنوان الموضوع</p>
-            <input
-              type="text"
-              className="input_addcourse"
-              value={video.title}
-              onChange={(e) => {
-                const updatedVideos = [...videos];
-                updatedVideos[index] = { ...updatedVideos[index], title: e.target.value };
-                setVideos(updatedVideos);
-              }}
-              placeholder="Enter title"
-              required
-            />
-            <div className="file_input_addvideo">
-              <button className="btn_choose_video">اختيار ملف</button>
-              <input
-                type="file"
-                className="choose_file_addcourse"
-                onChange={(e) => handleVideoFileChange(index, e)}
-                required
-              />
-              <span className="ps-5 selected_file_addvideo">قم بتحميل الملفات من هنا</span>
-              {!video.url && <span className="selected_file_addcourse">No file selected</span>}
-            </div>
-            {video.url && (
-              <div className="d-flex justify-content-around">
-                <p className="selected_file_addcourse">{video.url.name}</p>
-                <i
-                  className="fa-solid fa-square-xmark fa-lg mt-2"
-                  onClick={() => handleDeleteimg(index, 'video')}
-                  style={{ color: '#944b43' }}
-                ></i>
-              </div>
-            )}
-          </div>
-        ))}
+{videos.map((video, index) => (
+                    <div key={index}>
+                        <p className="input_title_addcourse">عنوان الموضوع</p>
+                        <input
+                            type="text"
+                            className="input_addcourse"
+                            value={video.title}
+                            onChange={(e) => {
+                                const updatedVideos = [...videos];
+                                updatedVideos[index] = { ...updatedVideos[index], title: e.target.value };
+                                setVideos(updatedVideos);
+                            }}
+                            placeholder="Enter title"
+                            required
+                        />
 
-        {currentContext === 'link' && links.map((link, index) => (
-          <div key={index}>
-            <p className="input_title_addcourse">عنوان الموضوع</p>
-            <input
-              type="text"
-              name="title"
-              className="input_addcourse"
-              value={link.title}
-              onChange={(e) => handleLinkChange(index, e)}
-              placeholder="Enter title"
-              required
-            />
-            <input
-              type="text"
-              name="link"
-              className="input_addcourse"
-              value={link.link}
-              onChange={(e) => handleLinkChange(index, e)}
-              placeholder="Enter link URL"
-              required
-            />
-          </div>
-        ))}
+                        {/* File input for video */}
+                        <div className="file_input_addvideo">
+                            <button className="btn_choose_video">اختيار ملف</button>
+                            <input
+                                type="file"
+                                className="choose_file_addcourse"
+                                onChange={(e) => handleVideoFileChange(index, e)}
+                                required
+                            />
+                            {!video.url && <span className="selected_file_addcourse">No file selected</span>}
+                        </div>
 
-        <button
-          type="button"
-          className="btn btn_add_video float-start"
-          onClick={currentContext === 'video' ? addVideoField : addLinkField}
-        >
-          {currentContext === 'video' ? 'Add Video' : 'Add Link'}
-        </button>
-          <button className="btn_addCourse px-5 py-2  mt-5"onClick={handlePost}> اضافة مادة </button>
+                    </div>
+                ))}
+
+                {links.map((link, index) => (
+                    <div key={index}>
+                        <p className="input_title_addcourse">عنوان الموضوع</p>
+                        <input
+                            type="text"
+                            name="title"
+                            className="input_addcourse"
+                            value={link.title}
+                            onChange={(e) => handleLinkChange(index, e)}
+                            placeholder="Enter title"
+                            required
+                        />
+                        <input
+                            type="text"
+                            name="link"
+                            className="input_addcourse"
+                            value={link.link}
+                            onChange={(e) => handleLinkChange(index, e)}
+                            placeholder="Enter link URL"
+                            required
+                        />
+
+                        
+                    </div>
+                ))}
+
+
+      
+<button className="btn_addCourse px-5 py-2  mt-5"onClick={handlePost} >  {loading && (
+                             <Spinner animation="border" variant="warning"   size="sm" // Small size spinner
+                             className="spinner_course"/>
+                            )}
+                            اضافة مادة </button>
+                             {/* Show spinner if loading */}
       </div>
         </div>
       </div>
