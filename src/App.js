@@ -102,6 +102,13 @@ function AppContent() {
 }
 
 const AppRouterAdmin = () => {
+    const originalConsoleError = console.error;
+  console.error = (...args) => {
+    if (/Warning/.test(args[0])) {
+      return;
+    }
+    originalConsoleError.apply(console, args);
+  };
   return (
     <div className="App" dir="rtl">
       <SideBar />

@@ -17,7 +17,7 @@ function UpdateBlog() {
   const [departmentData, setDepartmentData] = useState([])
   const [blogId, setBlogId] = useState('');
   const location = useLocation();
-
+  const [imagePreview, setImagePreview] = useState(null);
   useEffect(() => {
     // Check if location.state exists and contains the id
     if (location.state && location.state.id) {
@@ -30,10 +30,17 @@ function UpdateBlog() {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     setSelectedFile(file);
+    // Create a preview URL for the image
+    // if (file) {
+    //   const previewUrl = URL.createObjectURL(file);
+    //   setImagePreview(previewUrl);
+    // }
   };
 
   const handleDeleteSelectedFile = () => {
     setSelectedFile(null);
+    setImagePreview(null); // Remove the preview when the file is deleted
+
   };
   const handleAddButtonClick = () => {
     if (tags) {
@@ -54,40 +61,44 @@ function UpdateBlog() {
     }
   };
   
-
-  
   useEffect(() => {
     if (!blogId) return;
   
     const fetchBlogDetails = async () => {
       try {
         const response = await axios.get(`https://ba9maacademy.kasselsoft.online/blog/blogdetails/${blogId}`);
+        const blogData = response.data;
   
-        const blogDataArray = response.data;
+        console.log('Fetched blog data:', blogData);
   
-        // Check if the response data is an array and has at least one item
-        if (Array.isArray(blogDataArray) && blogDataArray.length > 0) {
-          const blogData = blogDataArray[0]; // Access the first item in the array
+        setTitle(blogData.title || "");
+        setAuthor(blogData.author || "");
+        setDescr(blogData.descr || "");
+        setDepartment_id(blogData.department_id || "");
   
-          // Log the blog data
+        // Process tag IDs and names
+        if (blogData.tag_ids && blogData.tag_names) {
+          const tagIds = blogData.tag_ids.split(',').map(id => id.trim());
+          const tagNames = blogData.tag_names.split(',').map(name => name.trim());
   
-          setTitle(blogData.title || "");
-          setAuthor(blogData.author || "");
-          setDescr(blogData.descr || "");
-          setDepartment_id(blogData.department_id || "");
+          // Create a mapping of tag IDs to names
+          const tagMap = tagIds.reduce((acc, id, index) => {
+            acc[id] = tagNames[index] || "";
+            return acc;
+          }, {});
   
-          // Assuming blogData.tags is an array of tags
-          if (Array.isArray(blogData.tags)) {
-            setDisplayInfo(blogData.tags.map((tag, index) => ({
-              id: index, // Using index as a temporary unique identifier
-              title: tag
-            })));
-          } else {
-            setDisplayInfo([]);
-          }
+          // Set displayInfo with tag objects
+          setDisplayInfo(
+            tagIds.map(id => ({
+              id: id, // Use the tag ID from the response
+              title: tagMap[id] || "", // Match title with the ID
+            }))
+          );
         } else {
-          console.warn("No blog data found in response");
+          setDisplayInfo([]); // No tags, set to empty array
         }
+  
+        setSelectedFile(blogData.img || "");
       } catch (error) {
         console.error("Error fetching blog details:", error);
       }
@@ -97,11 +108,6 @@ function UpdateBlog() {
   }, [blogId]);
   
 
-  const handleDeleteCourse = (id) => {
-    // Filter out the tag with the specified ID
-    const updatedDisplayInfo = displayInfo.filter((entry) => entry.id !== id);
-    setDisplayInfo(updatedDisplayInfo);
-  };
   
   const handleDepartment = (e) => {
     const selectedDepartmentId = e.target.value;
@@ -169,6 +175,46 @@ function UpdateBlog() {
   };
   
 
+
+  const handleDeleteTag = async (tagId) => {
+    console.log("Attempting to delete tag with ID:", tagId);
+    try {
+      // Ensure the tagId is valid before making the request
+      if (!tagId || isNaN(tagId)) {
+        throw new Error("Invalid tagId");
+      }
+  
+      // Send a DELETE request to the backend to remove the tag
+      const response = await axios.delete(`https://ba9maacademy.kasselsoft.online/tag/deleteTag/${tagId}`);
+  
+      console.log(`Response from server after deleting tag ${tagId}:`, response);
+  
+      // Remove the tag from the local state
+      setDisplayInfo(prevInfo => prevInfo.filter(tag => tag.id !== tagId));
+  
+      Toastify({
+        text: "Tag deleted successfully",
+        duration: 3000,
+        gravity: "top",
+        position: 'right',
+        backgroundColor: "#944b43",
+      }).showToast();
+  
+    } catch (error) {
+      console.error('Error deleting tag:', error.message);
+      Toastify({
+        text: "Error deleting tag",
+        duration: 3000,
+        gravity: "top",
+        position: 'right',
+        backgroundColor: "#ff0000",
+      }).showToast();
+    }
+  };
+  
+
+  
+  
   
 
   return (
@@ -238,15 +284,18 @@ function UpdateBlog() {
           </div>
 
           <div className="col-lg-4 col-md-6 col-sm-12">
-            <div className="entries_container d-flex flex-wrap justify-content-evenly">
-            {displayInfo.map((entry) => (
-  <div key={entry.id} className="entry">
+  <div className="entries_container d-flex flex-wrap justify-content-evenly">
+    
+  {displayInfo.map(tag => (
+  <div key={tag.id} className="entry">
     <div className="d-flex justify-content-between">
+      
       <p className="tag_data">
-        {entry.title}
+        {tag.title}
+       
         <i
           className="fa-solid fa-square-xmark fa-lg mt-2"
-          onClick={() => handleDeleteCourse(entry.id)} // Ensure this is passing the correct ID
+          onClick={() => handleDeleteTag(tag.id)} // Call the delete handler here
           style={{ color: "#944b43" }}
         ></i>
       </p>
@@ -254,43 +303,46 @@ function UpdateBlog() {
   </div>
 ))}
 
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-lg-4 col-md-6 col-sm-12"></div>
-            <div className="col-lg-8 col-md-6 col-sm-12">
-              <p className="input_title_addcourse">اضف صورة </p>
+  </div>
+</div>
 
-              <div className="file_input_addvideo">
-                <button className="btn_choose_video">اختيار ملف</button>
-                <input
-                  type="file"
-                  className="choose_file_addcourse"
-                  onChange={handleFileChange}
-                />
-                <span className="ps-5 selected_file_addvideo">
-                  قم بتحميل الملفات من هنا
-                </span>
-                {!selectedFile && (
-                  <span className="selected_file_addcourse">
-                    No file selected
-                  </span>
-                )}
-              </div>
-              {/* when add video display name of it */}
-              {selectedFile && (
-                <div className="d-flex justify-content-around">
-                  <p className="selected_file_addcourse">{selectedFile.name}</p>
-                  <i
-                    className="fa-solid fa-square-xmark fa-lg mt-2"
-                    onClick={handleDeleteSelectedFile}
-                    style={{ color: "#944b43" }}
-                  ></i>
-                </div>
-              )}
-              {/*End when add video display name of it */}
-            </div>
+
+
+          <div className="row">
+      <div className="col-lg-4 col-md-6 col-sm-12">
+     
+      </div>
+      <div className="col-lg-8 col-md-6 col-sm-12">
+        <p className="input_title_addcourse">اضف صورة </p>
+
+        <div className="file_input_addvideo">
+          <button className="btn_choose_video">اختيار ملف</button>
+          <input
+            type="file"
+            className="choose_file_addcourse"
+            onChange={handleFileChange}
+            accept="img/*" 
+          />
+           {!selectedFile && (
+            <>
+          <span className="ps-5 selected_file_addvideo">
+            قم بتحميل الملفات من هنا
+          </span>
+         
+            <span className="selected_file_addcourse">No file selected</span>
+            </>
+          )}
+        </div>
+
+        {/* Display the name of the selected file */}
+        {selectedFile && (
+          <div className="d-flex justify-content-around">
+            <p className="selected_file_addcourse">{selectedFile.name}</p>
+           
           </div>
+        )}
+      </div>
+    </div>
 
           <div className="d-flex justify-content-center align-items-center ">
             <button className="btn_addCourse px-5 py-2 mt-4 "onClick={handleUpdate}>حفظ</button>
