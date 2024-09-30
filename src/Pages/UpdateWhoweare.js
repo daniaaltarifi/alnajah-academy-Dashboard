@@ -18,7 +18,7 @@ function UpdateWhoweare() {
       setWhoweareId(location.state.id);
       const fetchContact = async () => {
         try {
-          const response = await axios.get(`https://ba9maacademy.kasselsoft.online/whoweare/Whowearebyid/${location.state.id}`);
+          const response = await axios.get(`https://backendba9ma.ba9maonline.com/whoweare/Whowearebyid/${location.state.id}`);
           const contact = response.data;
 
           // Check if the response contains expected data
@@ -55,7 +55,7 @@ function UpdateWhoweare() {
     }
     try {
       const response = await axios.put(
-        `https://ba9maacademy.kasselsoft.online/whoweare/update/${whoweareId}`, // Use whoweareId here
+        `https://backendba9ma.ba9maonline.com/whoweare/update/${whoweareId}`, // Use whoweareId here
         { title }
       );
 

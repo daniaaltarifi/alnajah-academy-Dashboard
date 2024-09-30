@@ -68,14 +68,14 @@ function UpdateCourse() {
   };
 
   useEffect(() => {
-      fetchData('https://ba9maacademy.kasselsoft.online/department', setDepartmentData);
-      fetchData('https://ba9maacademy.kasselsoft.online/teacher', setTeacherData);
+      fetchData('https://backendba9ma.ba9maonline.com/department', setDepartmentData);
+      fetchData('https://backendba9ma.ba9maonline.com/teacher', setTeacherData);
   }, []);
 
   useEffect(() => {
       if (CourseId) {
-          fetchData(`https://ba9maacademy.kasselsoft.online/courses/links/${CourseId}`, setVideoLinks);
-          fetchData(`https://ba9maacademy.kasselsoft.online/courses/videos/${CourseId}`, setVideoFiles);
+          fetchData(`https://backendba9ma.ba9maonline.com/courses/links/${CourseId}`, setVideoLinks);
+          fetchData(`https://backendba9ma.ba9maonline.com/courses/videos/${CourseId}`, setVideoFiles);
           fetchCourseDetails(CourseId);
       }
   }, [CourseId]);
@@ -83,7 +83,7 @@ function UpdateCourse() {
  // Fetch course details when courseId is available
  const fetchCourseDetails = async (id) => {
   try {
-      const response = await axios.get(`https://ba9maacademy.kasselsoft.online/courses/${id}`);
+      const response = await axios.get(`https://backendba9ma.ba9maonline.com/courses/${id}`);
       const courseData = response.data[0] || {};
       setCourseTitle(courseData.subject_name || '');
       setTeacherName(courseData.teacher_name || '');
@@ -234,7 +234,7 @@ videoFiles.forEach((video, index) => {
         });
 
         const response = await axios.put(
-            `https://ba9maacademy.kasselsoft.online/courses/${CourseId}`,
+            `https://backendba9ma.ba9maonline.com/courses/${CourseId}`,
             formData,
             { headers: { 'Content-Type': 'multipart/form-data' } }
         );
@@ -276,7 +276,7 @@ videoFiles.forEach((video, index) => {
 
 const deleteVideo = async (id) => {
   try {
-    await axios.delete(`https://ba9maacademy.kasselsoft.online/courses/videos/${id}`);
+    await axios.delete(`https://backendba9ma.ba9maonline.com/courses/videos/${id}`);
     setVideoFiles(videoFiles.filter(video => video.id !== id));
     Toastify({
       text: "Video deleted successfully",
@@ -292,7 +292,7 @@ const deleteVideo = async (id) => {
 
 const deleteLink = async (id) => {
   try {
-    await axios.delete(`https://ba9maacademy.kasselsoft.online/courses/videos/${id}`);
+    await axios.delete(`https://backendba9ma.ba9maonline.com/courses/videos/${id}`);
     setVideoLinks(videoLinks.filter(link => link.id !== id));
     Toastify({
       text: "Link deleted successfully",
@@ -311,7 +311,7 @@ const deleteLink = async (id) => {
 const inputStyle = (touched, value) => ({
   border: `1px solid ${touched && !value ? 'red' : '#ccc'}`,
 });
-const BASE_URL = 'https://ba9maacademy.kasselsoft.online/'; // Adjust this to your server's base URL
+const BASE_URL = 'https://backendba9ma.ba9maonline.com/'; // Adjust this to your server's base URL
 
 const renderFilePreview = (filePath) => {
   if (filePath) {

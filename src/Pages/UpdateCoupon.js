@@ -32,7 +32,7 @@ function UpdateCoupon() {
 
     const fetchCoupon = async () => {
       try {
-        const response = await axios.get(`https://ba9maacademy.kasselsoft.online/coupon/${couponId}`);
+        const response = await axios.get(`https://backendba9ma.ba9maonline.com/coupon/${couponId}`);
         setCoupon_code(response.data.coupon_code);
         setCoupon_type(response.data.coupon_type);
        // Convert the expiration_date to YYYY-MM-DD if it's not in the correct format
@@ -50,8 +50,8 @@ function UpdateCoupon() {
     const fetchData = async () => {
       try {
         const [deptRes, courseRes] = await Promise.all([
-          axios.get("https://ba9maacademy.kasselsoft.online/department"),
-          axios.get("https://ba9maacademy.kasselsoft.online/courses")
+          axios.get("https://backendba9ma.ba9maonline.com/department"),
+          axios.get("https://backendba9ma.ba9maonline.com/courses")
         ]);
 
         setDepartmentData(deptRes.data);
@@ -79,7 +79,7 @@ function UpdateCoupon() {
 
     try {
       await axios.put(
-        `https://ba9maacademy.kasselsoft.online/coupon/update/${couponId}`,
+        `https://backendba9ma.ba9maonline.com/coupon/update/${couponId}`,
         { coupon_code, coupon_type, expiration_date, course_id, department_id }
       );
 

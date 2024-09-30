@@ -54,7 +54,7 @@ function TeacherAddBlog() {
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await axios.get("https://ba9maacademy.kasselsoft.online/department");
+        const response = await axios.get("https://backendba9ma.ba9maonline.com/department");
         setDepartmentData(response.data);
       } catch (error) {
         console.error("Error fetching departments:", error);
@@ -87,7 +87,7 @@ function TeacherAddBlog() {
       tagsArray.forEach(tag => formData.append('tags[]', tag));
   
       const response = await axios.post(
-        "https://ba9maacademy.kasselsoft.online/blog/add",
+        "https://backendba9ma.ba9maonline.com/blog/add",
         formData,
         {
           headers: {

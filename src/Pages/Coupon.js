@@ -27,9 +27,9 @@ function Coupon() {
     const fetchData = async () => {
       try {
         const [couponRes, deptRes, courseRes] = await Promise.all([
-          axios.get("https://ba9maacademy.kasselsoft.online/coupon/"),
-          axios.get("https://ba9maacademy.kasselsoft.online/department"),
-          axios.get("https://ba9maacademy.kasselsoft.online/courses"),
+          axios.get("https://backendba9ma.ba9maonline.com/coupon/"),
+          axios.get("https://backendba9ma.ba9maonline.com/department"),
+          axios.get("https://backendba9ma.ba9maonline.com/courses"),
         ]);
 
         setCoupons(couponRes.data);
@@ -61,7 +61,7 @@ function Coupon() {
   // Handle coupon deletion
   const handleDelete = async () => {
     try {
-      await axios.delete(`https://ba9maacademy.kasselsoft.online/coupon/delete/${currentId}`);
+      await axios.delete(`https://backendba9ma.ba9maonline.com/coupon/delete/${currentId}`);
       setCoupons((prevData) => prevData.filter((data) => data.id !== currentId));
       Toastify({
         text: "Coupon deleted successfully",
@@ -78,7 +78,7 @@ function Coupon() {
 
   const handleDeleteAll = async () => {
     try {
-      await axios.delete("https://ba9maacademy.kasselsoft.online/coupon/deleteall");
+      await axios.delete("https://backendba9ma.ba9maonline.com/coupon/deleteall");
       setCoupons([]);
       Toastify({
         text: "All coupons deleted successfully",

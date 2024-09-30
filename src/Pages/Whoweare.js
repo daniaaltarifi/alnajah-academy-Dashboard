@@ -33,7 +33,7 @@ function Whoweare() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("https://ba9maacademy.kasselsoft.online/whoweare");
+        const response = await axios.get("https://backendba9ma.ba9maonline.com/whoweare");
         const data = response.data;
         setWhoweare(data);
       } catch (error) {
@@ -43,7 +43,7 @@ function Whoweare() {
     fetchData();
     const fetchAboutTeacher = async () => {
       try {
-        const response = await axios.get("https://ba9maacademy.kasselsoft.online/aboutteacher");
+        const response = await axios.get("https://backendba9ma.ba9maonline.com/aboutteacher");
         setAboutTeacher(response.data);
      
       } catch (error) {

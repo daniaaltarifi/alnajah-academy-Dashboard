@@ -48,7 +48,7 @@ function Slider() {
   useEffect(() => {
     const fetchSlider = async () => {
       try {
-        const response = await axios.get("https://ba9maacademy.kasselsoft.online/sliders");
+        const response = await axios.get("https://backendba9ma.ba9maonline.com/sliders");
         setSlider(response.data);
       } catch (error) {
         console.error("Error fetching departments:", error);
@@ -60,7 +60,7 @@ function Slider() {
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `https://ba9maacademy.kasselsoft.online/sliders/delete/${currentId}`
+        `https://backendba9ma.ba9maonline.com/sliders/delete/${currentId}`
       );
 
       // Remove the deleted department from state

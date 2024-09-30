@@ -33,7 +33,7 @@ function UpdateDynamicBlog() {
     }
     try {
       const response = await axios.put(
-        `https://ba9maacademy.kasselsoft.online/dynamicblog/update/${dynamicBlogId}`, // Use dynamicBlogId here
+        `https://backendba9ma.ba9maonline.com/dynamicblog/update/${dynamicBlogId}`, // Use dynamicBlogId here
         { title, descr }
       );
 

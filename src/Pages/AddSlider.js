@@ -58,7 +58,7 @@ const navigate = useNavigate()
       formData.append('img', img);
       formData.append('slider_img', slider_img);
       const response = await axios.post(
-        "https://ba9maacademy.kasselsoft.online/sliders/add",
+        "https://backendba9ma.ba9maonline.com/sliders/add",
         formData,
         {
           headers: {

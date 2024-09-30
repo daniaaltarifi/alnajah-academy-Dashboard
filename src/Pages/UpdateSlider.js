@@ -31,7 +31,7 @@ const [btn_name, setBtn_name] = useState("")
     // if (location.state && location.state.id) {
       const fetchslider= async () => {
         try {
-          const response = await axios.get(`https://ba9maacademy.kasselsoft.online/sliders/sliderbyid/${slider_id}`);
+          const response = await axios.get(`https://backendba9ma.ba9maonline.com/sliders/sliderbyid/${slider_id}`);
           const contact = response.data;
           // Check if the response contains expected data
           if (Array.isArray(contact) && contact.length > 0) {
@@ -68,7 +68,7 @@ const [btn_name, setBtn_name] = useState("")
   };
   const handleDeleteImg = async () => {
     try {
-      const response = await axios.delete(`https://ba9maacademy.kasselsoft.online/sliders/deleteimg/${slider_id}`);
+      const response = await axios.delete(`https://backendba9ma.ba9maonline.com/sliders/deleteimg/${slider_id}`);
 
       if (response.status === 200) {
         setImg(null); // Clear the image state
@@ -102,7 +102,7 @@ const [btn_name, setBtn_name] = useState("")
   formData.append("slider_img", slider_img);
   
       const response = await axios.put(
-        `https://ba9maacademy.kasselsoft.online/sliders/update/${slider_id}`,
+        `https://backendba9ma.ba9maonline.com/sliders/update/${slider_id}`,
         formData,
         {
           headers: {

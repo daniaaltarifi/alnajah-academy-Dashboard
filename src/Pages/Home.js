@@ -39,13 +39,13 @@ function Home() {
     const fetchData = async () => {
       try {
         const [departmentResponse,coursesResponse,usersResponse,teachersResponse,libraryResponse,blogResponse,commentsResponse]=await Promise.all([
-         axios.get("https://ba9maacademy.kasselsoft.online/department/"),
-         axios.get("https://ba9maacademy.kasselsoft.online/courses/"),
-         axios.get("https://ba9maacademy.kasselsoft.online/api/getusers"),
-         axios.get("https://ba9maacademy.kasselsoft.online/teacher/"),
-         axios.get("https://ba9maacademy.kasselsoft.online/library/"),
-         axios.get("https://ba9maacademy.kasselsoft.online/blog/"),
-         axios.get("https://ba9maacademy.kasselsoft.online/connects/comment"),
+         axios.get("https://backendba9ma.ba9maonline.com/department/"),
+         axios.get("https://backendba9ma.ba9maonline.com/courses/"),
+         axios.get("https://backendba9ma.ba9maonline.com/api/getusers"),
+         axios.get("https://backendba9ma.ba9maonline.com/teacher/"),
+         axios.get("https://backendba9ma.ba9maonline.com/library/"),
+         axios.get("https://backendba9ma.ba9maonline.com/blog/"),
+         axios.get("https://backendba9ma.ba9maonline.com/connects/comment"),
         ])
         const usersData = usersResponse.data;
         const student = usersData.filter(user => user.role === 'student');

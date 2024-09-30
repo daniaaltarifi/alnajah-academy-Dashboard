@@ -38,7 +38,7 @@ const [address, setaddress] = useState("")
 
   const fetchCardDetails = async (id) => {
     try {
-      const response = await axios.get(`https://ba9maacademy.kasselsoft.online/cards/get/availablecard/${id}`);
+      const response = await axios.get(`https://backendba9ma.ba9maonline.com/cards/get/availablecard/${id}`);
       const card = response.data[0];
       setName(card.name);
       setLocation(card.location);
@@ -61,7 +61,7 @@ const [address, setaddress] = useState("")
   useEffect(() => {
     const fetchGoverment = async () => {
         try {
-          const response = await axios.get("https://ba9maacademy.kasselsoft.online/cards/");
+          const response = await axios.get("https://backendba9ma.ba9maonline.com/cards/");
           setgovermentData(response.data);
         } catch (error) {
           console.error("Error fetching goverment:", error);
@@ -77,7 +77,7 @@ const [address, setaddress] = useState("")
     try {
     
       const response = await axios.put(
-        `https://ba9maacademy.kasselsoft.online/cards/update/availablecard/${availabalecardId}`,
+        `https://backendba9ma.ba9maonline.com/cards/update/availablecard/${availabalecardId}`,
         { name,location,mapslink,governorate_id,address,phone}
       );
       setavailablecard((prevAdd) =>

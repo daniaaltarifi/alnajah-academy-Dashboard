@@ -47,7 +47,7 @@ const fetchDepartmentOrder = async () => {
   setNoDepartmentessage(''); // Clear previous message
   
   try {
-    const response = await axios.get("https://ba9maacademy.kasselsoft.online/api/getcourseusers");
+    const response = await axios.get("https://backendba9ma.ba9maonline.com/api/getcourseusers");
     const data = response.data;
     // Filter to only include unapproved payments
     const unapprovedPayments = data.filter(payment => payment.department_id !== null);
@@ -69,7 +69,7 @@ const fetchDepartmentOrder = async () => {
 
   const fetchCourseOrder = async () => {
     try {
-      const response = await axios.get("https://ba9maacademy.kasselsoft.online/api/getcourseusers");
+      const response = await axios.get("https://backendba9ma.ba9maonline.com/api/getcourseusers");
       const data = response.data;
       // Filter to only include unapproved payments
       const unapprovedPayments = data.filter(payment => payment.course_id !== null);
@@ -92,7 +92,7 @@ const fetchDepartmentOrder = async () => {
 
   const handleDeleteCourseUsers = async () => {
     try {
-      await axios.delete(`https://ba9maacademy.kasselsoft.online/api/delete/payments/${currentId}`);
+      await axios.delete(`https://backendba9ma.ba9maonline.com/api/delete/payments/${currentId}`);
       setDepartmentOrder((prevData) => prevData.filter((data) => data.payment_id !== currentId));
       setCourseOrder((prevData) => prevData.filter((data) => data.payment_id !== currentId));
       Toastify({

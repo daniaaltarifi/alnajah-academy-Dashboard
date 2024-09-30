@@ -30,7 +30,7 @@ function ContactUs() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("https://ba9maacademy.kasselsoft.online/contactdynamic/");
+        const response = await axios.get("https://backendba9ma.ba9maonline.com/contactdynamic/");
         const data = response.data;
         setContactUs(data);
       } catch (error) {

@@ -38,7 +38,7 @@ function Library() {
   useEffect(()=>{
     const fetchLibrary = async () => {
       try {
-        const response = await axios.get("https://ba9maacademy.kasselsoft.online/library/");
+        const response = await axios.get("https://backendba9ma.ba9maonline.com/library/");
         setLibrary(response.data);
         setLoading(false);
       } catch (error) {
@@ -64,7 +64,7 @@ fetchLibrary()
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `https://ba9maacademy.kasselsoft.online/library/delete/${currentId}`
+        `https://backendba9ma.ba9maonline.com/library/delete/${currentId}`
       );
 
       // Remove the deleted department from state

@@ -37,7 +37,7 @@ function Courses() {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await axios.get("https://ba9maacademy.kasselsoft.online/courses/");
+        const response = await axios.get("https://backendba9ma.ba9maonline.com/courses/");
         const data = response.data;
         setCourses(data);
         fetchStudentCountsCourses(data);
@@ -55,7 +55,7 @@ function Courses() {
       courses.map(async (course) => {
         try {
           const response = await axios.get(
-            `https://ba9maacademy.kasselsoft.online/courses/users-counts/${course.id}`
+            `https://backendba9ma.ba9maonline.com/courses/users-counts/${course.id}`
           );
           counts[course.id] = response.data.student_count;
         } catch (error) {
@@ -75,7 +75,7 @@ function Courses() {
 
       // Fetch lesson counts for all course IDs in parallel
       const courseCountPromises = courseIds.map((id) =>
-        axios.get(`https://ba9maacademy.kasselsoft.online/courses/lesson-counts/${id}`)
+        axios.get(`https://backendba9ma.ba9maonline.com/courses/lesson-counts/${id}`)
       );
       const courseCountsResponses = await Promise.all(courseCountPromises);
       const courseCountsData = courseCountsResponses.map(
@@ -109,7 +109,7 @@ function Courses() {
   };
   // const handleDelete = async () => {
   //   try {
-  //     await axios.delete(`https://ba9maacademy.kasselsoft.online/courses/delete/${currentId}`);
+  //     await axios.delete(`https://backendba9ma.ba9maonline.com/courses/delete/${currentId}`);
 
   //     // Remove the deleted department from state
   //     setCourses((prevData) =>
@@ -132,12 +132,12 @@ function Courses() {
  
   const handleDelete = async (currentId) => {
     try {
-      const response = await axios.delete(`https://ba9maacademy.kasselsoft.online/courses/delete/${currentId}`);
+      const response = await axios.delete(`https://backendba9ma.ba9maonline.com/courses/delete/${currentId}`);
       const { message, hasUsers } = response.data;
   
       if (hasUsers) {
         if (window.confirm("This course has associated users. Are you sure you want to delete it?")) {
-          await axios.delete(`https://ba9maacademy.kasselsoft.online/courses/delete/${currentId}?force=true`);
+          await axios.delete(`https://backendba9ma.ba9maonline.com/courses/delete/${currentId}?force=true`);
           // Optionally, you may handle the deletion in the backend with a query parameter to force deletion.
           setCourses((prevData) => prevData.filter((data) => data.id !== currentId));
           Toastify({

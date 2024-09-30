@@ -35,7 +35,7 @@ function Faq() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("https://ba9maacademy.kasselsoft.online/faq/");
+        const response = await axios.get("https://backendba9ma.ba9maonline.com/faq/");
         const data = response.data;
         setFaq(data);
       } catch (error) {
@@ -47,7 +47,7 @@ function Faq() {
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `https://ba9maacademy.kasselsoft.online/faq/delete/${currentId}`
+        `https://backendba9ma.ba9maonline.com/faq/delete/${currentId}`
       );
 
       // Remove the deleted department from state

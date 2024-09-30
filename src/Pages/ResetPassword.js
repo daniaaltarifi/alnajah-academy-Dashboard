@@ -18,7 +18,7 @@ function ResetPassword() {
       return;
     }
     try {
-      const res = await axios.post(`https://kassel.icu/api/reset-password/${token}`, {
+      const res = await axios.post(`https://ba9maonline.com/api/reset-password/${token}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ password, confirmPassword })

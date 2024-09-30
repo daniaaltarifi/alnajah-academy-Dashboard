@@ -65,7 +65,7 @@ const [currentContext, setCurrentContext] = useState(null); // or 'link'
 
  const fetchDepartments = async () => {
     try {
-      const response = await axios.get("https://ba9maacademy.kasselsoft.online/department");
+      const response = await axios.get("https://backendba9ma.ba9maonline.com/department");
       setDepartmentData(response.data);
     } catch (error) {
       console.error("Error fetching departments:", error);
@@ -78,7 +78,7 @@ const [currentContext, setCurrentContext] = useState(null); // or 'link'
 
   const fetchLinks = async () => {
     try {
-      const response = await axios.get(`https://ba9maacademy.kasselsoft.online/courses/links/${updateTeacherId}`);
+      const response = await axios.get(`https://backendba9ma.ba9maonline.com/courses/links/${updateTeacherId}`);
       setLinks(response.data);
     } catch (error) {
       console.error("Error fetching links:", error);
@@ -87,7 +87,7 @@ const [currentContext, setCurrentContext] = useState(null); // or 'link'
 
   const fetchVideos = async () => {
     try {
-      const response = await axios.get(`https://ba9maacademy.kasselsoft.online/courses/videos/${updateTeacherId}`);
+      const response = await axios.get(`https://backendba9ma.ba9maonline.com/courses/videos/${updateTeacherId}`);
       setVideos(response.data);
     } catch (error) {
       console.error("Error fetching videos:", error);
@@ -103,7 +103,7 @@ const [currentContext, setCurrentContext] = useState(null); // or 'link'
   const getTeacherCourseById = async (teacherEmail, updateTeacherId) => {
     try {
       const response = await axios.get(
-        `https://ba9maacademy.kasselsoft.online/teacher/teacher-course/${updateTeacherId}?teacherEmail=${encodeURIComponent(teacherEmail)}`
+        `https://backendba9ma.ba9maonline.com/teacher/teacher-course/${updateTeacherId}?teacherEmail=${encodeURIComponent(teacherEmail)}`
       );
       const course = response.data;
 
@@ -217,7 +217,7 @@ const addLinkField = () => {
       });
   
       const response = await axios.put(
-        `https://ba9maacademy.kasselsoft.online/teacher/updatecourseteacher/${updateTeacherId}`,
+        `https://backendba9ma.ba9maonline.com/teacher/updatecourseteacher/${updateTeacherId}`,
         formData,
         {
           headers: {
@@ -247,7 +247,7 @@ navigate('/teachercourses')
 
   const deleteVideo = async (id) => {
     try {
-      await axios.delete(`https://ba9maacademy.kasselsoft.online/courses/videos/${id}`);
+      await axios.delete(`https://backendba9ma.ba9maonline.com/courses/videos/${id}`);
       setVideos(videos.filter(video => video.id !== id));
       Toastify({
         text: "Video deleted successfully",
@@ -263,7 +263,7 @@ navigate('/teachercourses')
   
   const deleteLink = async (id) => {
     try {
-      await axios.delete(`https://ba9maacademy.kasselsoft.online/courses/videos/${id}`);
+      await axios.delete(`https://backendba9ma.ba9maonline.com/courses/videos/${id}`);
       setLinks(links.filter(link => link.id !== id));
       Toastify({
         text: "Link deleted successfully",

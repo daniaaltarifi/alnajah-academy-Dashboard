@@ -33,7 +33,7 @@ useEffect(() => {
   const fetchTeacher = async () => {
     try {
       if (teacher_id) {
-        const response = await axios.get(`https://ba9maacademy.kasselsoft.online/teacher/${teacher_id}`);
+        const response = await axios.get(`https://backendba9ma.ba9maonline.com/teacher/${teacher_id}`);
         const teacherData = response.data;
         setTeacher_name(teacherData.teacher_name);
         setDescr(teacherData.descr);
@@ -66,7 +66,7 @@ const navigate = useNavigate()
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await axios.get("https://ba9maacademy.kasselsoft.online/department");
+        const response = await axios.get("https://backendba9ma.ba9maonline.com/department");
         setDepartmentData(response.data);
       } catch (error) {
         console.error("Error fetching departments:", error);
@@ -87,7 +87,7 @@ const navigate = useNavigate()
 
 
       const response = await axios.put(
-        `https://ba9maacademy.kasselsoft.online/teacher/update/${teacher_id}`,
+        `https://backendba9ma.ba9maonline.com/teacher/update/${teacher_id}`,
         formData, // Send the FormData object
         {
           headers: {

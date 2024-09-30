@@ -42,7 +42,7 @@ function Courses() {
       }
       
       try {
-        const response = await axios.get(`https://ba9maacademy.kasselsoft.online/teacher/teachercourse/${teacherId}`);
+        const response = await axios.get(`https://backendba9ma.ba9maonline.com/teacher/teachercourse/${teacherId}`);
         const data = response.data;
         setCourses(data);
       
@@ -72,7 +72,7 @@ function Courses() {
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `https://ba9maacademy.kasselsoft.online/teacher/deletecourseteacher/${currentId}`
+        `https://backendba9ma.ba9maonline.com/teacher/deletecourseteacher/${currentId}`
       );
 
       // Remove the deleted department from state

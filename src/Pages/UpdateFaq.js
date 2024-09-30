@@ -25,7 +25,7 @@ function UpdateFaq() {
 
   const fetchFaqById = async (id) => {
     try {
-      const response = await axios.get(`https://ba9maacademy.kasselsoft.online/faq/${id}`);
+      const response = await axios.get(`https://backendba9ma.ba9maonline.com/faq/${id}`);
       setQues(response.data.ques);
       setAns(response.data.ans);
     } catch (error) {
@@ -54,7 +54,7 @@ function UpdateFaq() {
 
     try {
       const response = await axios.put(
-        `https://ba9maacademy.kasselsoft.online/faq/update/${faqId}`,
+        `https://backendba9ma.ba9maonline.com/faq/update/${faqId}`,
         { ques, ans }
       );
 

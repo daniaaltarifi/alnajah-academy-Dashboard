@@ -47,7 +47,7 @@ function PurchaseSteps() {
   useEffect(() => {
     const fetchPurchaseSteps = async () => {
       try {
-        const response = await axios.get("https://ba9maacademy.kasselsoft.online/purchasesteps");
+        const response = await axios.get("https://backendba9ma.ba9maonline.com/purchasesteps");
         setPurchaseSteps(response.data);
      
       } catch (error) {
@@ -61,7 +61,7 @@ function PurchaseSteps() {
 const handleDelete = async () => {
     try {
       await axios.delete(
-        `https://ba9maacademy.kasselsoft.online/purchasesteps/delete/${currentId}`
+        `https://backendba9ma.ba9maonline.com/purchasesteps/delete/${currentId}`
       );
 
       // Remove the deleted department from state

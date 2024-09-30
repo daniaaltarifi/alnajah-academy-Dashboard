@@ -22,7 +22,7 @@ function UpdateContactUs() {
       setContactusId(location.state.id);
       const fetchContact = async () => {
         try {
-          const response = await axios.get(`https://ba9maacademy.kasselsoft.online/contactdynamic/contactbyid/${location.state.id}`);
+          const response = await axios.get(`https://backendba9ma.ba9maonline.com/contactdynamic/contactbyid/${location.state.id}`);
           const contact = response.data;
 
           // Check if the response contains expected data
@@ -62,7 +62,7 @@ function UpdateContactUs() {
     }
     try {
       const response = await axios.put(
-        `https://ba9maacademy.kasselsoft.online/contactdynamic/update/${contactusId}`, // Use contactusId here
+        `https://backendba9ma.ba9maonline.com/contactdynamic/update/${contactusId}`, // Use contactusId here
         { title, descr,phone,email,facebook,whatsup }
       );
 

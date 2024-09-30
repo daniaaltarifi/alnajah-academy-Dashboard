@@ -20,7 +20,7 @@ function AddCouponCode() {
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await axios.get("https://ba9maacademy.kasselsoft.online/department");
+        const response = await axios.get("https://backendba9ma.ba9maonline.com/department");
         setDepartmentData(response.data);
       } catch (error) {
         console.error("Error fetching departments:", error);
@@ -33,7 +33,7 @@ function AddCouponCode() {
    
       const fetchCourses = async () => {
         try {
-          const response = await axios.get(`https://ba9maacademy.kasselsoft.online/courses/`);
+          const response = await axios.get(`https://backendba9ma.ba9maonline.com/courses/`);
           setCoursesData(response.data);
         } catch (error) {
           console.error("Error fetching courses:", error);
@@ -70,7 +70,7 @@ function AddCouponCode() {
 
     try {
       const response = await axios.post(
-        "https://ba9maacademy.kasselsoft.online/coupon/add",
+        "https://backendba9ma.ba9maonline.com/coupon/add",
         { coupon_code, coupon_type, expiration_date, department_id, course_id }
       );
       Toastify({

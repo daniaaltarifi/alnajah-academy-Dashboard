@@ -31,7 +31,7 @@ function Comments() {
   useEffect(() => {
     const fetchCommentBlogs = async () => {
       try {
-        const response = await axios.get("https://ba9maacademy.kasselsoft.online/commentblog/");
+        const response = await axios.get("https://backendba9ma.ba9maonline.com/commentblog/");
         setCommentblog(response.data);
         console.log("comment blog",response.data);
         setLoading(false);
@@ -44,7 +44,7 @@ function Comments() {
     const fetchCommentCourses = async () => {
       try {
         const response = await axios.get(
-          "https://ba9maacademy.kasselsoft.online/commentcourse/"
+          "https://backendba9ma.ba9maonline.com/commentcourse/"
         );
         setCommentCourses(response.data);
         setLoading(false);
@@ -57,7 +57,7 @@ function Comments() {
     const fetchAllComment = async () => {
       try {
         const response = await axios.get(
-          "https://ba9maacademy.kasselsoft.online/connects/comment"
+          "https://backendba9ma.ba9maonline.com/connects/comment"
         );
         setAllComments(response.data);
         setLoading(false);
@@ -71,12 +71,12 @@ function Comments() {
   const handleApproved = async (blogId) => {
     try {
       await axios.put(
-        `https://ba9maacademy.kasselsoft.online/commentblog/commentblogaction/${blogId}`,
+        `https://backendba9ma.ba9maonline.com/commentblog/commentblogaction/${blogId}`,
         {
           action: "approved",
         }
       );
-      const response = await axios.get("https://ba9maacademy.kasselsoft.online/commentblog");
+      const response = await axios.get("https://backendba9ma.ba9maonline.com/commentblog");
       setCommentblog(response.data);
     } catch (error) {
       console.error("Error updating blog status:", error);
@@ -85,12 +85,12 @@ function Comments() {
   const handleApprovedCommentsCourse = async (courseid) => {
     try {
       await axios.put(
-        `https://ba9maacademy.kasselsoft.online/commentcourse/action/${courseid}`,
+        `https://backendba9ma.ba9maonline.com/commentcourse/action/${courseid}`,
         {
           action: "approved",
         }
       );
-      const response = await axios.get("https://ba9maacademy.kasselsoft.online/commentcourse");
+      const response = await axios.get("https://backendba9ma.ba9maonline.com/commentcourse");
       setCommentCourses(response.data);
     } catch (error) {
       console.error("Error updating comment status:", error);
@@ -98,11 +98,11 @@ function Comments() {
   };
   const handleApprovedComments = async (commentid) => {
     try {
-      await axios.put(`https://ba9maacademy.kasselsoft.online/connects/action/${commentid}`, {
+      await axios.put(`https://backendba9ma.ba9maonline.com/connects/action/${commentid}`, {
         action: "approved",
       });
       const response = await axios.get(
-        "https://ba9maacademy.kasselsoft.online/connects/comment"
+        "https://backendba9ma.ba9maonline.com/connects/comment"
       );
       setAllComments(response.data);
     } catch (error) {
@@ -111,7 +111,7 @@ function Comments() {
   };
   const handleDeleteCourse = async (id) => {
     try {
-      await axios.delete(`https://ba9maacademy.kasselsoft.online/commentcourse/delete/${id}`);
+      await axios.delete(`https://backendba9ma.ba9maonline.com/commentcourse/delete/${id}`);
       setCommentCourses((prevData) => prevData.filter((data) => data.id !== id));
       Toastify({
         text: "Comment deleted successfully",
@@ -128,7 +128,7 @@ function Comments() {
   };
   const handleDeleteBlog = async (id) => {
     try {
-      await axios.delete(`https://ba9maacademy.kasselsoft.online/commentblog/delete/${id}`);
+      await axios.delete(`https://backendba9ma.ba9maonline.com/commentblog/delete/${id}`);
       setCommentblog((prevData) => prevData.filter((data) => data.id !== id));
       Toastify({
         text: "Comment deleted successfully",
@@ -145,7 +145,7 @@ function Comments() {
   };
   const handleDeleteComments = async (id) => {
     try {
-      await axios.delete(`https://ba9maacademy.kasselsoft.online/connects/delete/${id}`);
+      await axios.delete(`https://backendba9ma.ba9maonline.com/connects/delete/${id}`);
       setAllComments((prevData) => prevData.filter((data) => data.id !== id));
       Toastify({
         text: "Comment deleted successfully",

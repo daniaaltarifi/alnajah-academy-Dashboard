@@ -19,7 +19,7 @@ function UpdateBoxUnderSlider() {
       setBoxSliderId(location.state.id);
       const fetchContact = async () => {
         try {
-          const response = await axios.get(`https://ba9maacademy.kasselsoft.online/boxslider/boxbyid/${location.state.id}`);
+          const response = await axios.get(`https://backendba9ma.ba9maonline.com/boxslider/boxbyid/${location.state.id}`);
           const contact = response.data;
 
           // Check if the response contains expected data
@@ -57,7 +57,7 @@ function UpdateBoxUnderSlider() {
     }
     try {
       const response = await axios.put(
-        `https://ba9maacademy.kasselsoft.online/boxslider/update/${boxsliderId}`, // Use boxsliderId here
+        `https://backendba9ma.ba9maonline.com/boxslider/update/${boxsliderId}`, // Use boxsliderId here
         { title, descr }
       );
 

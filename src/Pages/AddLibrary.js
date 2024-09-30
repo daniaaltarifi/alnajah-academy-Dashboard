@@ -37,7 +37,7 @@ const [library, setLibrary] = useState([])
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await axios.get("https://ba9maacademy.kasselsoft.online/department");
+        const response = await axios.get("https://backendba9ma.ba9maonline.com/department");
         setDepartmentData(response.data);
       } catch (error) {
         console.error("Error fetching departments:", error);
@@ -77,7 +77,7 @@ const [library, setLibrary] = useState([])
         return;
       }
       const response = await axios.post(
-        "https://ba9maacademy.kasselsoft.online/library/add",
+        "https://backendba9ma.ba9maonline.com/library/add",
         formData,
         {
           headers: {

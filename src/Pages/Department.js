@@ -35,7 +35,7 @@ function Department() {
   };
   const fetchData = async () => {
     try {
-      const response = await axios.get("https://ba9maacademy.kasselsoft.online/department/");
+      const response = await axios.get("https://backendba9ma.ba9maonline.com/department/");
       const data = response.data;
       setDepartmentData(data);
     } catch (error) {
@@ -59,7 +59,7 @@ function Department() {
     }
     try {
       const response = await axios.post(
-        "https://ba9maacademy.kasselsoft.online/department/add",
+        "https://backendba9ma.ba9maonline.com/department/add",
         { title , price }
       );
       setDepartmentData(response.data);
@@ -89,7 +89,7 @@ function Department() {
     }
     try {
       const response = await axios.put(
-        `https://ba9maacademy.kasselsoft.online/department/update/${currentId}`, // Use currentId here
+        `https://backendba9ma.ba9maonline.com/department/update/${currentId}`, // Use currentId here
         { title, price }
       );
       // Update the department data in state
@@ -114,7 +114,7 @@ function Department() {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`https://ba9maacademy.kasselsoft.online/department/delete/${currentId}?confirm=true`);
+      await axios.delete(`https://backendba9ma.ba9maonline.com/department/delete/${currentId}?confirm=true`);
       setSmShow(false);
       setUserIds([]);
     } catch (error) {
@@ -128,7 +128,7 @@ function Department() {
   const handleOpenModal = async (id) => {
     setCurrentId(id);
     try {
-      const response = await axios.delete(`https://ba9maacademy.kasselsoft.online/department/delete/${id}`);
+      const response = await axios.delete(`https://backendba9ma.ba9maonline.com/department/delete/${id}`);
       const { message, userIds } = response.data;
 
       setMessage(message);

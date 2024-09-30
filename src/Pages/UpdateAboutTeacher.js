@@ -27,7 +27,7 @@ function UpdateAboutTeacher() {
       setAboutteacherId(location.state.id);
       const fetchContact = async () => {
         try {
-          const response = await axios.get(`https://ba9maacademy.kasselsoft.online/aboutteacher/aboutteacherbyid/${location.state.id}`);
+          const response = await axios.get(`https://backendba9ma.ba9maonline.com/aboutteacher/aboutteacherbyid/${location.state.id}`);
           const contact = response.data;
 
           // Check if the response contains expected data
@@ -73,7 +73,7 @@ function UpdateAboutTeacher() {
         formData.append('img', img);
   
         const response = await axios.put(
-          `https://ba9maacademy.kasselsoft.online/aboutteacher/update/${aboutteacherId}`,
+          `https://backendba9ma.ba9maonline.com/aboutteacher/update/${aboutteacherId}`,
           formData, // Send the FormData object
           {
             headers: {

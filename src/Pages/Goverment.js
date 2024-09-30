@@ -36,7 +36,7 @@ function Goverment() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("https://ba9maacademy.kasselsoft.online/cards/");
+        const response = await axios.get("https://backendba9ma.ba9maonline.com/cards/");
         const data = response.data;
         setGoverment(data);
       } catch (error) {
@@ -46,7 +46,7 @@ function Goverment() {
     const fetchAvailableCards = async () => {
 
     try {
-      const response = await axios.get("https://ba9maacademy.kasselsoft.online/cards/get/availablecard");
+      const response = await axios.get("https://backendba9ma.ba9maonline.com/cards/get/availablecard");
       setAvailableCards(response.data);
     } catch (error) {
       console.error("Error fetching AvailableCards:", error);
@@ -59,7 +59,7 @@ function Goverment() {
   // const handleDelete = async () => {
   //   try {
   //     await axios.delete(
-  //       `https://ba9maacademy.kasselsoft.online/cards/delete/${currentId}`
+  //       `https://backendba9ma.ba9maonline.com/cards/delete/${currentId}`
   //     );
 
   //     // Remove the deleted department from state
@@ -84,7 +84,7 @@ function Goverment() {
     try {
       if (currentType === 'availableCards') {
         await axios.delete(
-          `https://ba9maacademy.kasselsoft.online/cards/delete/availablecards/${currentId}`
+          `https://backendba9ma.ba9maonline.com/cards/delete/availablecards/${currentId}`
         );
         setAvailableCards((prevData) =>
           prevData.filter((data) => data.id !== currentId)
@@ -98,7 +98,7 @@ function Goverment() {
         }).showToast();
       } else if (currentType === 'dataToDisplay') {
         await axios.delete(
-          `https://ba9maacademy.kasselsoft.online/cards/delete/${currentId}`
+          `https://backendba9ma.ba9maonline.com/cards/delete/${currentId}`
         );
         setGoverment((prevData) =>
           prevData.filter((data) => data.id !== currentId)

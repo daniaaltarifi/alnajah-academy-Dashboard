@@ -31,7 +31,7 @@ function Login() {
     const deviceInfo = getDeviceInfo();
 
     try {
-      const res = await axios.post('https://ba9maacademy.kasselsoft.online/api/login', {
+      const res = await axios.post('https://backendba9ma.ba9maonline.com/api/login', {
         email, role, password,deviceInfo
       });
       // Check for device count error
@@ -73,7 +73,7 @@ function Login() {
   //   const deviceInfo = getDeviceInfo();
 
   //   try {
-  //     const res = await axios.post('https://ba9maacademy.kasselsoft.online/api/login', {
+  //     const res = await axios.post('https://backendba9ma.ba9maonline.com/api/login', {
   //       email, role, password,deviceInfo
   //     });
   //     // Check for device count error

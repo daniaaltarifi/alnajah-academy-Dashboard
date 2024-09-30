@@ -35,7 +35,7 @@ function DynamicBlog() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("https://ba9maacademy.kasselsoft.online/dynamicblog/");
+        const response = await axios.get("https://backendba9ma.ba9maonline.com/dynamicblog/");
         const data = response.data;
         setDynamicBlog(data);
       } catch (error) {
@@ -47,7 +47,7 @@ function DynamicBlog() {
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `https://ba9maacademy.kasselsoft.online/dynamicblog/delete/${currentId}`
+        `https://backendba9ma.ba9maonline.com/dynamicblog/delete/${currentId}`
       );
 
       // Remove the deleted department from state

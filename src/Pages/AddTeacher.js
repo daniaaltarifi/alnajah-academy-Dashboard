@@ -35,7 +35,7 @@ const navigate = useNavigate()
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await axios.get("https://ba9maacademy.kasselsoft.online/department");
+        const response = await axios.get("https://backendba9ma.ba9maonline.com/department");
         setDepartmentData(response.data);
       } catch (error) {
         console.error("Error fetching departments:", error);
@@ -64,7 +64,7 @@ const navigate = useNavigate()
       formData.append('email', email);
       formData.append('img', selectedFile);
       const response = await axios.post(
-        "https://ba9maacademy.kasselsoft.online/teacher/add",
+        "https://backendba9ma.ba9maonline.com/teacher/add",
         formData,
         {
           headers: {

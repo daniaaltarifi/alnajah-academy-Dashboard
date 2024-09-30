@@ -25,7 +25,7 @@ function UpdateAbout() {
 
   const fetchAboutData = async (id) => {
     try {
-      const response = await axios.get(`https://ba9maacademy.kasselsoft.online/about/${id}`);
+      const response = await axios.get(`https://backendba9ma.ba9maonline.com/about/${id}`);
       const { title, descr, img } = response.data;
       setTitle(title);
       setDescr(descr);
@@ -56,7 +56,7 @@ function UpdateAbout() {
       }
 
       const response = await axios.put(
-        `https://ba9maacademy.kasselsoft.online/about/update/${about_id}`,
+        `https://backendba9ma.ba9maonline.com/about/update/${about_id}`,
         formData,
         {
           headers: {

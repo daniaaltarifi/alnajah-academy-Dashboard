@@ -37,7 +37,7 @@ function UpdatePurchaseSteps() {
         setpurchase_id(location.state.id);
       const fetchPurchase = async () => {
         try {
-          const response = await axios.get(`https://ba9maacademy.kasselsoft.online/purchasesteps/PurchaseStepsbyid/${location.state.id}`);
+          const response = await axios.get(`https://backendba9ma.ba9maonline.com/purchasesteps/PurchaseStepsbyid/${location.state.id}`);
           const contact = response.data;
 
           // Check if the response contains expected data
@@ -78,7 +78,7 @@ function UpdatePurchaseSteps() {
       formData.append("img", img);
 
       const response = await axios.put(
-        `https://ba9maacademy.kasselsoft.online/purchasesteps/update/${purchase_id}`,
+        `https://backendba9ma.ba9maonline.com/purchasesteps/update/${purchase_id}`,
         formData, // Send the FormData object
         {
           headers: {

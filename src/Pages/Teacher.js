@@ -53,7 +53,7 @@ function Teacher() {
     const fetchTeachers = async () => {
       try {
         const response = await axios.get(
-          "https://ba9maacademy.kasselsoft.online/teacher/"
+          "https://backendba9ma.ba9maonline.com/teacher/"
         );
         const teachersData = response.data;
         setTeachers(teachersData);
@@ -76,7 +76,7 @@ function Teacher() {
       teachers.map(async (teacher) => {
         try {
           const response = await axios.get(
-            `https://ba9maacademy.kasselsoft.online/teacher/student-counts/${teacher.id}`
+            `https://backendba9ma.ba9maonline.com/teacher/student-counts/${teacher.id}`
           );
           counts[teacher.id] = response.data.student_count;
         } catch (error) {
@@ -97,7 +97,7 @@ function Teacher() {
 
       // Fetch course counts for all teacher IDs in parallel
       const courseCountPromises = teacherIds.map((id) =>
-        axios.get(`https://ba9maacademy.kasselsoft.online/courses/course-counts/${id}`)
+        axios.get(`https://backendba9ma.ba9maonline.com/courses/course-counts/${id}`)
       );
 
       const courseCountsResponses = await Promise.all(courseCountPromises);
@@ -119,7 +119,7 @@ function Teacher() {
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `https://ba9maacademy.kasselsoft.online/teacher/delete/${currentId}`
+        `https://backendba9ma.ba9maonline.com/teacher/delete/${currentId}`
       );
 
       // Remove the deleted department from state

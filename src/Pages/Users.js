@@ -93,7 +93,7 @@ function Users() {
 
     try {
       const res = await axios.post(
-        "https://ba9maacademy.kasselsoft.online/api/register",
+        "https://backendba9ma.ba9maonline.com/api/register",
         {
           name,
           email,
@@ -129,7 +129,7 @@ function Users() {
     const fetchUsers = async () => {
       try {
         const response = await axios.get(
-          "https://ba9maacademy.kasselsoft.online/api/getusers"
+          "https://backendba9ma.ba9maonline.com/api/getusers"
         );
         const usersdata = response.data;
         const student = usersdata.filter((user) => user.role === "student");
@@ -161,7 +161,7 @@ function Users() {
   const dataToDisplay = searchQuery ? searchResults : users;
   const handleDelete = async () => {
     try {
-      await axios.delete(`https://ba9maacademy.kasselsoft.online/api/delete/${currentId}`);
+      await axios.delete(`https://backendba9ma.ba9maonline.com/api/delete/${currentId}`);
 
       // Remove the deleted department from state
       setUsers((prevData) =>

@@ -30,7 +30,7 @@ function BasmaTraining() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("https://ba9maacademy.kasselsoft.online/basmatrainig/");
+        const response = await axios.get("https://backendba9ma.ba9maonline.com/basmatrainig/");
         const data = response.data;
         setBasmaTraining(data);
       } catch (error) {

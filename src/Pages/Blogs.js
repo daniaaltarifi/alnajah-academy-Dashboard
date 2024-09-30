@@ -51,7 +51,7 @@ function Blogs() {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const response = await axios.get("https://ba9maacademy.kasselsoft.online/blog");
+        const response = await axios.get("https://backendba9ma.ba9maonline.com/blog");
         setBlogs(response.data);
         setLoading(false);
       } catch (error) {
@@ -63,12 +63,12 @@ function Blogs() {
   const handleApproved = async (blogId) => {
     try {
       // Update the blog status in the database using PUT
-      await axios.put(`https://ba9maacademy.kasselsoft.online/blog/action/${blogId}`, {
+      await axios.put(`https://backendba9ma.ba9maonline.com/blog/action/${blogId}`, {
         action: "approved",
       });
 
       // Fetch the updated list of blogs
-      const response = await axios.get("https://ba9maacademy.kasselsoft.online/blog");
+      const response = await axios.get("https://backendba9ma.ba9maonline.com/blog");
       setBlogs(response.data);
     } catch (error) {
       console.error("Error updating blog status:", error);
@@ -76,13 +76,13 @@ function Blogs() {
   };
   const handleDelete = async () => {
     try {
-      await axios.delete(`https://ba9maacademy.kasselsoft.online/blog/delete/${currentId}`);
+      await axios.delete(`https://backendba9ma.ba9maonline.com/blog/delete/${currentId}`);
 
       // Remove the deleted department from state
       setBlogs((prevData) => prevData.filter((data) => data.id !== currentId));
 
       Toastify({
-        text: "Department deleted successfully",
+        text: "Blog deleted successfully",
         duration: 3000,
         gravity: "top",
         position: "right",

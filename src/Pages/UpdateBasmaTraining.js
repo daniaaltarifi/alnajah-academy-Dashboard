@@ -19,7 +19,7 @@ function UpdateBasmaTraining() {
       setBasmaTrianingId(location.state.id);
       const fetchContact = async () => {
         try {
-          const response = await axios.get(`https://ba9maacademy.kasselsoft.online/basmatrainig/basmatrainigbyid/${location.state.id}`);
+          const response = await axios.get(`https://backendba9ma.ba9maonline.com/basmatrainig/basmatrainigbyid/${location.state.id}`);
           const contact = response.data;
 
           // Check if the response contains expected data
@@ -57,7 +57,7 @@ function UpdateBasmaTraining() {
     }
     try {
       const response = await axios.put(
-        `https://ba9maacademy.kasselsoft.online/basmatrainig/update/${basmatrainingId}`, // Use basmatrainingId here
+        `https://backendba9ma.ba9maonline.com/basmatrainig/update/${basmatrainingId}`, // Use basmatrainingId here
         { title, descr }
       );
 

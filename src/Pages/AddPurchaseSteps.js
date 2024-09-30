@@ -54,7 +54,7 @@ const navigate = useNavigate()
       formData.append('descr', descr);
       formData.append('img', img);
       const response = await axios.post(
-        "https://ba9maacademy.kasselsoft.online/purchasesteps/add",
+        "https://backendba9ma.ba9maonline.com/purchasesteps/add",
         formData,
         {
           headers: {

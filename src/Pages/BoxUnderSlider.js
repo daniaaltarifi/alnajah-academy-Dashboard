@@ -33,7 +33,7 @@ function BoxUnderSlider() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("https://ba9maacademy.kasselsoft.online/boxslider/");
+        const response = await axios.get("https://backendba9ma.ba9maonline.com/boxslider/");
         const data = response.data;
         setBoxUnderSlider(data);
       } catch (error) {
@@ -43,7 +43,7 @@ function BoxUnderSlider() {
     fetchData();
     const fetchAbout = async () => {
       try {
-        const response = await axios.get("https://ba9maacademy.kasselsoft.online/about");
+        const response = await axios.get("https://backendba9ma.ba9maonline.com/about");
         setAbout(response.data);
       } catch (error) {
         console.error("Error fetching departments:", error);

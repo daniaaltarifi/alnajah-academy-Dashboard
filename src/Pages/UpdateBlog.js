@@ -66,7 +66,7 @@ function UpdateBlog() {
   
     const fetchBlogDetails = async () => {
       try {
-        const response = await axios.get(`https://ba9maacademy.kasselsoft.online/blog/blogdetails/${blogId}`);
+        const response = await axios.get(`https://backendba9ma.ba9maonline.com/blog/blogdetails/${blogId}`);
         const blogData = response.data;
   
         console.log('Fetched blog data:', blogData);
@@ -116,7 +116,7 @@ function UpdateBlog() {
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const response = await axios.get("https://ba9maacademy.kasselsoft.online/department");
+        const response = await axios.get("https://backendba9ma.ba9maonline.com/department");
         setDepartmentData(response.data);
       } catch (error) {
         console.error("Error fetching departments:", error);
@@ -145,7 +145,7 @@ function UpdateBlog() {
 
       // Send the PUT request
       const response = await axios.put(
-         `https://ba9maacademy.kasselsoft.online/blog/updateblogandtag/${blogId}`,
+         `https://backendba9ma.ba9maonline.com/blog/updateblogandtag/${blogId}`,
          formData,
          {
             headers: {
@@ -185,7 +185,7 @@ function UpdateBlog() {
       }
   
       // Send a DELETE request to the backend to remove the tag
-      const response = await axios.delete(`https://ba9maacademy.kasselsoft.online/tag/deleteTag/${tagId}`);
+      const response = await axios.delete(`https://backendba9ma.ba9maonline.com/tag/deleteTag/${tagId}`);
   
       console.log(`Response from server after deleting tag ${tagId}:`, response);
   
